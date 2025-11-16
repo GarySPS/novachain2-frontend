@@ -615,7 +615,7 @@ const handleWithdraw = async (e) => {
               {/* USD Value */}
               <td className="py-3 px-2 text-right tabular-nums font-semibold text-slate-900">
                 {(() => {
-                  const p = prices[symbol] ?? (symbol === "USDT" ? 1 : undefined);
+                  const p = (symbol === "USDT") ? 1 : (prices[symbol] ?? undefined);
                   return p !== undefined ? fmtUSD(Number(balance) * p) : "--";
                 })()}
               </td>
