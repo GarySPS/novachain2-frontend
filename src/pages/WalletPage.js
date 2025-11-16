@@ -109,16 +109,18 @@ const [earnToast, setEarnToast] = useState(null);
   ].sort((a, b) => new Date(b.created_at || b.date) - new Date(a.created_at || a.date));
 
   // ===== MODIFIED: This now calculates total for *main* wallet only =====
-  useEffect(() => {
-    if (!balances.length) { setTotalUsd(0); return; }
-    if (!Object.keys(prices).length) { return; }
-    let sum = 0;
-    balances.forEach(({ symbol, balance }) => {
-      const coinPrice = prices[symbol] || (symbol === "USDT" ? 1 : 0);
-      sum += Number(balance) * coinPrice;
-    });
-    setTotalUsd(sum);
-  }, [balances, prices]);
+  useEffect(() => {
+    if (!balances.length) { setTotalUsd(0); return; }
+    // We don't need to check prices.length, the logic will handle it
+    let sum = 0;
+    balances.forEach(({ symbol, balance }) => {
+      // --- THIS IS THE FIX ---
+      // Always use 1 for USDT, otherwise use the live price (or 0 if not found)
+      const coinPrice = (symbol === "USDT") ? 1 : (prices[symbol] || 0);
+      sum += Number(balance) * coinPrice;
+    });
+    setTotalUsd(sum);
+  }, [balances, prices]);
 
   // ===== NEW: Calculate total USD in Earn Wallet =====
   useEffect(() => {
