@@ -889,9 +889,6 @@ const handleWithdraw = async (e) => {
                   onError={(e) => { e.currentTarget.style.display = "none"; }}
                 />
               ) : null}
-              {!walletQRCodes[selectedDepositCoin] && (
-                <QRCodeCanvas value={walletAddresses[selectedDepositCoin] || ""} size={140} bgColor="#ffffff" fgColor="#000000" />
-              )}
             </div>
           </div>
 
