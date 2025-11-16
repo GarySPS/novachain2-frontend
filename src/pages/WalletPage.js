@@ -252,7 +252,7 @@ const [earnToast, setEarnToast] = useState(null);
   /* ---------------- wallet & histories (unchanged) ---------------- */
   useEffect(() => {
     // 1. Use the new public route we are about to create
-    axios.get(`${MAIN_API_BASE}/api/public/deposit-addresses`)
+    axios.get(`${MAIN_API_BASE}/public/deposit-addresses`)
       .then(res => {
         const addresses = {};
         const qrcodes = {};
