@@ -669,7 +669,7 @@ useEffect(() => {
               </button>
               <button
                 className="h-12 rounded-xl font-bold text-white bg-[#229ED9] hover:opacity-95 transition"
-                onClick={() => window.open('https://t.me/novachainsingapore', '_blank')}
+                onClick={() => window.open('https://t.me/novachainsgofficial', '_blank')}
               >
                 Telegram
               </button>
