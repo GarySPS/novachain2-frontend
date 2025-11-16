@@ -394,39 +394,56 @@ const [earnToast, setEarnToast] = useState(null);
   // ============================================
 
 const handleDepositSubmit = async (e) => {
-  e.preventDefault();
-  if (depositBusy) return;
-  setDepositBusy(true);
-  try {
-    let screenshotUrl = null;
-    if (depositScreenshot) {
-      screenshotUrl = await uploadDepositScreenshot(depositScreenshot, userId);
-    }
-    await axios.post(`${MAIN_API_BASE}/deposit`, {
-      coin: selectedDepositCoin,
-      amount: depositAmount,
-      address: walletAddresses[selectedDepositCoin],
-      screenshot: screenshotUrl,
-    }, { headers: { Authorization: `Bearer ${token}` } });
+  e.preventDefault();
+  if (depositBusy) return;
+  setDepositBusy(true);
 
-    setDepositToast(t("Deposit Submitted") || "Deposit Submitted");
-    setDepositAmount("");
-    setDepositScreenshot(null);
-    setFileLocked(false);
+  // --- NEW: Get and check the address ---
+  const depositAddress = walletAddresses[selectedDepositCoin];
+  if (!depositAddress) {
+    setDepositToast(t("Address not found, please try again.") || "Address not found, please try again.");
+    console.error("Deposit address is missing for coin:", selectedDepositCoin);
+    setTimeout(() => setDepositToast(""), 1400);
+    setDepositBusy(false);
+    return; // Stop the function here
+  }
+  // --- End of new check ---
 
-    // refresh list
-    axios.get(`${MAIN_API_BASE}/deposits`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => setDepositHistory(res.data));
+  try {
+    let screenshotUrl = null;
+    if (depositScreenshot) {
+      screenshotUrl = await uploadDepositScreenshot(depositScreenshot, userId);
+    }
 
-    // close after short delay
-    setTimeout(() => { setDepositToast(""); closeModal(); }, 1400);
-  } catch (err) {
-    setDepositToast(t("deposit_failed"));
-    console.error(err);
-    setTimeout(() => setDepositToast(""), 1400);
-  } finally {
-    setDepositBusy(false);
-  }
+    // --- FIX: Added /api to the URL ---
+    await axios.post(`${MAIN_API_BASE}/api/deposit`, { 
+      coin: selectedDepositCoin,
+      amount: depositAmount,
+      address: depositAddress, // <-- Use the checked variable
+      screenshot: screenshotUrl,
+    }, { headers: { Authorization: `Bearer ${token}` } });
+
+    setDepositToast(t("Deposit Submitted") || "Deposit Submitted");
+    setDepositAmount("");
+    setDepositScreenshot(null);
+    setFileLocked(false);
+    if (fileInputRef.current) fileInputRef.current.value = ""; // Clear file input
+
+    // refresh list
+    axios.get(`${MAIN_API_BASE}/api/deposits`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => setDepositHistory(res.data));
+
+    // close after short delay
+    setTimeout(() => { setDepositToast(""); closeModal(); }, 1400);
+  } catch (err) {
+    // Use the detailed error from the backend if it exists
+    const errorMsg = err.response?.data?.detail || err.response?.data?.error || t("deposit_failed");
+    setDepositToast(errorMsg);
+    console.error(err);
+    setTimeout(() => setDepositToast(""), 1400);
+  } finally {
+    setDepositBusy(false);
+  }
 };
 const handleWithdraw = async (e) => {
   e.preventDefault();
