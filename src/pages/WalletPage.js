@@ -249,37 +249,41 @@ const [earnToast, setEarnToast] = useState(null);
     return () => { canceled = true; clearInterval(id); };
   }, [fromCoin, toCoin, MAIN_API_BASE]);
 
-    /* ---------------- wallet & histories (unchanged) ---------------- */
-  useEffect(() => {
-    // 1. Use the new public route we are about to create
-    axios.get(`${MAIN_API_BASE}/public/deposit-addresses`) // This is now correct
-      .then(res => {
-        console.log("Deposit addresses response:", res.data);
-        const addresses = {};
-        const qrcodes = {};
+/* ---------------- wallet & histories (unchanged) ---------------- */
+useEffect(() => {
+  console.log("🔄 Fetching deposit addresses from:", `${MAIN_API_BASE}/public/deposit-addresses`);
+  
+  axios.get(`${MAIN_API_BASE}/public/deposit-addresses`)
+    .then(res => {
+      console.log("✅ Deposit addresses response:", res.data);
+      
+      const addresses = {};
+      const qrcodes = {};
 
-        res.data.forEach(row => {
-          addresses[row.coin] = row.address;
+      res.data.forEach(row => {
+        console.log("Processing coin:", row.coin, "address:", row.address);
+        addresses[row.coin] = row.address;
 
-          // NEW LOGIC:
-          // Only use the qr_url if it is a full "https://" link (like Supabase)
-          if (row.qr_url && row.qr_url.startsWith("https://")) {
-            qrcodes[row.coin] = row.qr_url; // Use the valid Supabase URL
-          } else {
-            // For all other cases (null, or old "/uploads/" paths), set to null
-            // This will force the <QRCodeCanvas> generator to run.
-            qrcodes[row.coin] = null; 
-          }
-        });
-        
-        setWalletAddresses(addresses);
-        setWalletQRCodes(qrcodes);
-      })
-      .catch(() => {
-        setWalletAddresses({});
-        setWalletQRCodes({});
-      });
-  }, []); // <-- This empty array [] is important
+        if (row.qr_url && row.qr_url.startsWith("https://")) {
+          qrcodes[row.coin] = row.qr_url;
+        } else {
+          qrcodes[row.coin] = null;
+        }
+      });
+      
+      console.log("Final addresses object:", addresses);
+      console.log("Final qrcodes object:", qrcodes);
+      
+      setWalletAddresses(addresses);
+      setWalletQRCodes(qrcodes);
+    })
+    .catch(error => {
+      console.error("❌ Error fetching deposit addresses:", error);
+      console.error("Error details:", error.response?.data);
+      setWalletAddresses({});
+      setWalletQRCodes({});
+    });
+}, []);
 
   // ===== MODIFIED: Added fetchEarnBalances() =====
   useEffect(() => {
