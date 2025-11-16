@@ -154,7 +154,7 @@ const [earnToast, setEarnToast] = useState(null);
       for (let row of allHistory) {
         if (row.screenshot) {
           if (!row.screenshot.includes("/")) {
-            shots[row.id] = `https://zgnefojwdijycgcqngke.supabase.co/storage/v1/object/public/deposit/${encodeURIComponent(row.screenshot)}`;
+            shots[row.id] = `https://obrfnkggcfgfspyqgtws.supabase.co/storage/v1/object/public/deposit/${encodeURIComponent(row.screenshot)}`;
           } else if (row.screenshot.startsWith("/uploads/")) {
             shots[row.id] = `${MAIN_API_BASE}${row.screenshot}`;
           } else if (row.screenshot.startsWith("http")) {
