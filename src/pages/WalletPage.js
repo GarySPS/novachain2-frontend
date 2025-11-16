@@ -470,6 +470,7 @@ const handleWithdraw = async (e) => {
       coin: selectedWithdrawCoin,
       amount: withdrawForm.amount,
       address: withdrawForm.address,
+      network: depositNetworks[selectedWithdrawCoin],
     }, { headers: { Authorization: `Bearer ${token}` } });
 
     if (res.data && res.data.success) {
