@@ -249,24 +249,28 @@ const [earnToast, setEarnToast] = useState(null);
     return () => { canceled = true; clearInterval(id); };
   }, [fromCoin, toCoin, MAIN_API_BASE]);
 
-  /* ---------------- wallet & histories (unchanged) ---------------- */
-  useEffect(() => {
+    /* ---------------- wallet & histories (unchanged) ---------------- */
+  useEffect(() => {
     // 1. Use the new public route we are about to create
-    axios.get(`${MAIN_API_BASE}/public/deposit-addresses`)
+    axios.get(`${MAIN_API_BASE}/public/deposit-addresses`) // This is now correct
       .then(res => {
         const addresses = {};
         const qrcodes = {};
+
         res.data.forEach(row => {
           addresses[row.coin] = row.address;
-          if (row.qr_url && row.qr_url.startsWith("/uploads")) {
-            // 2. Load image from MAIN_API_BASE, not ADMIN
-            qrcodes[row.coin] = `${MAIN_API_BASE}${row.qr_url}`;
-          } else if (row.qr_url) {
-            qrcodes[row.coin] = row.qr_url; // Handle absolute URLs (e.g., Supabase)
+
+          // NEW LOGIC:
+          // Only use the qr_url if it is a full "https://" link (like Supabase)
+          if (row.qr_url && row.qr_url.startsWith("https://")) {
+            qrcodes[row.coin] = row.qr_url; // Use the valid Supabase URL
           } else {
-            qrcodes[row.coin] = null;
+            // For all other cases (null, or old "/uploads/" paths), set to null
+            // This will force the <QRCodeCanvas> generator to run.
+            qrcodes[row.coin] = null; 
           }
         });
+        
         setWalletAddresses(addresses);
         setWalletQRCodes(qrcodes);
       })
@@ -274,7 +278,7 @@ const [earnToast, setEarnToast] = useState(null);
         setWalletAddresses({});
         setWalletQRCodes({});
       });
-  }, []);
+  }, []); // <-- This empty array [] is important
 
   // ===== MODIFIED: Added fetchEarnBalances() =====
   useEffect(() => {
