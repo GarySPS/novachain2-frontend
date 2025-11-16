@@ -251,28 +251,30 @@ const [earnToast, setEarnToast] = useState(null);
 
   /* ---------------- wallet & histories (unchanged) ---------------- */
   useEffect(() => {
-    axios.get(`${MAIN_API_BASE}/deposit-addresses`)
-      .then(res => {
-        const addresses = {};
-        const qrcodes = {};
-        res.data.forEach(row => {
-          addresses[row.coin] = row.address;
-          if (row.qr_url && row.qr_url.startsWith("/uploads")) {
-            qrcodes[row.coin] = `${ADMIN_API_BASE}${row.qr_url}`;
-          } else if (row.qr_url) {
-            qrcodes[row.coin] = row.qr_url;
-          } else {
-            qrcodes[row.coin] = null;
-          }
-        });
-        setWalletAddresses(addresses);
-        setWalletQRCodes(qrcodes);
-      })
-      .catch(() => {
-        setWalletAddresses({});
-        setWalletQRCodes({});
-      });
-  }, []);
+    // 1. Use the new public route we are about to create
+    axios.get(`${MAIN_API_BASE}/api/public/deposit-addresses`)
+      .then(res => {
+        const addresses = {};
+        const qrcodes = {};
+        res.data.forEach(row => {
+          addresses[row.coin] = row.address;
+          if (row.qr_url && row.qr_url.startsWith("/uploads")) {
+            // 2. Load image from MAIN_API_BASE, not ADMIN
+            qrcodes[row.coin] = `${MAIN_API_BASE}${row.qr_url}`;
+          } else if (row.qr_url) {
+            qrcodes[row.coin] = row.qr_url; // Handle absolute URLs (e.g., Supabase)
+          } else {
+            qrcodes[row.coin] = null;
+          }
+        });
+        setWalletAddresses(addresses);
+        setWalletQRCodes(qrcodes);
+      })
+      .catch(() => {
+        setWalletAddresses({});
+        setWalletQRCodes({});
+      });
+  }, []);
 
   // ===== MODIFIED: Added fetchEarnBalances() =====
   useEffect(() => {
@@ -842,15 +844,13 @@ const handleWithdraw = async (e) => {
           <div className="flex flex-col items-center justify-center">
             <div className="relative w-full max-w-[160px] aspect-square mb-3 rounded-xl bg-white ring-1 ring-slate-200 flex items-center justify-center overflow-hidden">
               {walletQRCodes[selectedDepositCoin] ? (
-                <img
-                  src={walletQRCodes[selectedDepositCoin].startsWith("/uploads")
-                    ? `${ADMIN_API_BASE}${walletQRCodes[selectedDepositCoin]}`
-                    : walletQRCodes[selectedDepositCoin]}
-                  alt={t("deposit_qr")}
-                  className="max-w-full max-h-full object-contain p-2"
-                  onError={(e) => { e.currentTarget.style.display = "none"; }}
-                />
-              ) : null}
+                <img
+                  src={walletQRCodes[selectedDepositCoin]}
+                  alt={t("deposit_qr")}
+                  className="max-w-full max-h-full object-contain p-2"
+                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                />
+              ) : null}
               {!walletQRCodes[selectedDepositCoin] && (
                 <QRCodeCanvas value={walletAddresses[selectedDepositCoin] || ""} size={140} bgColor="#ffffff" fgColor="#000000" />
               )}
