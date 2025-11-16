@@ -398,7 +398,7 @@ const handleDepositSubmit = async (e) => {
   if (depositBusy) return;
   setDepositBusy(true);
 
-  // --- NEW: Get and check the address ---
+  // --- This check is correct and must stay ---
   const depositAddress = walletAddresses[selectedDepositCoin];
   if (!depositAddress) {
     setDepositToast(t("Address not found, please try again.") || "Address not found, please try again.");
@@ -407,7 +407,7 @@ const handleDepositSubmit = async (e) => {
     setDepositBusy(false);
     return; // Stop the function here
   }
-  // --- End of new check ---
+  // --- End of check ---
 
   try {
     let screenshotUrl = null;
@@ -415,8 +415,8 @@ const handleDepositSubmit = async (e) => {
       screenshotUrl = await uploadDepositScreenshot(depositScreenshot, userId);
     }
 
-    // --- FIX: Added /api to the URL ---
-    await axios.post(`${MAIN_API_BASE}/api/deposit`, { 
+    // --- FIX: Removed the extra /api. It should just be /deposit ---
+    await axios.post(`${MAIN_API_BASE}/deposit`, { 
       coin: selectedDepositCoin,
       amount: depositAmount,
       address: depositAddress, // <-- Use the checked variable
@@ -429,8 +429,8 @@ const handleDepositSubmit = async (e) => {
     setFileLocked(false);
     if (fileInputRef.current) fileInputRef.current.value = ""; // Clear file input
 
-    // refresh list
-    axios.get(`${MAIN_API_BASE}/api/deposits`, { headers: { Authorization: `Bearer ${token}` } })
+    // --- FIX: Removed the extra /api here too ---
+    axios.get(`${MAIN_API_BASE}/deposits`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => setDepositHistory(res.data));
 
     // close after short delay
