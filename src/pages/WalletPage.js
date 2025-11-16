@@ -399,55 +399,65 @@ useEffect(() => {
   // ============================================
 
 const handleDepositSubmit = async (e) => {
-  e.preventDefault();
-  if (depositBusy) return;
-  setDepositBusy(true);
+  e.preventDefault();
+  if (depositBusy) return;
+  setDepositBusy(true);
 
-  // --- NEW: Get and check the address ---
-  const depositAddress = walletAddresses[selectedDepositCoin];
-  if (!depositAddress) {
-    setDepositToast(t("Address not found, please try again.") || "Address not found, please try again.");
-    console.error("Deposit address is missing for coin:", selectedDepositCoin);
-    setTimeout(() => setDepositToast(""), 1400);
-    setDepositBusy(false);
-    return; // Stop the function here
-  }
-  // --- End of new check ---
+  // --- Get and check the address ---
+  const depositAddress = walletAddresses[selectedDepositCoin];
+  
+  // --- DEBUG: Check what's being sent ---
+  console.log("🔄 Submitting deposit with:", {
+    coin: selectedDepositCoin,
+    amount: depositAmount,
+    address: depositAddress,
+    addressExists: !!depositAddress,
+    screenshot: !!depositScreenshot
+  });
+  // --- End debug ---
 
-  try {
-    let screenshotUrl = null;
-    if (depositScreenshot) {
-      screenshotUrl = await uploadDepositScreenshot(depositScreenshot, userId);
-    }
+  if (!depositAddress) {
+    setDepositToast(t("Address not found, please try again.") || "Address not found, please try again.");
+    console.error("Deposit address is missing for coin:", selectedDepositCoin, "Available addresses:", walletAddresses);
+    setTimeout(() => setDepositToast(""), 1400);
+    setDepositBusy(false);
+    return; // Stop the function here
+  }
 
-    await axios.post(`${MAIN_API_BASE}/deposit`, { 
-      coin: selectedDepositCoin,
-      amount: depositAmount,
-      address: depositAddress, // <-- Use the checked variable
-      screenshot: screenshotUrl,
-    }, { headers: { Authorization: `Bearer ${token}` } });
+  try {
+    let screenshotUrl = null;
+    if (depositScreenshot) {
+      screenshotUrl = await uploadDepositScreenshot(depositScreenshot, userId);
+    }
 
-    setDepositToast(t("Deposit Submitted") || "Deposit Submitted");
-    setDepositAmount("");
-    setDepositScreenshot(null);
-    setFileLocked(false);
+    await axios.post(`${MAIN_API_BASE}/deposit`, { 
+      coin: selectedDepositCoin,
+      amount: depositAmount,
+      address: depositAddress,
+      screenshot: screenshotUrl,
+    }, { headers: { Authorization: `Bearer ${token}` } });
+
+    setDepositToast(t("Deposit Submitted") || "Deposit Submitted");
+    setDepositAmount("");
+    setDepositScreenshot(null);
+    setFileLocked(false);
     if (fileInputRef.current) fileInputRef.current.value = ""; // Clear file input
 
-    // refresh list
-    axios.get(`${MAIN_API_BASE}/deposits`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => setDepositHistory(res.data));
+    // refresh list
+    axios.get(`${MAIN_API_BASE}/deposits`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => setDepositHistory(res.data));
 
-    // close after short delay
-    setTimeout(() => { setDepositToast(""); closeModal(); }, 1400);
-  } catch (err) {
-    // Use the detailed error from the backend if it exists
-    const errorMsg = err.response?.data?.detail || err.response?.data?.error || t("deposit_failed");
-    setDepositToast(errorMsg);
-    console.error(err);
-    setTimeout(() => setDepositToast(""), 1400);
-  } finally {
-    setDepositBusy(false);
-  }
+    // close after short delay
+    setTimeout(() => { setDepositToast(""); closeModal(); }, 1400);
+  } catch (err) {
+    // Use the detailed error from the backend if it exists
+    const errorMsg = err.response?.data?.detail || err.response?.data?.error || t("deposit_failed");
+    setDepositToast(errorMsg);
+    console.error(err);
+    setTimeout(() => setDepositToast(""), 1400);
+  } finally {
+    setDepositBusy(false);
+  }
 };
   
 const handleWithdraw = async (e) => {
