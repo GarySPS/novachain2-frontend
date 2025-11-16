@@ -254,6 +254,7 @@ const [earnToast, setEarnToast] = useState(null);
     // 1. Use the new public route we are about to create
     axios.get(`${MAIN_API_BASE}/public/deposit-addresses`) // This is now correct
       .then(res => {
+        console.log("Deposit addresses response:", res.data);
         const addresses = {};
         const qrcodes = {};
 
