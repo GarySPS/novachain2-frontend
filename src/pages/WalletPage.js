@@ -444,6 +444,7 @@ const handleDepositSubmit = async (e) => {
     setDepositBusy(false);
   }
 };
+  
 const handleWithdraw = async (e) => {
   e.preventDefault();
   if (withdrawBusy) return;
