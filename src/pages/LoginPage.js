@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { MAIN_API_BASE } from "../config";
-import NovaChainLogo from "../components/NovaChainLogo.svg";
 import DatabaseErrorCard from "../components/DatabaseErrorCard";
 
 export default function LoginPage() {

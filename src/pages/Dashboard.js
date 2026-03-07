@@ -217,7 +217,8 @@ return (
           background: "linear-gradient(120deg, #0b1020f0 0%, #0d1220d8 60%, #0a101dd1 100%)",
         }}
       />
-      <div style={{ position: "relative", zIndex: 1 }} className="w-full max-w-7xl mx-auto space-y-6">
+      {/* pb-32 prevents the bottom NavBar from hiding the footer */}
+      <div style={{ position: "relative", zIndex: 1 }} className="w-full max-w-7xl mx-auto space-y-6 pb-32">
 
         {/* ---- ✨ Polished Top Stats Card ---- */}
         <Card className="p-0 overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343]">
@@ -274,169 +275,132 @@ return (
           </div>
         {/* --- Table Section Starts Here --- */}
 
-        {/* ---- ✨ Polished Table ---- */}
-        <div className="w-full overflow-x-auto">
-          {/* Use min-w-[768px] or similar if needed for smaller screens */}
-          <table className="w-full min-w-[768px] text-sm md:text-base">
-            {/* Colgroup remains same */}
-            <colgroup><col className="w-24" /><col /><col className="w-28" /><col className="w-40" /><col className="w-28" /><col className="w-44" /><col className="w-44" /></colgroup>
-            {/* Polished Head */}
-            <thead className="sticky top-0 z-10 bg-[#0f1424]"> {/* Dark background for head */}
-              <tr className="text-left text-gray-400 border-y border-white/10">
-                <th className="py-3.5 px-3 text-center">#</th>
-                <th className="py-3.5 px-3">Name</th>
-                <th className="py-3.5 px-3">Symbol</th>
-                <th className="py-3.5 px-3 text-right">Price</th>
-                <th className="py-3.5 px-3 text-center">24h</th> {/* Centered */}
-                <th className="py-3.5 px-3 text-right whitespace-nowrap">
-                  24h Volume
-                </th>
-                <th className="py-3.5 px-3 text-right whitespace-nowrap">
-                  Market Cap
-                </th>
-              </tr>
-            </thead>
-            {/* Polished Body */}
-            <tbody className="divide-y divide-white/10"> {/* Row dividers */}
-              {loading
-                ? Array.from({ length: 12 }).map((_, i) => (
-                    // Use Polished Skeleton
-                    /* ---------- ✨ Polished Skeleton ---------- */
-                    <tr key={`sk-${i}`} className="animate-pulse border-b border-white/10"> {/* Ensure border matches tbody divider */}
-                      {/* # and Icon */}
+        {/* ---- ✨ Polished Responsive Coin List ---- */}
+        <div className="w-full">
+          {/* 📱 MOBILE VIEW (Hidden on Desktop) */}
+          <div className="md:hidden flex flex-col divide-y divide-white/5">
+            {loading ? (
+              Array.from({ length: 8 }).map((_, i) => (
+                <div key={`sk-mob-${i}`} className="flex items-center justify-between p-4 animate-pulse">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-gray-800" />
+                    <div className="space-y-2">
+                      <div className="h-4 w-16 bg-gray-800 rounded" />
+                      <div className="h-3 w-24 bg-gray-800 rounded" />
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-2">
+                    <div className="h-4 w-20 bg-gray-800 rounded" />
+                    <div className="h-5 w-14 bg-gray-800 rounded-md" />
+                  </div>
+                </div>
+              ))
+            ) : (
+              display.map((coin, idx) => {
+                const u = coin.quote?.USD || {};
+                const change = typeof u.percent_change_24h === "number" ? u.percent_change_24h : null;
+                const isUp = change > 0;
+                const isDown = change < 0;
+                
+                return (
+                  <div key={coin.id || coin.symbol || idx} className="flex items-center justify-between p-4 hover:bg-white/[0.02] active:bg-white/[0.05] transition-colors">
+                    <div className="flex items-center gap-3">
+                      <span className="text-gray-600 text-[10px] font-bold w-4 text-center">{idx + 1}</span>
+                      <div className="w-9 h-9 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+                        <img
+                          src={`https://assets.coincap.io/assets/icons/${coin.symbol?.toLowerCase()}@2x.png`}
+                          onError={(e) => { e.currentTarget.style.opacity = "0"; }}
+                          alt={coin.symbol}
+                          className="w-full h-full object-contain p-1.5"
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-gray-100 font-bold text-[15px] tracking-wide">{coin.symbol}</span>
+                        <span className="text-gray-500 text-xs truncate max-w-[120px] font-medium">{coin.name}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-1">
+                      <span className="text-gray-100 font-semibold tracking-tight">
+                        {typeof u.price === "number" ? "$" + u.price.toLocaleString(undefined, { maximumFractionDigits: u.price < 0.01 ? 6 : 2, minimumFractionDigits: 2 }) : "--"}
+                      </span>
+                      {change !== null ? (
+                        <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${isUp ? 'bg-emerald-500/10 text-emerald-400' : isDown ? 'bg-rose-500/10 text-rose-400' : 'bg-gray-500/10 text-gray-400'}`}>
+                          {isUp ? "+" : ""}{change.toFixed(2)}%
+                        </span>
+                      ) : (
+                        <span className="text-gray-500 text-xs">--</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* 💻 DESKTOP VIEW (Hidden on Mobile) */}
+          <div className="hidden md:block w-full overflow-x-auto">
+            <table className="w-full min-w-[768px] text-sm md:text-base">
+              <colgroup><col className="w-24" /><col /><col className="w-28" /><col className="w-40" /><col className="w-28" /><col className="w-44" /><col className="w-44" /></colgroup>
+              <thead className="sticky top-0 z-10 bg-[#0f1424]">
+                <tr className="text-left text-gray-400 border-y border-white/10">
+                  <th className="py-3.5 px-3 text-center">#</th>
+                  <th className="py-3.5 px-3">Name</th>
+                  <th className="py-3.5 px-3">Symbol</th>
+                  <th className="py-3.5 px-3 text-right">Price</th>
+                  <th className="py-3.5 px-3 text-center">24h</th>
+                  <th className="py-3.5 px-3 text-right whitespace-nowrap">24h Volume</th>
+                  <th className="py-3.5 px-3 text-right whitespace-nowrap">Market Cap</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/10">
+                {loading ? Array.from({ length: 12 }).map((_, i) => (
+                  <tr key={`sk-${i}`} className="animate-pulse border-b border-white/10">
+                    <td className="py-3 px-3"><div className="w-8 h-8 rounded-full bg-gray-700 mx-auto" /></td>
+                    <td className="py-4 px-3"><div className="h-4 w-32 bg-gray-700 rounded" /></td>
+                    <td className="py-4 px-3"><div className="h-6 w-20 bg-gray-700 rounded-md" /></td>
+                    <td className="py-4 px-3 text-right"><div className="h-4 w-24 bg-gray-700 rounded ml-auto" /></td>
+                    <td className="py-4 px-3 text-center"><div className="h-6 w-[70px] bg-gray-700 rounded-lg mx-auto" /></td>
+                    <td className="py-4 px-3 text-right"><div className="h-6 w-24 bg-gray-700 rounded-md ml-auto" /></td>
+                    <td className="py-4 px-3 text-right"><div className="h-6 w-24 bg-gray-700 rounded-md ml-auto" /></td>
+                  </tr>
+                )) : display.map((coin, idx) => {
+                  const u = coin.quote?.USD || {};
+                  const change = typeof u.percent_change_24h === "number" ? u.percent_change_24h : null;
+                  return (
+                    <tr key={coin.id || coin.symbol || idx} className="group hover:bg-white/5 transition-colors text-white" style={{ height: 64 }}>
                       <td className="py-3 px-3">
                         <div className="flex items-center">
-                          <span className="text-transparent text-xs font-medium w-8 tabular-nums text-right mr-2 bg-gray-700 rounded">00</span>
-                          <div className="w-8 h-8 rounded-full bg-gray-700" />
+                          <span className="text-gray-500 text-xs font-medium w-8 tabular-nums text-right mr-2">{String(idx + 1).padStart(2, "0")}</span>
+                          <div className="w-8 h-8 rounded-full bg-[#2c3040] overflow-hidden flex items-center justify-center border border-white/10">
+                            <img src={`https://assets.coincap.io/assets/icons/${coin.symbol?.toLowerCase()}@2x.png`} onError={(e) => { e.currentTarget.style.opacity = "0"; e.currentTarget.parentElement.style.backgroundColor = 'transparent';}} alt={coin.symbol} className="w-full h-full object-contain" />
+                          </div>
                         </div>
                       </td>
-                      {/* Name */}
-                      <td className="py-4 px-3">
-                        <div className="h-4 w-32 bg-gray-700 rounded" />
-                      </td>
-                      {/* Symbol */}
-                      <td className="py-4 px-3">
-                        <div className="h-6 w-20 bg-gray-700 rounded-md" />
-                      </td>
-                      {/* Price */}
-                      <td className="py-4 px-3 text-right">
-                        <div className="h-4 w-24 bg-gray-700 rounded ml-auto" />
-                      </td>
-                      {/* 24h Change */}
-                      <td className="py-4 px-3 text-center">
-                        <div className="h-6 w-[70px] bg-gray-700 rounded-lg mx-auto" />
-                      </td>
-                      {/* Volume */}
-                      <td className="py-4 px-3 text-right">
-                        <div className="h-6 w-24 bg-gray-700 rounded-md ml-auto" />
-                      </td>
-                      {/* Market Cap */}
-                      <td className="py-4 px-3 text-right">
-                        <div className="h-6 w-24 bg-gray-700 rounded-md ml-auto" />
-                      </td>
+                      <td className="py-3 px-3">
+                         <div className="flex items-center gap-2">
+                           <span className="font-semibold text-gray-100">{coin.name || "--"}</span>
+                           <span className="px-2 py-0.5 rounded-full text-[10px] bg-gray-700 text-gray-300 ring-1 ring-gray-600">#{coin.cmc_rank || idx + 1}</span>
+                         </div>
+                       </td>
+                      <td className="py-3 px-3"><span className="font-mono text-gray-300 bg-[#2c3040] ring-1 ring-gray-700 px-2 py-1 rounded-md inline-block w-20 text-center">{coin.symbol}</span></td>
+                      <td className="py-3 px-3 text-right font-semibold tabular-nums text-gray-100">
+                         {typeof u.price === "number" ? "$" + u.price.toLocaleString(undefined, { maximumFractionDigits: u.price < 0.01 ? 6 : 2, minimumFractionDigits: 2 }) : "--"}
+                       </td>
+                      <td className="py-3 px-3 text-center">
+                         {change === null ? <span className="text-gray-500">--</span> : (
+                           <span className={`inline-flex items-center justify-center min-w-[70px] px-2 py-1 rounded-lg text-sm font-semibold ${change > 0 ? 'bg-emerald-500/10 text-emerald-400 ring-emerald-500/20' : change < 0 ? 'bg-rose-500/10 text-rose-400 ring-rose-500/20' : 'bg-gray-500/10 text-gray-400 ring-gray-500/20'} ring-1`}>
+                             {change > 0 ? "+" : ""}{change.toFixed(2)}%
+                           </span>
+                         )}
+                       </td>
+                      <td className="py-3 px-3 text-right tabular-nums text-gray-300"><span className="inline-block px-2 py-1 rounded-md bg-[#2c3040] ring-1 ring-gray-700">{u.volume_24h ? formatBigNum(u.volume_24h) : "--"}</span></td>
+                      <td className="py-3 px-3 text-right tabular-nums text-gray-300"><span className="inline-block px-2 py-1 rounded-md bg-[#2c3040] ring-1 ring-gray-700">{u.market_cap ? formatBigNum(u.market_cap) : "--"}</span></td>
                     </tr>
-                  ))
-                : display.map((coin, idx) => {
-                    const u = coin.quote?.USD || {};
-                    const change =
-                      typeof u.percent_change_24h === "number"
-                        ? u.percent_change_24h
-                        : null;
-                    return (
-                      <tr
-                        key={coin.id || coin.symbol || idx}
-                        className="group hover:bg-white/5 transition-colors text-white" // White text for rows
-                        style={{ height: 64 }}
-                      >
-                        {/* # and Icon */}
-                        <td className="py-3 px-3">
-                          <div className="flex items-center">
-                            <span className="text-gray-500 text-xs font-medium w-8 tabular-nums text-right mr-2">
-                              {String(idx + 1).padStart(2, "0")}
-                            </span>
-                            {/* Darker icon bg */}
-                            <div className="w-8 h-8 rounded-full bg-[#2c3040] overflow-hidden flex items-center justify-center border border-white/10">
-                              <img
-                                src={`https://assets.coincap.io/assets/icons/${coin.symbol?.toLowerCase()}@2x.png`}
-                                onError={(e) => { e.currentTarget.style.opacity = "0"; e.currentTarget.parentElement.style.backgroundColor = 'transparent';}} // Hide broken image + bg
-                                alt={coin.symbol}
-                                className="w-full h-full object-contain"
-                              />
-                            </div>
-                          </div>
-                        </td>
-
-                        {/* Name and Rank */}
-                        <td className="py-3 px-3">
-                           <div className="flex items-center gap-2">
-                             <span className="font-semibold text-gray-100"> {/* Brighter text */}
-                               {coin.name || "--"}
-                             </span>
-                             {/* Polished Rank Badge */}
-                             <span className="px-2 py-0.5 rounded-full text-[10px] bg-gray-700 text-gray-300 ring-1 ring-gray-600">
-                               #{coin.cmc_rank || idx + 1}
-                             </span>
-                           </div>
-                         </td>
-
-                        {/* Symbol */}
-                        <td className="py-3 px-3">
-                          {/* Polished Symbol Badge */}
-                          <span className="font-mono text-gray-300 bg-[#2c3040] ring-1 ring-gray-700 px-2 py-1 rounded-md inline-block w-20 text-center">
-                            {coin.symbol}
-                          </span>
-                        </td>
-
-                        {/* Price */}
-                        <td className="py-3 px-3 text-right font-semibold tabular-nums text-gray-100"> {/* Brighter text */}
-                           {typeof u.price === "number"
-                             ? "$" +
-                               u.price.toLocaleString(undefined, {
-                                 maximumFractionDigits: u.price < 0.01 ? 6 : 2, // More digits for small prices
-                                 minimumFractionDigits: 2,
-                               })
-                             : "--"}
-                         </td>
-
-                        {/* 24h Change */}
-                        <td className="py-3 px-3 text-center"> {/* Centered */}
-                           {change === null ? (
-                             <span className="text-gray-500">--</span>
-                           ) : (
-                             // Polished % Badge (using updated pctClass logic)
-                             <span
-                               className={`inline-flex items-center justify-center min-w-[70px] px-2 py-1 rounded-lg text-sm font-semibold ${
-                                 change > 0 ? 'bg-green-500/10 text-green-400 ring-green-500/20' // Darker theme colors
-                                 : change < 0 ? 'bg-red-500/10 text-red-400 ring-red-500/20' // Darker theme colors
-                                 : 'bg-gray-500/10 text-gray-400 ring-gray-500/20' // Darker theme colors
-                               } ring-1`}
-                             >
-                               {change > 0 ? "+" : ""}
-                               {change.toFixed(2)}%
-                             </span>
-                           )}
-                         </td>
-
-                        {/* Volume */}
-                        <td className="py-3 px-3 text-right tabular-nums text-gray-300"> {/* Adjusted text color */}
-                          {/* Polished Volume Badge */}
-                          <span className="inline-block px-2 py-1 rounded-md bg-[#2c3040] ring-1 ring-gray-700">
-                            {u.volume_24h ? formatBigNum(u.volume_24h) : "--"}
-                          </span>
-                        </td>
-
-                        {/* Market Cap */}
-                        <td className="py-3 px-3 text-right tabular-nums text-gray-300"> {/* Adjusted text color */}
-                          {/* Polished Market Cap Badge */}
-                          <span className="inline-block px-2 py-1 rounded-md bg-[#2c3040] ring-1 ring-gray-700">
-                            {u.market_cap ? formatBigNum(u.market_cap) : "--"}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-            </tbody>
-          </table>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
         </Card> {/* This closes the main card that wraps stats and table */}
 
@@ -475,47 +439,37 @@ return (
 
       </div> {/* Closes z-index wrapper */}
 
-      {/* ===== Promotion Video Card (Keep dark theme) ===== */}
+      {/* ===== Premium Floating Promo Video ===== */}
      {showPromotion && (
        <div
-         className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 w-[90vw] max-w-sm rounded-2xl shadow-2xl border border-slate-700 overflow-hidden"
-         style={{
-           background: "linear-gradient(120deg, #0b1020f0 0%, #0d1220d8 60%, #0a101dd1 100%)", // Dark gradient
-         }}
+         className="fixed bottom-28 left-1/2 -translate-x-1/2 z-50 w-[92vw] max-w-[340px] rounded-2xl overflow-hidden backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.8)] transition-all"
        >
-         <div className="relative">
+         <div className="relative p-1">
+           {/* Glass close button */}
            <button
              onClick={handleClosePromotion}
-             className="absolute top-2 right-2 z-10 h-7 w-7 rounded-full bg-black/60 text-white hover:bg-black/90 transition-colors flex items-center justify-center"
+             className="absolute top-3 right-3 z-10 h-8 w-8 rounded-full bg-black/50 backdrop-blur-md text-gray-300 border border-white/10 hover:bg-black/80 hover:text-white transition-colors flex items-center justify-center shadow-lg"
              aria-label="Close promotion"
            >
-             {/* Simple 'X' icon */}
-             <svg
-               xmlns="http://www.w3.org/2000/svg"
-               width="18"
-               height="18"
-               viewBox="0 0 24 24"
-               fill="none"
-               stroke="currentColor"
-               strokeWidth="2.5"
-               strokeLinecap="round"
-               strokeLinejoin="round"
-             >
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                <line x1="18" y1="6" x2="6" y2="18"></line>
                <line x1="6" y1="6" x2="18" y2="18"></line>
              </svg>
            </button>
-           <video
-             src="/promotion.mp4"
-             autoPlay
-             loop
-             muted
-             playsInline // Important for mobile browsers
-             className="w-full h-auto"
-           />
+           {/* Rounded video wrapper to fit inside the padding */}
+           <div className="rounded-xl overflow-hidden bg-[#0b1020]">
+             <video
+               src="/promotion.mp4"
+               autoPlay
+               loop
+               muted
+               playsInline
+               className="w-full h-auto object-cover opacity-95" // Slight opacity drop makes it blend better with dark mode
+             />
+           </div>
          </div>
        </div>
      )}
-    </div> // Closes main page div
+    </div>
   );
 }

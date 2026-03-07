@@ -55,7 +55,7 @@ export default function BottomNavBar() {
           width="100%"
           height={BAR_HEIGHT + NOTCH_RADIUS}
           viewBox={`0 0 ${width} ${BAR_HEIGHT + NOTCH_RADIUS}`}
-          className="drop-shadow-2xl"
+          className="drop-shadow-[0_-8px_25px_rgba(0,0,0,0.6)]"
         >
           <defs>
             <mask id="notch-mask">
@@ -64,9 +64,14 @@ export default function BottomNavBar() {
                 <circle cx="0" cy={NOTCH_RADIUS + 6} r={NOTCH_RADIUS} fill="black" />
               </g>
             </mask>
+            {/* Premium Dark Gradient */}
+            <linearGradient id="premium-nav-bg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#161c2d" />
+              <stop offset="100%" stopColor="#0b1020" />
+            </linearGradient>
           </defs>
 
-          {/* The visible bar element with a SOLID fill color */}
+          {/* The visible bar element */}
           <rect
             x="0"
             y={NOTCH_RADIUS}
@@ -74,8 +79,7 @@ export default function BottomNavBar() {
             height={BAR_HEIGHT}
             rx={BAR_CORNER_RADIUS}
             ry={BAR_CORNER_RADIUS}
-            // Replace #1A1A2E with your theme's background color (e.g., the color for 'bg-theme-on-surface-1')
-            fill="#1A1A2E"
+            fill="url(#premium-nav-bg)"
             mask="url(#notch-mask)"
           />
         </svg>
@@ -93,7 +97,7 @@ export default function BottomNavBar() {
             transition: "left 280ms ease-in-out",
           }}
         >
-          <div className="w-full h-full rounded-full flex items-center justify-center bg-theme-brand shadow-lg">
+          <div className="w-full h-full rounded-full flex items-center justify-center bg-gradient-to-tr from-blue-600 to-sky-400 shadow-[0_0_20px_rgba(56,189,248,0.4)] border border-white/20">
             <ActiveIconComponent index={activeIndex} />
           </div>
         </Link>
@@ -112,8 +116,10 @@ export default function BottomNavBar() {
                 >
                   <Icon
                     name={NAV_ITEMS[i].icon}
-                    className={`h-6 w-6 transition-opacity duration-200 ${
-                      isActive ? "opacity-0" : "opacity-100 fill-theme-secondary hover:fill-theme-primary"
+                    className={`h-6 w-6 transition-all duration-300 ${
+                      isActive 
+                        ? "opacity-0 scale-50" 
+                        : "opacity-100 fill-[#64748b] hover:fill-[#e2e8f0] hover:scale-110 drop-shadow-md"
                     }`}
                   />
                   <span className="sr-only">{t(label)}</span>
