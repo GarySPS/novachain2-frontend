@@ -424,23 +424,39 @@ export default function ForexPage() {
                     </div>
                 </div>
 
-                {/* Cyberpunk Commodity Selector */}
-                <div className="relative mt-2">
-                  <select
-                    value={selectedCommodity.symbol}
-                    disabled={timerActive}
-                    onChange={(e) => {
-                      const newCommodity = FOREX_PAIRS.find(c => c.symbol === e.target.value);
-                      if (newCommodity) setSelectedCommodity(newCommodity);
-                    }}
-                    className="w-full h-12 px-4 rounded-xl bg-[#0b1020] border border-[#2c3040] text-white font-bold text-sm focus:ring-2 focus:ring-cyan-500 appearance-none disabled:opacity-50 transition shadow-inner outline-none"
-                  >
-                    {FOREX_PAIRS.map(commodity => (
-                      <option key={commodity.symbol} value={commodity.symbol}>{commodity.symbol}</option>
-                    ))}
-                  </select>
-                  <Icon name="arrow-down" className="absolute right-4 top-[16px] w-4 h-4 text-gray-500 pointer-events-none"/>
-                </div>
+                {/* Premium Commodity Selector */}
+<div className="grid grid-cols-5 gap-2 mt-2">
+  {FOREX_PAIRS.map((commodity) => {
+    const active = selectedCommodity.symbol === commodity.symbol;
+
+    return (
+      <button
+        key={commodity.symbol}
+        disabled={timerActive}
+        onClick={() => setSelectedCommodity(commodity)}
+        className={`
+          relative h-12 rounded-xl border transition-all duration-200
+          flex items-center justify-center text-sm font-bold
+          ${
+            active
+              ? "bg-gradient-to-br from-cyan-500/30 to-blue-500/20 border-cyan-400 text-white shadow-[0_0_15px_rgba(34,211,238,0.5)]"
+              : "bg-[#0b1020] border-[#2c3040] text-gray-400 hover:text-white hover:border-cyan-500/40"
+          }
+          ${timerActive ? "opacity-40" : ""}
+        `}
+      >
+        {commodity.symbol.split("/")[0]}
+
+        {active && (
+          <div
+            className="absolute inset-0 rounded-xl pointer-events-none
+            ring-1 ring-cyan-400/40"
+          />
+        )}
+      </button>
+    );
+  })}
+</div>
               </div>
 
               {/* Buy/Sell Buttons */}
