@@ -15,10 +15,10 @@ const fmtUSD = (n, max = 2) =>
 
 const chipClass = (ok) =>
   ok === "WIN"
-    ? "bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200"
+    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.15)]"
     : ok === "LOSE"
-    ? "bg-rose-100 text-rose-700 ring-1 ring-rose-200"
-    : "bg-slate-100 text-slate-600 ring-1 ring-slate-200";
+    ? "bg-rose-500/10 text-rose-400 border border-rose-500/30 shadow-[0_0_10px_rgba(244,63,94,0.15)]"
+    : "bg-white/5 text-gray-400 border border-white/10";
 
 export default function TradeHistory() {
   const [history, setHistory] = useState([]);
@@ -114,14 +114,16 @@ export default function TradeHistory() {
 
   /* ---------- UI skeleton ---------- */
   const SkeletonRow = ({ i }) => (
-    <tr key={`sk-${i}`} className="animate-pulse border-b border-slate-100">
+    <tr key={`sk-${i}`} className="animate-pulse border-b border-white/5">
       {Array.from({ length: 9 }).map((_, idx) => (
         <td key={idx} className="py-4 px-3">
-          <div className="h-4 w-24 bg-slate-200 rounded" />
+          <div className="h-4 w-20 bg-gray-800 rounded mx-auto" />
         </td>
       ))}
     </tr>
   );
+
+  const cardClass = "p-0 overflow-hidden rounded-3xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-[#1a2343] bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020]";
 
   return (
     <div
@@ -129,79 +131,78 @@ export default function TradeHistory() {
       style={{
         background: 'url("/novachain.jpg") no-repeat center center fixed',
         backgroundSize: "cover",
-        minHeight: "100vh",
-        position: "relative",
       }}
     >
-      {/* overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          zIndex: 0,
-          background: "linear-gradient(120deg, #0b1020f0 0%, #0d1220d8 60%, #0a101dd1 100%)",
-        }}
-      />
-      <div style={{ position: "relative", zIndex: 1 }} className="w-full max-w-7xl">
-        {/* header + controls */}
-        <Card className="p-0 overflow-hidden rounded-2xl shadow-lg border border-slate-100 mb-4">
-          <div className="bg-gradient-to-r from-indigo-50 via-sky-50 to-emerald-50 px-4 py-4 md:px-6 md:py-5">
-            <div className="flex flex-col md:flex-row md:items-end gap-3 md:gap-6">
+      <div className="fixed inset-0 bg-[linear-gradient(120deg,#0b1020f0_0%,#0d1220d8_60%,#0a101dd1_100%)] pointer-events-none" />
+      
+      {/* pb-32 prevents mobile navbar overlap */}
+      <div style={{ position: "relative", zIndex: 1 }} className="w-full max-w-7xl pb-32">
+        
+        {/* ----- Header + Controls ----- */}
+        <Card className={`${cardClass} mb-6`}>
+          <div className="px-5 py-5 md:px-6 md:py-6 relative">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+            
+            <div className="flex flex-col lg:flex-row lg:items-end gap-5 lg:gap-6 relative z-10">
               <div className="flex-1">
-                <div className="text-slate-500 text-sm">Your Trades</div>
-                <div className="text-2xl md:text-3xl font-semibold tracking-tight">
-                  {rows.length.toLocaleString()} record{rows.length !== 1 ? "s" : ""}
+                <div className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-1">Trade Ledger</div>
+                <div className="text-3xl md:text-4xl font-black text-white tracking-tight drop-shadow-md">
+                  {rows.length.toLocaleString()} <span className="text-xl text-gray-500 font-bold">record{rows.length !== 1 ? "s" : ""}</span>
                 </div>
               </div>
 
-              {/* filters */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1">
-                <div className="flex bg-white/80 rounded-xl ring-1 ring-slate-200 p-1">
+              {/* Filters */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 flex-1 w-full lg:w-auto">
+                {/* Win/Lose Toggle */}
+                <div className="flex bg-[#0b1020] rounded-xl ring-1 ring-[#2c3040] p-1 shadow-inner">
                   {["ALL", "WIN", "LOSE"].map((k) => (
                     <button
                       key={k}
                       onClick={() => setResultFilter(k)}
-                      className={`flex-1 h-9 rounded-lg text-sm font-semibold transition
-                        ${
-                          resultFilter === k
-                            ? k === "WIN"
-                              ? "bg-emerald-500 text-white"
-                              : k === "LOSE"
-                              ? "bg-rose-500 text-white"
-                              : "bg-slate-900 text-white"
-                            : "text-slate-600 hover:bg-slate-50"
+                      className={`flex-1 h-10 rounded-lg text-xs font-black tracking-wider transition-all
+                        ${resultFilter === k
+                            ? k === "WIN" ? "bg-emerald-500/20 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.2)] border border-emerald-500/30"
+                            : k === "LOSE" ? "bg-rose-500/20 text-rose-400 shadow-[0_0_15px_rgba(244,63,94,0.2)] border border-rose-500/30"
+                            : "bg-[#1a2343] text-white border border-white/10 shadow-md"
+                            : "text-gray-500 hover:text-gray-300"
                         }`}
                     >
                       {k}
                     </button>
                   ))}
                 </div>
-                <select
-                  className="w-full h-11 rounded-xl border border-slate-200 bg-white/80 px-4 outline-none focus:ring-2 focus:ring-sky-200"
-                  value={`${sortBy}:${sortDir}`}
-                  onChange={(e) => {
-                    const [by, dir] = e.target.value.split(":");
-                    setSortBy(by);
-                    setSortDir(dir);
-                  }}
-                >
-                  <option value="time:desc">Newest first</option>
-                  <option value="time:asc">Oldest first</option>
-                  <option value="profit:desc">Profit high → low</option>
-                  <option value="profit:asc">Profit low → high</option>
-                  <option value="amount:desc">Amount high → low</option>
-                  <option value="amount:asc">Amount low → high</option>
-                  <option value="duration:desc">Duration high → low</option>
-                  <option value="duration:asc">Duration low → high</option>
-                </select>
+                
+                {/* Sort */}
+                <div className="relative">
+                  <select
+                    className="w-full h-12 rounded-xl border border-[#2c3040] bg-[#0b1020] text-white font-bold px-4 appearance-none outline-none focus:ring-2 focus:ring-cyan-500 shadow-inner text-sm"
+                    value={`${sortBy}:${sortDir}`}
+                    onChange={(e) => {
+                      const [by, dir] = e.target.value.split(":");
+                      setSortBy(by);
+                      setSortDir(dir);
+                    }}
+                  >
+                    <option value="time:desc">Newest First</option>
+                    <option value="time:asc">Oldest First</option>
+                    <option value="profit:desc">Profit: High → Low</option>
+                    <option value="profit:asc">Profit: Low → High</option>
+                    <option value="amount:desc">Amount: High → Low</option>
+                    <option value="amount:asc">Amount: Low → High</option>
+                  </select>
+                  <Icon name="arrow-down" className="absolute right-4 top-4 w-4 h-4 text-gray-500 pointer-events-none"/>
+                </div>
+                
+                {/* Search */}
                 <div className="relative">
                   <input
-                    className="w-full h-11 rounded-xl border border-slate-200 bg-white/80 px-4 pr-10 outline-none focus:ring-2 focus:ring-sky-200"
-                    placeholder="Search symbol / id / direction…"
+                    className="w-full h-12 rounded-xl border border-[#2c3040] bg-[#0b1020] text-white font-bold px-4 pr-10 outline-none focus:ring-2 focus:ring-cyan-500 shadow-inner placeholder:text-gray-600 text-sm"
+                    placeholder="Search pair / ID..."
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
-                    <Icon name="search" />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                    <Icon name="search" className="w-4 h-4" />
                   </span>
                 </div>
               </div>
@@ -209,134 +210,146 @@ export default function TradeHistory() {
           </div>
         </Card>
 
-        {/* table / empty / loading */}
+        {/* ----- Data View ----- */}
         {loading ? (
-          <Card className="max-w-7xl mx-auto px-0 py-0 rounded-2xl shadow-lg border border-slate-100">
-            <div className="w-full overflow-x-auto">
+          <Card className={`${cardClass} p-0`}>
+            <div className="w-full overflow-x-auto hidden md:block">
               <table className="w-full">
-                <thead className="bg-white sticky top-0 z-10">
-                  <tr className="text-left text-slate-600 border-y border-slate-100">
-                    {[
-                      "#",
-                      "Direction",
-                      "Amount",
-                      "Entry",
-                      "Result",
-                      "Result Price",
-                      "Profit",
-                      "Duration",
-                      "Time",
-                    ].map((h, i) => (
-                      <th key={i} className="py-3.5 px-3">
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
+                <thead className="bg-[#0f1424]">
+                  <tr className="text-left text-gray-500 border-b border-white/5 text-xs uppercase"><th className="py-4">...</th></tr>
                 </thead>
-                <tbody>{Array.from({ length: 10 }).map((_, i) => <SkeletonRow key={i} i={i} />)}</tbody>
+                <tbody>{Array.from({ length: 6 }).map((_, i) => <SkeletonRow key={i} i={i} />)}</tbody>
               </table>
+            </div>
+            {/* Mobile Skeleton */}
+            <div className="md:hidden flex flex-col p-4 space-y-4">
+              {Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-24 bg-gray-800 animate-pulse rounded-xl" />)}
             </div>
           </Card>
         ) : rows.length === 0 ? (
-          <Card className="max-w-xl mx-auto py-12 text-center rounded-2xl shadow-lg border border-slate-100 bg-white/70 backdrop-blur">
-            <div className="text-slate-700 text-lg font-semibold">No trade history yet.</div>
-            <div className="text-slate-500 mt-1">Your trades will appear here right after settlement.</div>
+          <Card className={`${cardClass} py-16 text-center flex flex-col items-center justify-center`}>
+            <Icon name="clock" className="w-12 h-12 text-gray-600 mb-3" />
+            <div className="text-white text-xl font-black mb-1">No Trade History</div>
+            <div className="text-gray-500 text-sm font-medium">Completed trades will be recorded here.</div>
           </Card>
         ) : (
-          <Card className="max-w-7xl mx-auto px-0 py-0 rounded-2xl shadow-lg border border-slate-100">
-            <div className="w-full overflow-x-auto">
-              <table className="w-full text-sm md:text-base">
-                <thead className="bg-white sticky top-0 z-10">
-                  <tr className="text-left text-slate-600 border-y border-slate-100">
-                    <th className="py-3.5 px-3 text-center">#</th>
-                    <th className="py-3.5 px-3 text-center">Direction</th>
-                    <th className="py-3.5 px-3 text-left">Symbol</th>
-                    <th className="py-3.5 px-3 text-right">Amount</th>
-                    <th className="py-3.5 px-3 text-right">Entry</th>
-                    <th className="py-3.5 px-3 text-center">
-                      Result{" "}
-                      <Tooltip title="Win: You gained profit. Lose: You lost your trade." />
-                    </th>
-                    <th className="py-3.5 px-3 text-right">Result Price</th>
-                    <th className="py-3.5 px-3 text-right">Profit</th>
-                    <th className="py-3.5 px-3 text-center">Duration</th>
-                    <th className="py-3.5 px-3 text-center">Time</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  {rows.map((t, idx) => {
-                    const isBuy = String(t.direction).toUpperCase() === "BUY";
-                    const res = String(t.result || "").toUpperCase();
-                    return (
-                      <tr
-                        key={`trade-${t.id || idx}`}
-                        className="group border-b border-slate-100 hover:bg-slate-50/60 transition-colors"
-                        style={{ height: 64 }}
-                      >
-                        <td className="py-3 px-3 text-center font-mono text-slate-500">{t.id}</td>
-
-                        <td className="py-3 px-3 text-center">
-                          <span
-                            className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold ring-1 ${
-                              isBuy
-                                ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
-                                : "bg-rose-50 text-rose-700 ring-rose-200"
-                            }`}
-                          >
-                            <Icon name={isBuy ? "arrow-up" : "arrow-down"} className="w-4 h-4" />
-                            {isBuy ? "BUY" : "SELL"}
+          <Card className={`${cardClass} p-0`}>
+            <div className="w-full">
+              
+              {/* 📱 MOBILE CARD VIEW */}
+              <div className="md:hidden flex flex-col divide-y divide-white/5">
+                {rows.map((t, idx) => {
+                  const isBuy = String(t.direction).toUpperCase() === "BUY";
+                  const res = String(t.result || "").toUpperCase();
+                  return (
+                    <div key={`trade-mob-${t.id || idx}`} className="p-4 hover:bg-white/[0.02] transition-colors flex flex-col gap-3">
+                      {/* Top row: Direction, Symbol, Result */}
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-inner ${isBuy ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'}`}>
+                            <Icon name={isBuy ? "arrow-up" : "arrow-down"} className="w-5 h-5" />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-black text-white text-lg tracking-wide">{(t.symbol || "N/A").toUpperCase()}</span>
+                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{t.id}</span>
+                          </div>
+                        </div>
+                        <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${chipClass(res)}`}>
+                          {res || "--"}
+                        </span>
+                      </div>
+                      
+                      {/* Bottom row: Details Grid */}
+                      <div className="grid grid-cols-2 gap-2 bg-[#0b1020] rounded-xl p-3 ring-1 ring-white/5">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Amount</span>
+                          <span className="font-bold text-gray-200">{fmtUSD(Number(t.amount))}</span>
+                        </div>
+                        <div className="flex flex-col text-right">
+                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Profit</span>
+                          <span className={`font-black ${Number(t.profit) > 0 ? "text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.4)]" : Number(t.profit) < 0 ? "text-rose-400 drop-shadow-[0_0_5px_rgba(244,63,94,0.4)]" : "text-gray-400"}`}>
+                            {(Number(t.profit) > 0 ? "+" : "") + fmtUSD(Number(t.profit))}
                           </span>
-                        </td>
-
-                        <td className="py-3 px-3 text-left font-semibold tabular-nums text-slate-800">
-                          {(t.symbol || "N/A").toUpperCase()}
-                        </td>
-
-                        <td className="py-3 px-3 text-right font-medium tabular-nums">
-                          {fmtUSD(Number(t.amount))}
-                        </td>
-
-                        <td className="py-3 px-3 text-right tabular-nums text-slate-700">
-                          {t.start_price != null && !isNaN(Number(t.start_price))
-                            ? fmtUSD(Number(t.start_price), 6)
-                            : "--"}
-                        </td>
-
-                        <td className="py-3 px-3 text-center">
-                          <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-extrabold ${chipClass(res)}`}>
-                            <Icon name={res === "WIN" ? "check" : res === "LOSE" ? "close" : "dot"} className="w-4 h-4" />
-                            {res || "--"}
+                        </div>
+                        <div className="flex flex-col mt-2 pt-2 border-t border-white/5">
+                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Entry → Result</span>
+                          <span className="font-semibold text-gray-300 text-xs tabular-nums">
+                            {fmtUSD(Number(t.start_price), 4)} → {fmtUSD(Number(t.result_price), 4)}
                           </span>
-                        </td>
+                        </div>
+                        <div className="flex flex-col mt-2 pt-2 border-t border-white/5 text-right">
+                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Time ({t.duration}s)</span>
+                          <span className="font-medium text-gray-400 text-xs tabular-nums">
+                            {t.timestamp ? new Date(t.timestamp).toLocaleString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}) : ""}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
 
-                        <td className="py-3 px-3 text-right tabular-nums text-slate-700">
-                          {t.result_price != null && !isNaN(Number(t.result_price))
-                            ? fmtUSD(Number(t.result_price), 6)
-                            : "--"}
-                        </td>
-
-                        <td
-                          className={`py-3 px-3 text-right tabular-nums font-semibold ${
-                            Number(t.profit) > 0
-                              ? "text-emerald-600"
-                              : Number(t.profit) < 0
-                              ? "text-rose-600"
-                              : "text-slate-700"
-                          }`}
-                        >
-                          {(Number(t.profit) > 0 ? "+" : "") + fmtUSD(Number(t.profit))}
-                        </td>
-
-                        <td className="py-3 px-3 text-center text-slate-700">{Number(t.duration)}s</td>
-
-                        <td className="py-3 px-3 text-center font-mono text-slate-500">
-                          {t.timestamp ? new Date(t.timestamp).toLocaleString() : ""}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              {/* 💻 DESKTOP TABLE VIEW */}
+              <div className="hidden md:block w-full overflow-x-auto">
+                <table className="w-full text-sm md:text-base">
+                  <thead className="bg-[#0b1020] sticky top-0 z-10">
+                    <tr className="text-left text-gray-400 border-b border-white/10 text-xs uppercase tracking-widest font-bold">
+                      <th className="py-4 pl-6 pr-3"># ID</th>
+                      <th className="py-4 px-3 text-center">Direction</th>
+                      <th className="py-4 px-3 text-left">Symbol</th>
+                      <th className="py-4 px-3 text-right">Amount</th>
+                      <th className="py-4 px-3 text-right">Entry</th>
+                      <th className="py-4 px-3 text-center">Result</th>
+                      <th className="py-4 px-3 text-right">Result Price</th>
+                      <th className="py-4 px-3 text-right">Profit</th>
+                      <th className="py-4 pr-6 pl-3 text-right">Time</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {rows.map((t, idx) => {
+                      const isBuy = String(t.direction).toUpperCase() === "BUY";
+                      const res = String(t.result || "").toUpperCase();
+                      return (
+                        <tr key={`trade-${t.id || idx}`} className="group hover:bg-white/[0.02] transition-colors" style={{ height: 72 }}>
+                          <td className="py-3 pl-6 pr-3 font-mono text-gray-500 text-xs">{t.id}</td>
+                          <td className="py-3 px-3 text-center">
+                            <span className={`inline-flex items-center justify-center gap-1.5 w-20 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest ${isBuy ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border border-rose-500/20"}`}>
+                              <Icon name={isBuy ? "arrow-up" : "arrow-down"} className="w-3 h-3" />
+                              {isBuy ? "BUY" : "SELL"}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-left font-black text-white tracking-wide">
+                            {(t.symbol || "N/A").toUpperCase()}
+                          </td>
+                          <td className="py-3 px-3 text-right font-bold text-gray-200 tabular-nums">
+                            {fmtUSD(Number(t.amount))}
+                          </td>
+                          <td className="py-3 px-3 text-right font-medium tabular-nums text-gray-400">
+                            {t.start_price != null && !isNaN(Number(t.start_price)) ? fmtUSD(Number(t.start_price), 6) : "--"}
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${chipClass(res)}`}>
+                              {res || "--"}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 text-right font-medium tabular-nums text-gray-400">
+                            {t.result_price != null && !isNaN(Number(t.result_price)) ? fmtUSD(Number(t.result_price), 6) : "--"}
+                          </td>
+                          <td className={`py-3 px-3 text-right tabular-nums font-black text-lg ${Number(t.profit) > 0 ? "text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]" : Number(t.profit) < 0 ? "text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.4)]" : "text-gray-500"}`}>
+                            {(Number(t.profit) > 0 ? "+" : "") + fmtUSD(Number(t.profit))}
+                          </td>
+                          <td className="py-3 pr-6 pl-3 text-right font-medium text-gray-500 text-xs">
+                            <div className="flex flex-col items-end">
+                                <span>{t.timestamp ? new Date(t.timestamp).toLocaleDateString() : ""}</span>
+                                <span>{t.timestamp ? new Date(t.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ""}</span>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </Card>
         )}

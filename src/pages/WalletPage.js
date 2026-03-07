@@ -521,288 +521,308 @@ const handleWithdraw = async (e) => {
   if (!authChecked) return null;
   if (isGuest) return null;
 
+  const cardClass = "rounded-3xl shadow-[0_10px_30px_rgba(0,0,0,0.4)] border border-[#1a2343] bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] overflow-hidden";
+  const modalGlassClass = "bg-[#0f1424] border border-[#1a2343] shadow-[0_0_40px_rgba(0,0,0,0.8)] text-white";
+
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center px-3 pt-6 pb-14"
+      className="min-h-screen w-full flex flex-col items-center px-3 pt-6 pb-32"
       style={{
         background: 'url("/novachain.jpg") no-repeat center center fixed',
         backgroundSize: "cover",
       }}
     >
-      {/* overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          zIndex: 0,
-          background: "linear-gradient(120deg, #0b1020f0 0%, #0d1220d8 60%, #0a101dd1 100%)",
-        }}
-      />
-      <div style={{ position: "relative", zIndex: 1 }} className="w-full max-w-7xl">
+      <div className="fixed inset-0 bg-[linear-gradient(120deg,#0b1020f0_0%,#0d1220d8_60%,#0a101dd1_100%)] pointer-events-none" />
+      
+      <div className="relative z-10 w-full max-w-7xl space-y-6 md:space-y-8">
+        
         {/* ===== Top row: balance + assets ===== */}
-<div className="w-full grid grid-cols-1 lg:grid-cols-[minmax(320px,380px),1fr] gap-6 md:gap-8 items-stretch">
-
-<Card className="rounded-3xl shadow-xl border border-slate-100 p-0 overflow-hidden h-full">
-  <div className="w-full h-full min-h-[180px] md:min-h-[220px] flex items-center justify-center
-            px-4 sm:px-6 bg-gradient-to-br from-indigo-50 via-sky-50 to-emerald-50">
-    <div className="flex flex-col items-center gap-1 w-full">
-      <div className="text-center text-slate-500 text-xs sm:text-sm font-semibold">
-        {t("total_balance")}
-      </div>
-
-      {/* key: clamp + break-all + leading + full width */}
-      <div
-        className="
-          w-full max-w-full px-1 text-center font-extrabold text-slate-900 tabular-nums
-          leading-[1.1] tracking-tight break-all
-          text-[clamp(1.5rem,5.2vw,2.75rem)]
-        "
-      >
-        {fmtUSD(totalUsd)}
-      </div>
-    </div>
-  </div>
-</Card>
-
-        {/* Assets table */}
-        <Card className="rounded-3xl shadow-xl border border-slate-100 p-0 overflow-hidden">
-          <div className="px-5 pt-4 pb-2">
-            <div className="text-slate-700 font-semibold">{t("my_assets")}</div>
-          </div>
-          <div className="w-full overflow-x-auto">
-            {/* REVISED: 
-              - Removed 'table-fixed' to allow columns to size based on content, fixing alignment.
-              - Added 'min-w-[700px]' to ensure the table is scrollable on small screens instead of collapsing.
-            */}
-            <table className="w-full min-w-[700px] text-sm md:text-base">
-              <thead className="bg-white sticky top-0 z-10">
-                <tr className="text-left text-slate-600 border-y border-slate-100">
-                  {/* REVISED: Removed width classes (e.g., w-1/5) and added whitespace-nowrap */}
-                  <th className="py-3 pl-4 pr-2 whitespace-nowrap">{t("type")}</th>
-                  <th className="py-3 px-2 text-right whitespace-nowrap">{t("amount")}</th>
-                  <th className="py-3 px-2 text-right whitespace-nowrap">{t("frozen", "Frozen")}</th>
-                  <th className="py-3 px-2 text-right whitespace-nowrap">{t("usd_value", "USD Value")}</th>
-                  <th className="py-3 pl-2 pr-4 text-right whitespace-nowrap">{t("Transfer")}</th>
-                </tr>
-              </thead>
-        <tbody className="bg-white">
-          {balances.map(({ symbol, icon, balance, frozen }) => (
-            <tr
-              key={symbol}
-              className="group border-b border-slate-100 hover:bg-slate-50/60 transition-colors"
-              style={{ height: 64 }}
-            >
-              {/* Type */}
-              <td className="py-3 pl-4 pr-2">
-                <div className="flex items-center gap-2">
-                  <Icon name={symbol?.toLowerCase() || "coin"} className="w-6 h-6" />
-                  <span className="font-semibold text-slate-900">{symbol}</span>
+        <div className="w-full grid grid-cols-1 lg:grid-cols-[minmax(320px,380px),1fr] gap-6 md:gap-8 items-stretch">
+          
+          {/* Total Balance */}
+          <Card className={`${cardClass} p-0 h-full`}>
+            <div className="w-full h-full min-h-[180px] md:min-h-[220px] flex items-center justify-center px-4 sm:px-6 bg-gradient-to-br from-blue-900/20 via-sky-900/10 to-transparent">
+              <div className="flex flex-col items-center gap-2 w-full">
+                <div className="text-center text-gray-400 text-xs sm:text-sm font-semibold uppercase tracking-wider">
+                  {t("total_balance")}
                 </div>
-              </td>
-              {/* Amount */}
-              <td className="py-3 px-2 text-right tabular-nums font-medium text-slate-800">
-                {Number(balance).toLocaleString(undefined, {
-                  minimumFractionDigits: symbol === "BTC" ? 6 : 2,
-                  maximumFractionDigits: symbol === "BTC" ? 8 : 6,
-                })}
-              </td>
-              {/* Frozen */}
-              <td className="py-3 px-2 text-right tabular-nums font-medium text-amber-600">
-                {Number(frozen || 0).toLocaleString(undefined, {
-                  minimumFractionDigits: symbol === "BTC" ? 6 : 2,
-                  maximumFractionDigits: symbol === "BTC" ? 8 : 6,
-                })}
-              </td>
-              {/* USD Value */}
-              <td className="py-3 px-2 text-right tabular-nums font-semibold text-slate-900">
-                {(() => {
-                  const p = (symbol === "USDT") ? 1 : (prices[symbol] ?? undefined);
-                  return p !== undefined ? fmtUSD(Number(balance) * p) : "--";
-                })()}
-              </td>
-              {/* Transfer */}
-              <td className="py-3 pl-2 pr-4 text-right">
-                <div className="inline-flex items-center gap-2">
-                  <button
-                    className="h-10 px-4 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:scale-[1.02] transition whitespace-nowrap"
-                    onClick={() => { setSelectedDepositCoin(symbol); openModal("deposit", symbol); }}
-                  >
-                    <span className="inline-flex items-center gap-1"><Icon name="download" />{t("deposit")}</span>
-                  </button>
-                  <button
-                    className="h-10 px-4 rounded-xl bg-white ring-1 ring-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition whitespace-nowrap"
-                    onClick={() => openModal("withdraw", symbol)}
-                  >
-                    <span className="inline-flex items-center gap-1"><Icon name="upload" />{t("withdraw")}</span>
-                  </button>
+                <div className="w-full max-w-full px-1 text-center font-black text-white tabular-nums leading-[1.1] tracking-tight break-all text-[clamp(2rem,6vw,3rem)] drop-shadow-[0_0_15px_rgba(56,189,248,0.4)]">
+                  {fmtUSD(totalUsd)}
                 </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-            </table>
-          </div>
-        </Card>
-      </div>
+              </div>
+            </div>
+          </Card>
 
-        {/* ===== NEW: Earn Savings Card ===== */}
-        <Card id="earn-section" className="mt-8 rounded-3xl shadow-xl border border-slate-100 p-0 overflow-hidden">
-          <div className="bg-gradient-to-r from-teal-50 via-sky-50 to-indigo-50 px-5 py-5 md:px-6 md:py-6">
-            <div className="flex items-center gap-2 text-slate-800 text-xl md:text-2xl font-extrabold">
-              <Icon name="zap" className="w-7 h-7 text-teal-500" /> {t("savings_earn", "Savings Earn")}
+          {/* Assets List/Table */}
+          <Card className={`${cardClass} p-0`}>
+            <div className="px-5 pt-5 pb-3 border-b border-white/5">
+              <div className="text-gray-300 font-bold uppercase tracking-wider text-sm">{t("my_assets")}</div>
+            </div>
+            
+            <div className="w-full">
+              {/* 📱 MOBILE VIEW */}
+              <div className="md:hidden flex flex-col divide-y divide-white/5">
+                {balances.map(({ symbol, balance, frozen }) => (
+                  <div key={symbol} className="flex flex-col p-4 hover:bg-white/[0.02] transition-colors">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center p-2 shadow-inner">
+                           <Icon name={symbol?.toLowerCase() || "coin"} className="w-full h-full object-contain" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-gray-100 text-lg">{symbol}</span>
+                          <span className="text-xs text-gray-500 font-medium">Frozen: {Number(frozen || 0).toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <span className="font-bold text-white tracking-tight text-lg">
+                          {(() => {
+                            const p = (symbol === "USDT") ? 1 : (prices[symbol] ?? undefined);
+                            return p !== undefined ? fmtUSD(Number(balance) * p) : "--";
+                          })()}
+                        </span>
+                        <span className="text-xs text-gray-400 font-medium">{Number(balance).toLocaleString(undefined, { maximumFractionDigits: 6 })} {symbol}</span>
+                      </div>
+                    </div>
+                    {/* Actions */}
+                    <div className="flex gap-2 w-full">
+                      <button onClick={() => { setSelectedDepositCoin(symbol); openModal("deposit", symbol); }} className="flex-1 h-9 rounded-lg bg-sky-500/10 text-sky-400 font-semibold text-sm ring-1 ring-sky-500/20 hover:bg-sky-500/20 transition flex items-center justify-center gap-1">
+                        <Icon name="download" className="w-4 h-4" /> {t("deposit")}
+                      </button>
+                      <button onClick={() => openModal("withdraw", symbol)} className="flex-1 h-9 rounded-lg bg-white/5 text-gray-300 font-semibold text-sm ring-1 ring-white/10 hover:bg-white/10 transition flex items-center justify-center gap-1">
+                        <Icon name="upload" className="w-4 h-4" /> {t("withdraw")}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 💻 DESKTOP VIEW */}
+              <div className="hidden md:block w-full overflow-x-auto">
+                <table className="w-full min-w-[700px] text-base">
+                  <thead className="bg-[#0f1424] sticky top-0 z-10">
+                    <tr className="text-left text-gray-400 border-y border-white/5 text-sm uppercase tracking-wider">
+                      <th className="py-4 pl-6 pr-2 font-semibold">{t("type")}</th>
+                      <th className="py-4 px-2 text-right font-semibold">{t("amount")}</th>
+                      <th className="py-4 px-2 text-right font-semibold">{t("frozen", "Frozen")}</th>
+                      <th className="py-4 px-2 text-right font-semibold">{t("usd_value", "USD Value")}</th>
+                      <th className="py-4 pl-2 pr-6 text-right font-semibold">{t("Transfer")}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {balances.map(({ symbol, icon, balance, frozen }) => (
+                      <tr key={symbol} className="group hover:bg-white/[0.02] transition-colors" style={{ height: 72 }}>
+                        <td className="py-3 pl-6 pr-2">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center p-1.5 shadow-inner">
+                              <Icon name={symbol?.toLowerCase() || "coin"} className="w-full h-full object-contain" />
+                            </div>
+                            <span className="font-bold text-gray-100">{symbol}</span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-2 text-right tabular-nums font-semibold text-gray-300">
+                          {Number(balance).toLocaleString(undefined, { minimumFractionDigits: symbol === "BTC" ? 6 : 2, maximumFractionDigits: symbol === "BTC" ? 8 : 6 })}
+                        </td>
+                        <td className="py-3 px-2 text-right tabular-nums font-medium text-rose-400/80">
+                          {Number(frozen || 0).toLocaleString(undefined, { minimumFractionDigits: symbol === "BTC" ? 6 : 2, maximumFractionDigits: symbol === "BTC" ? 8 : 6 })}
+                        </td>
+                        <td className="py-3 px-2 text-right tabular-nums font-bold text-white">
+                          {(() => {
+                            const p = (symbol === "USDT") ? 1 : (prices[symbol] ?? undefined);
+                            return p !== undefined ? fmtUSD(Number(balance) * p) : "--";
+                          })()}
+                        </td>
+                        <td className="py-3 pl-2 pr-6 text-right">
+                          <div className="inline-flex items-center gap-2">
+                            <button onClick={() => { setSelectedDepositCoin(symbol); openModal("deposit", symbol); }} className="h-9 px-4 rounded-lg bg-sky-500/10 text-sky-400 text-sm font-semibold ring-1 ring-sky-500/20 hover:bg-sky-500/20 transition whitespace-nowrap flex items-center gap-1">
+                              <Icon name="download" className="w-4 h-4"/>{t("deposit")}
+                            </button>
+                            <button onClick={() => openModal("withdraw", symbol)} className="h-9 px-4 rounded-lg bg-white/5 text-gray-300 text-sm font-semibold ring-1 ring-white/10 hover:bg-white/10 transition whitespace-nowrap flex items-center gap-1">
+                              <Icon name="upload" className="w-4 h-4"/>{t("withdraw")}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        {/* ===== AI Trading Investment Card ===== */}
+        <Card id="earn-section" className={`${cardClass} p-0 relative overflow-hidden`}>
+          {/* Subtle tech background glow */}
+          <div className="absolute top-0 right-0 w-72 h-72 bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+          
+          <div className="bg-[#0f1424] px-5 py-5 md:px-6 md:py-6 border-b border-indigo-500/20 flex justify-between items-center relative z-10">
+            <div className="flex items-center gap-3 text-white text-xl md:text-2xl font-black">
+              <div className="relative flex h-8 w-8 items-center justify-center">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-20"></span>
+                <Icon name="cpu" className="relative z-10 w-6 h-6 text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
+              </div>
+              {t("ai_trading_investment", "AI Trading Investment")}
+            </div>
+            {/* AI Active Badge */}
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[10px] sm:text-xs font-bold tracking-widest uppercase">
+              <span className={`w-1.5 h-1.5 rounded-full ${totalEarnUsd > 0 ? "bg-cyan-400 animate-pulse shadow-[0_0_5px_#22d3ee]" : "bg-gray-500"}`}></span>
+              {totalEarnUsd > 0 ? "Bot Active" : "Standby"}
             </div>
           </div>
           
-          {/* --- Earn Stats --- */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-6 py-5 border-b border-slate-100">
-            <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 ring-1 ring-slate-200">
-              <div className="text-sm font-semibold text-slate-500">{t("total_saved", "Total Saved")}</div>
-              <div className="text-3xl font-extrabold text-slate-900 tabular-nums">{fmtUSD(totalEarnUsd)}</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-5 py-5 border-b border-white/5 relative z-10">
+            <div className="flex flex-col items-center justify-center p-5 rounded-2xl bg-[#0b1020] ring-1 ring-white/5 shadow-inner relative overflow-hidden group">
+              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">{t("deployed_capital", "Deployed Capital")}</div>
+              <div className="text-3xl font-black text-white tabular-nums drop-shadow-md">{fmtUSD(totalEarnUsd)}</div>
             </div>
-            <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-teal-50 ring-1 ring-teal-200">
-              <div className="text-sm font-semibold text-teal-600">{t("monthly_rate", "Monthly Rate")}</div>
-              <div className="text-3xl font-extrabold text-teal-700 tabular-nums">{currentEarnRate}%</div>
+            <div className="flex flex-col items-center justify-center p-5 rounded-2xl bg-indigo-900/10 ring-1 ring-indigo-500/30 shadow-[inset_0_0_20px_rgba(99,102,241,0.05)] relative overflow-hidden">
+              <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent"></div>
+              <div className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-1">{t("projected_roi", "AI Projected ROI")}</div>
+              <div className="text-3xl font-black text-cyan-400 tabular-nums drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">~{currentEarnRate}% / mo</div>
             </div>
           </div>
 
-          {/* --- Earn Actions --- */}
-          <div className="flex flex-col md:flex-row gap-3 px-6 py-5 border-b border-slate-100">
-            <button
-              onClick={() => openEarnModal('save')}
-              className="flex-1 h-12 rounded-xl bg-slate-900 text-white text-lg font-extrabold hover:scale-[1.02] transition"
-            >
-              <span className="inline-flex items-center gap-2">
-                <Icon name="plus" /> {t("save", "Save")}
-              </span>
+          <div className="flex flex-col md:flex-row gap-3 px-5 py-5 border-b border-white/5 relative z-10">
+            <button onClick={() => openEarnModal('save')} className="flex-1 h-12 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-500 text-white text-lg font-black hover:scale-[1.02] transition shadow-[0_0_20px_rgba(34,211,238,0.25)] border border-cyan-400/30">
+              <span className="inline-flex items-center gap-2"><Icon name="zap" className="w-5 h-5" /> {t("deploy_funds", "Deploy Funds")}</span>
             </button>
-            <button
-              onClick={() => openEarnModal('redeem')}
-              className="flex-1 h-12 rounded-xl bg-white ring-1 ring-slate-200 text-slate-800 text-lg font-extrabold hover:bg-slate-50 transition"
-            >
-              <span className="inline-flex items-center gap-2">
-                <Icon name="check-circle" /> {t("redeem", "Redeem")}
-              </span>
+            <button onClick={() => openEarnModal('redeem')} className="flex-1 h-12 rounded-xl bg-[#0b1020] ring-1 ring-rose-500/20 text-rose-400 hover:bg-rose-500/10 text-lg font-bold transition">
+              <span className="inline-flex items-center gap-2"><Icon name="power" className="w-5 h-5" /> {t("withdraw_capital", "Withdraw Capital")}</span>
             </button>
           </div>
 
-          {/* --- Earn Balances Table --- */}
-          <div className="w-full overflow-x-auto">
-            <table className="w-full min-w-[600px] text-sm md:text-base">
-              <thead className="bg-white sticky top-0 z-10">
-                <tr className="text-left text-slate-600 border-y border-slate-100">
-                  <th className="py-3 pl-4 pr-2 whitespace-nowrap">{t("asset", "Asset")}</th>
-                  <th className="py-3 px-2 text-right whitespace-nowrap">{t("balance", "Balance")}</th>
-                  <th className="py-3 px-2 text-right whitespace-nowrap">{t("usd_value", "USD Value")}</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white">
-                {earnBalances.length > 0 ? earnBalances.map(({ symbol, balance }) => (
-                  <tr key={symbol} className="group border-b border-slate-100 hover:bg-slate-50/60 transition-colors" style={{ height: 60 }}>
-                    {/* Asset */}
-                    <td className="py-3 pl-4 pr-2">
-                      <div className="flex items-center gap-2">
-                        <Icon name={symbol?.toLowerCase() || "coin"} className="w-6 h-6" />
-                        <span className="font-semibold text-slate-900">{symbol}</span>
-                      </div>
-                    </td>
-                    {/* Balance */}
-                    <td className="py-3 px-2 text-right tabular-nums font-medium text-slate-800">
-                      {Number(balance).toLocaleString(undefined, {
-                        minimumFractionDigits: symbol === "BTC" ? 6 : 2,
-                        maximumFractionDigits: symbol === "BTC" ? 8 : 6,
-                      })}
-                    </td>
-                    {/* USD Value */}
-                    <td className="py-3 px-2 text-right tabular-nums font-semibold text-slate-900">
+          <div className="w-full relative z-10">
+            {/* MOBILE AI LIST */}
+            <div className="md:hidden flex flex-col divide-y divide-white/5">
+              {earnBalances.length > 0 ? earnBalances.map(({ symbol, balance }) => (
+                <div key={`earn-${symbol}`} className="flex items-center justify-between p-4 hover:bg-white/[0.02]">
+                  <div className="flex items-center gap-3">
+                    <Icon name={symbol?.toLowerCase() || "coin"} className="w-8 h-8 drop-shadow-md" />
+                    <span className="font-bold text-gray-100">{symbol}</span>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="font-bold text-cyan-400">
                       {(() => {
                         const p = prices[symbol] ?? (symbol === "USDT" ? 1 : undefined);
                         return p !== undefined ? fmtUSD(Number(balance) * p) : "--";
                       })()}
-                    </td>
+                    </span>
+                    <span className="text-xs text-gray-500 font-medium">{Number(balance).toLocaleString(undefined, { maximumFractionDigits: 6 })}</span>
+                  </div>
+                </div>
+              )) : (
+                <div className="text-center py-8 text-indigo-500/50 text-sm font-medium">{t("no_ai_capital", "No capital deployed to AI currently.")}</div>
+              )}
+            </div>
+            
+            {/* DESKTOP AI TABLE */}
+            <div className="hidden md:block w-full overflow-x-auto">
+              <table className="w-full min-w-[600px] text-base">
+                <thead className="bg-[#0b1020] sticky top-0">
+                  <tr className="text-left text-gray-400 border-y border-indigo-500/10 text-sm uppercase tracking-wider">
+                    <th className="py-4 pl-6 pr-2 font-semibold">{t("asset", "Asset")}</th>
+                    <th className="py-4 px-2 text-right font-semibold">{t("deployed", "Deployed Amount")}</th>
+                    <th className="py-4 px-6 text-right font-semibold">{t("usd_value", "USD Value")}</th>
                   </tr>
-                )) : (
-                  <tr>
-                    <td colSpan="3" className="text-center py-10 text-slate-500">
-                      {t("no_savings_yet", "You have no assets in savings.")}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </Card>
-        {/* =================================== */}
-
-
-        {/* ===== Convert section ===== */}
-        <Card id="convert-section" className="mt-8 rounded-3xl shadow-xl border border-slate-100 p-0 overflow-hidden">
-          <div className="bg-gradient-to-r from-fuchsia-50 via-sky-50 to-emerald-50 px-5 py-5 md:px-6 md:py-6">
-            <div className="flex items-center gap-2 text-slate-800 text-xl md:text-2xl font-extrabold">
-              <Icon name="swap" className="w-7 h-7" /> {t("convert_crypto")}
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {earnBalances.length > 0 ? earnBalances.map(({ symbol, balance }) => (
+                    <tr key={`earn-${symbol}`} className="group hover:bg-white/[0.02]" style={{ height: 60 }}>
+                      <td className="py-3 pl-6 pr-2">
+                        <div className="flex items-center gap-3">
+                          <Icon name={symbol?.toLowerCase() || "coin"} className="w-6 h-6" />
+                          <span className="font-bold text-gray-100">{symbol}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-2 text-right tabular-nums font-semibold text-gray-300">
+                        {Number(balance).toLocaleString(undefined, { maximumFractionDigits: 6 })}
+                      </td>
+                      <td className="py-3 px-6 text-right tabular-nums font-bold text-cyan-400">
+                        {(() => {
+                          const p = prices[symbol] ?? (symbol === "USDT" ? 1 : undefined);
+                          return p !== undefined ? fmtUSD(Number(balance) * p) : "--";
+                        })()}
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr>
+                      <td colSpan="3" className="text-center py-10 text-indigo-500/50 font-medium">
+                        {t("no_ai_capital", "No capital deployed to AI currently.")}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
-          <div className="px-6 py-6">
-            <form onSubmit={handleConvert} className="flex flex-col gap-5">
-              <div className="flex flex-col md:flex-row gap-3">
-                <div className="flex-1">
-                  <label className="text-slate-600 font-medium mb-2 block">{t("from")}</label>
+        </Card>
+
+        {/* ===== Convert section ===== */}
+        <Card id="convert-section" className={`${cardClass} p-0`}>
+          <div className="bg-[#0f1424] px-5 py-5 md:px-6 md:py-6 border-b border-white/5">
+            <div className="flex items-center gap-2 text-white text-xl md:text-2xl font-black">
+              <Icon name="swap" className="w-7 h-7 text-sky-400 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)]" /> {t("convert_crypto")}
+            </div>
+          </div>
+          <div className="px-5 py-6 md:p-8">
+            <form onSubmit={handleConvert} className="flex flex-col gap-6">
+              <div className="flex flex-col md:flex-row gap-4 items-center">
+                <div className="flex-1 w-full relative">
+                  <label className="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2 block">{t("from")}</label>
                   <select
                     value={fromCoin}
-                    onChange={e => {
-                      setFromCoin(e.target.value);
-                      if (e.target.value === "USDT") setToCoin("BTC"); else setToCoin("USDT");
-                    }}
-                    className="w-full px-4 py-3 rounded-xl bg-white ring-1 ring-slate-200 focus:ring-2 focus:ring-sky-200 outline-none"
+                    onChange={e => { setFromCoin(e.target.value); if (e.target.value === "USDT") setToCoin("BTC"); else setToCoin("USDT"); }}
+                    className="w-full px-4 py-3.5 rounded-xl bg-[#0b1020] ring-1 ring-[#2c3040] text-white font-bold appearance-none focus:ring-2 focus:ring-sky-500 outline-none"
                   >
                     {coinSymbols.map(c => (<option key={c} value={c}>{c}</option>))}
                   </select>
+                  <Icon name="arrow-down" className="absolute right-4 top-[38px] w-4 h-4 text-gray-500 pointer-events-none"/>
                 </div>
 
-                <button type="button" onClick={swap} className="self-end md:self-auto h-12 mt-2 md:mt-7 rounded-xl bg-slate-900 text-white px-4 hover:scale-[1.02] transition">
-                  <Icon name="swap" />
+                <button type="button" onClick={swap} className="h-12 w-12 rounded-full bg-[#1a2343] text-sky-400 ring-1 ring-sky-500/30 flex items-center justify-center hover:scale-110 hover:bg-[#202b54] transition shadow-[0_0_15px_rgba(56,189,248,0.2)] mt-0 md:mt-6 shrink-0">
+                  <Icon name="swap" className="w-5 h-5" />
                 </button>
 
-                <div className="flex-1">
-                  <label className="text-slate-600 font-medium mb-2 block">{t("to")}</label>
+                <div className="flex-1 w-full relative">
+                  <label className="text-gray-400 font-bold text-xs uppercase tracking-widest mb-2 block">{t("to")}</label>
                   <select
                     value={toCoin}
                     onChange={e => setToCoin(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-white ring-1 ring-slate-200 focus:ring-2 focus:ring-sky-200 outline-none"
+                    className="w-full px-4 py-3.5 rounded-xl bg-[#0b1020] ring-1 ring-[#2c3040] text-white font-bold appearance-none focus:ring-2 focus:ring-sky-500 outline-none"
                   >
-                    {fromCoin === "USDT"
-                      ? coinSymbols.filter(c => c !== "USDT").map(c => <option key={c} value={c}>{c}</option>)
-                      : <option value="USDT">USDT</option>}
+                    {fromCoin === "USDT" ? coinSymbols.filter(c => c !== "USDT").map(c => <option key={c} value={c}>{c}</option>) : <option value="USDT">USDT</option>}
                   </select>
+                  <Icon name="arrow-down" className="absolute right-4 top-[38px] w-4 h-4 text-gray-500 pointer-events-none"/>
                 </div>
               </div>
 
               <Field
                 label={t("amount_with_coin", { coin: fromCoin })}
-                type="number"
-                min={0}
-                step="any"
-                value={amount}
-                onChange={e => setAmount(e.target.value)}
+                type="number" min={0} step="any"
+                value={amount} onChange={e => setAmount(e.target.value)}
                 placeholder={t("enter_amount_with_coin", { coin: fromCoin })}
                 icon="dollar-sign"
+                classInput="!bg-[#0b1020]/50 !border-[#2c3040] !text-white !font-bold"
               />
 
-              <div className="rounded-xl bg-slate-50 ring-1 ring-slate-200 px-4 py-3 text-slate-700 font-medium">
-                {t("you_will_receive")}:&nbsp;
-                <span className="font-extrabold text-slate-900">
+              <div className="rounded-xl bg-[#1a2343] ring-1 ring-white/5 px-5 py-4 flex justify-between items-center shadow-inner">
+                <span className="text-gray-400 font-semibold">{t("you_will_receive")}:</span>
+                <span className="font-black text-white text-lg">
                   {result ? `${result} ${toCoin}` : "--"}
                 </span>
               </div>
 
               <button
                 type="submit"
-                className="w-full h-12 rounded-xl bg-slate-900 text-white text-lg font-extrabold hover:scale-[1.02] transition"
+                className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 text-white text-lg font-black hover:scale-[1.02] transition shadow-[0_0_20px_rgba(56,189,248,0.3)] disabled:opacity-50 disabled:pointer-events-none"
                 disabled={!amount || isNaN(amount) || fromCoin === toCoin || parseFloat(amount) <= 0}
               >
                 {t("convert")}
               </button>
 
               {successMsg && (
-                <div className="mt-2 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 rounded-lg px-4 py-3 text-center text-base font-semibold">
+                <div className={`mt-2 rounded-xl px-4 py-3 text-center text-sm font-bold border ${successMsg.includes("Fail") || successMsg.includes("error") ? "bg-rose-500/10 text-rose-400 border-rose-500/20" : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"}`}>
                   {successMsg}
                 </div>
               )}
@@ -811,287 +831,251 @@ const handleWithdraw = async (e) => {
         </Card>
 
         {/* ===== History ===== */}
-        <Card className="mt-8 rounded-3xl shadow-xl border border-slate-100 p-0 overflow-hidden">
-          <div className="px-5 py-4 md:px-6 md:py-5 bg-white/80">
-            <div className="flex items-center gap-2 text-slate-800 text-xl font-extrabold">
-              <Icon name="clock" className="w-6 h-6" /> {t("deposit_withdraw_history")}
+        <Card className={`${cardClass} p-0`}>
+          <div className="bg-[#0f1424] px-5 py-5 md:px-6 md:py-6 border-b border-white/5">
+            <div className="flex items-center gap-2 text-white text-xl md:text-2xl font-black">
+              <Icon name="clock" className="w-7 h-7 text-indigo-400 drop-shadow-[0_0_8px_rgba(129,140,248,0.5)]" /> {t("deposit_withdraw_history")}
             </div>
           </div>
-          <div className="w-full overflow-x-auto">
-            <table className="w-full text-sm md:text-base">
-              <thead className="bg-white sticky top-0 z-10">
-                <tr className="text-left text-slate-600 border-y border-slate-100">
-                  <th className="py-3.5 px-4">{t("type")}</th>
-                  <th className="py-3.5 px-4 text-right">{t("amount")}</th>
-                  <th className="py-3.5 px-4">{t("coin")}</th>
-                  <th className="py-3.5 px-4">{t("date")}</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white">
-                {(Array.isArray(allHistory) ? allHistory : []).map((row, idx) => (
-                  <tr
-                    key={row.type === "Deposit" ? `deposit-${row.id || idx}` : row.type === "Withdraw" ? `withdraw-${row.id || idx}` : idx}
-                    className="group border-b border-slate-100 hover:bg-slate-50/60 transition-colors"
-                    style={{ height: 60 }}
-                  >
-                    <td className="py-3 px-4">
-                      <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-semibold ring-1 ${
-                        row.type === "Deposit"
-                          ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
-                          : "bg-amber-50 text-amber-700 ring-amber-200"
-                      }`}>
-                        <Icon name={row.type === "Deposit" ? "download" : "upload"} className="w-4 h-4" />
-                        {t(row.type.toLowerCase())}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-right tabular-nums font-medium">
-                      {row.amount}
-                    </td>
-                    <td className="py-3 px-4 font-semibold text-slate-900">
-                      <span className="inline-flex items-center gap-2">
-                        <Icon name={row.coin?.toLowerCase() || "coin"} className="w-5 h-5" />
-                        {row.coin}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-slate-700">
-                      {row.created_at ? new Date(row.created_at).toLocaleString() : (row.date || "--")}
-                    </td>
+          
+          <div className="w-full">
+            {/* MOBILE HISTORY LIST */}
+            <div className="md:hidden flex flex-col divide-y divide-white/5">
+              {(Array.isArray(allHistory) ? allHistory : []).map((row, idx) => (
+                 <div key={row.type === "Deposit" ? `deposit-${row.id || idx}` : row.type === "Withdraw" ? `withdraw-${row.id || idx}` : idx} className="flex items-center justify-between p-4 hover:bg-white/[0.02]">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${row.type === "Deposit" ? "bg-emerald-500/10 text-emerald-400" : "bg-amber-500/10 text-amber-400"}`}>
+                         <Icon name={row.type === "Deposit" ? "download" : "upload"} className="w-5 h-5" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-gray-100">{t(row.type.toLowerCase())} {row.coin}</span>
+                        <span className="text-xs text-gray-500 font-medium">{row.created_at ? new Date(row.created_at).toLocaleDateString() : (row.date || "--")}</span>
+                      </div>
+                    </div>
+                    <span className={`font-bold text-lg ${row.type === "Deposit" ? "text-emerald-400" : "text-amber-400"}`}>
+                      {row.type === "Deposit" ? "+" : "-"}{row.amount}
+                    </span>
+                 </div>
+              ))}
+              {(!allHistory || allHistory.length === 0) && (
+                 <div className="text-center py-8 text-gray-500 text-sm font-medium">No history found.</div>
+              )}
+            </div>
+
+            {/* DESKTOP HISTORY TABLE */}
+            <div className="hidden md:block w-full overflow-x-auto">
+              <table className="w-full text-base">
+                <thead className="bg-[#0f1424] sticky top-0">
+                  <tr className="text-left text-gray-400 border-y border-white/5 text-sm uppercase tracking-wider">
+                    <th className="py-4 pl-6 pr-4 font-semibold">{t("type")}</th>
+                    <th className="py-4 px-4 text-right font-semibold">{t("amount")}</th>
+                    <th className="py-4 px-4 font-semibold">{t("coin")}</th>
+                    <th className="py-4 pr-6 pl-4 font-semibold text-right">{t("date")}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {(Array.isArray(allHistory) ? allHistory : []).map((row, idx) => (
+                    <tr key={row.type === "Deposit" ? `deposit-${row.id || idx}` : row.type === "Withdraw" ? `withdraw-${row.id || idx}` : idx} className="group hover:bg-white/[0.02] transition-colors" style={{ height: 60 }}>
+                      <td className="py-3 pl-6 pr-4">
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-bold ${row.type === "Deposit" ? "bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20" : "bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/20"}`}>
+                          <Icon name={row.type === "Deposit" ? "download" : "upload"} className="w-4 h-4" />
+                          {t(row.type.toLowerCase())}
+                        </span>
+                      </td>
+                      <td className={`py-3 px-4 text-right tabular-nums font-bold ${row.type === "Deposit" ? "text-emerald-400" : "text-amber-400"}`}>
+                        {row.type === "Deposit" ? "+" : "-"}{row.amount}
+                      </td>
+                      <td className="py-3 px-4 font-bold text-gray-200">
+                        <span className="inline-flex items-center gap-2">
+                          <Icon name={row.coin?.toLowerCase() || "coin"} className="w-5 h-5" /> {row.coin}
+                        </span>
+                      </td>
+                      <td className="py-3 pr-6 pl-4 text-gray-500 font-medium text-right text-sm">
+                        {row.created_at ? new Date(row.created_at).toLocaleString() : (row.date || "--")}
+                      </td>
+                    </tr>
+                  ))}
+                  {(!allHistory || allHistory.length === 0) && (
+                     <tr><td colSpan="4" className="text-center py-10 text-gray-500 font-medium">No history found.</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </Card>
       </div>
 
       {/* ===== Modals ===== */}
-      <Modal visible={modal.open && modal.type === "deposit"} onClose={closeModal}>
-        <form onSubmit={handleDepositSubmit} className="space-y-5 p-2">
-          <div className="text-2xl font-bold mb-3 flex items-center gap-2 text-slate-900">
-            <Icon name="download" className="w-7 h-7" /> {t("deposit")}
+      <Modal visible={modal.open && modal.type === "deposit"} onClose={closeModal} classWrap={modalGlassClass} classButtonClose="text-gray-400 hover:text-white">
+        <form onSubmit={handleDepositSubmit} className="space-y-5 p-1">
+          <div className="text-2xl font-black mb-4 flex items-center justify-center gap-2 text-white text-center">
+            <Icon name="download" className="w-7 h-7 text-sky-400" /> {t("deposit")}
           </div>
 
-          <select
-            className="w-full px-4 py-3 rounded-xl bg-white ring-1 ring-slate-200 focus:ring-2 focus:ring-sky-200 outline-none"
-            value={selectedDepositCoin}
-            onChange={e => setSelectedDepositCoin(e.target.value)}
-          >
-            {coinSymbols.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
+          <div className="relative">
+            <select
+              className="w-full px-4 py-3.5 rounded-xl bg-[#0b1020] ring-1 ring-[#2c3040] text-white font-bold appearance-none focus:ring-2 focus:ring-sky-500 outline-none"
+              value={selectedDepositCoin}
+              onChange={e => setSelectedDepositCoin(e.target.value)}
+            >
+              {coinSymbols.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <Icon name="arrow-down" className="absolute right-4 top-[18px] w-4 h-4 text-gray-500 pointer-events-none"/>
+          </div>
 
           <div className="flex flex-col items-center justify-center">
-            <div className="relative w-full max-w-[160px] aspect-square mb-3 rounded-xl bg-white ring-1 ring-slate-200 flex items-center justify-center overflow-hidden">
+            <div className="relative w-full max-w-[180px] aspect-square mb-2 rounded-2xl bg-white flex items-center justify-center overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.1)] p-2">
               {walletQRCodes[selectedDepositCoin] ? (
-                <img
-                  src={walletQRCodes[selectedDepositCoin]}
-                  alt={t("deposit_qr")}
-                  className="max-w-full max-h-full object-contain p-2"
-                  onError={(e) => { e.currentTarget.style.display = "none"; }}
-                />
-              ) : null}
+                <img src={walletQRCodes[selectedDepositCoin]} alt={t("deposit_qr")} className="max-w-full max-h-full object-contain" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+              ) : <div className="text-gray-400 text-xs text-center">No QR</div>}
             </div>
           </div>
 
-          <div className="text-slate-600 font-medium">{t("network")}: <span className="font-semibold text-slate-900">{depositNetworks[selectedDepositCoin]}</span></div>
+          <div className="text-gray-400 font-medium text-center">{t("network")}: <span className="font-black text-sky-400">{depositNetworks[selectedDepositCoin]}</span></div>
 
-          <div className="flex items-center gap-2 justify-center">
-            <span className="font-mono bg-slate-50 ring-1 ring-slate-200 px-2 py-1 rounded text-sm max-w-[260px] overflow-x-auto">
-              {walletAddresses[selectedDepositCoin]}
-            </span>
-            <button
-              type="button"
-              className="h-9 px-3 rounded-lg bg-slate-900 text-white text-sm font-semibold"
-              onClick={() => { navigator.clipboard.writeText(walletAddresses[selectedDepositCoin]); setDepositToast(t("copied")); }}
-            >
-              <span className="inline-flex items-center gap-1"><Icon name="copy" />{t("copy")}</span>
+          <div className="flex items-center gap-2 justify-center w-full">
+            <div className="flex-1 font-mono bg-[#0b1020] ring-1 ring-[#2c3040] px-3 py-3 rounded-xl text-xs text-gray-300 overflow-x-auto whitespace-nowrap scrollbar-hide">
+              {walletAddresses[selectedDepositCoin] || "Address not available"}
+            </div>
+            <button type="button" className="h-11 px-4 rounded-xl bg-[#1a2343] hover:bg-[#202b54] ring-1 ring-white/10 text-white text-sm font-bold transition flex shrink-0 items-center gap-1" onClick={() => { navigator.clipboard.writeText(walletAddresses[selectedDepositCoin] || ""); setDepositToast(t("copied")); }}>
+              <Icon name="copy" className="w-4 h-4" />{t("copy")}
             </button>
           </div>
 
           <Field
             label={t("deposit_amount_with_coin", { coin: selectedDepositCoin })}
-            type="number"
-            min={0}
-            step="any"
-            value={depositAmount}
-            onChange={e => setDepositAmount(e.target.value)}
-            required
+            type="number" min={0} step="any" required
+            value={depositAmount} onChange={e => setDepositAmount(e.target.value)}
             icon="dollar-sign"
+            classInput="!bg-[#0b1020]/50 !border-[#2c3040] !text-white !font-bold"
           />
 
           <div>
-            <label className="block text-slate-600 font-medium mb-1">{t("upload_screenshot")}</label>
+            <label className="block text-gray-400 font-bold text-sm mb-2">{t("upload_screenshot")}</label>
             <div className="relative">
-              <input
-                type="file"
-                accept="image/*"
-                ref={fileInputRef}
-                onChange={e => { setDepositScreenshot(e.target.files[0]); setFileLocked(true); }}
-                required
-                className="absolute inset-0 opacity-0 z-50 cursor-pointer"
-                disabled={fileLocked}
-              />
-              <div className={`truncate w-full text-sm text-white font-semibold text-center px-4 py-2 rounded-xl ${fileLocked ? "bg-slate-400 cursor-not-allowed" : "bg-slate-900 hover:opacity-95 cursor-pointer"}`}>
+              <input type="file" accept="image/*" ref={fileInputRef} required onChange={e => { setDepositScreenshot(e.target.files[0]); setFileLocked(true); }} className="absolute inset-0 opacity-0 z-50 cursor-pointer" disabled={fileLocked} />
+              <div className={`truncate w-full text-sm font-bold text-center px-4 py-3.5 rounded-xl border border-dashed ${fileLocked ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 cursor-not-allowed" : "bg-[#0b1020]/50 border-[#2c3040] text-gray-300 hover:bg-[#1a2343] cursor-pointer transition"}`}>
                 {fileLocked ? t("screenshot_uploaded") : t("choose_file")}
               </div>
             </div>
           </div>
 
-          <div className="text-sm text-slate-600 bg-slate-50 ring-1 ring-slate-200 rounded px-3 py-2">
-            {t("for_your_safety_submit_screenshot")}
-            <span className="block text-amber-600">{t("proof_ensures_support")}</span>
+          <div className="text-xs text-amber-400/80 bg-amber-500/10 ring-1 ring-amber-500/20 rounded-lg px-4 py-3 text-center leading-relaxed">
+            {t("for_your_safety_submit_screenshot")} <span className="font-bold text-amber-400">{t("proof_ensures_support")}</span>
           </div>
 
-<div className="relative">
-  <button
-    type="submit"
-    disabled={depositBusy || !depositAmount || !depositScreenshot}
-    className={`w-full h-12 rounded-xl text-white text-lg font-extrabold transition
-      ${depositBusy ? "bg-slate-500 cursor-not-allowed" : "bg-slate-900 hover:scale-[1.02]"}`}
-  >
-    {depositBusy ? (t("submitting") || "Submitting...") : t("submit")}
-  </button>
-
-  {depositToast && (
-    <div className="absolute -top-12 left-1/2 -translate-x-1/2 z-[70]">
-      <div className="flex items-center gap-2 px-4 py-2 rounded-2xl shadow-2xl
-              bg-slate-900/95 backdrop-blur text-white font-semibold ring-1 ring-white/15">
-        <Icon name="check" className="w-5 h-5" />
-        <span>{depositToast}</span>
-      </div>
-    </div>
-  )}
-</div>
+          <div className="relative mt-2">
+            <button type="submit" disabled={depositBusy || !depositAmount || !depositScreenshot} className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-lg ${depositBusy ? "bg-slate-700 cursor-not-allowed" : "bg-gradient-to-r from-blue-600 to-sky-500 hover:scale-[1.02]"}`}>
+              {depositBusy ? (t("submitting") || "Submitting...") : t("submit")}
+            </button>
+            {depositToast && (
+              <div className="absolute -top-14 left-1/2 -translate-x-1/2 z-[70] w-full max-w-[280px]">
+                <div className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl shadow-2xl bg-emerald-500/90 backdrop-blur text-white font-bold ring-1 ring-white/20">
+                  <Icon name="check" className="w-5 h-5" /><span>{depositToast}</span>
+                </div>
+              </div>
+            )}
+          </div>
         </form>
       </Modal>
 
-      <Modal visible={modal.open && modal.type === "withdraw"} onClose={closeModal}>
-        <form onSubmit={handleWithdraw} className="space-y-5 p-2">
-          <div className="text-2xl font-bold mb-3 flex items-center gap-2 text-slate-900">
-            <Icon name="upload" className="w-7 h-7" /> {t("withdraw")}
+      <Modal visible={modal.open && modal.type === "withdraw"} onClose={closeModal} classWrap={modalGlassClass} classButtonClose="text-gray-400 hover:text-white">
+        <form onSubmit={handleWithdraw} className="space-y-5 p-1">
+          <div className="text-2xl font-black mb-4 flex items-center justify-center gap-2 text-white text-center">
+            <Icon name="upload" className="w-7 h-7 text-sky-400" /> {t("withdraw")}
           </div>
-          <select
-            className="w-full px-4 py-3 rounded-xl bg-white ring-1 ring-slate-200 focus:ring-2 focus:ring-sky-200 outline-none"
-            value={selectedWithdrawCoin}
-            onChange={e => setSelectedWithdrawCoin(e.target.value)}
-          >
-            {coinSymbols.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
+          
+          <div className="relative">
+            <select
+              className="w-full px-4 py-3.5 rounded-xl bg-[#0b1020] ring-1 ring-[#2c3040] text-white font-bold appearance-none focus:ring-2 focus:ring-sky-500 outline-none"
+              value={selectedWithdrawCoin}
+              onChange={e => setSelectedWithdrawCoin(e.target.value)}
+            >
+              {coinSymbols.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <Icon name="arrow-down" className="absolute right-4 top-[18px] w-4 h-4 text-gray-500 pointer-events-none"/>
+          </div>
 
-          <div className="text-slate-600 font-medium">{t("network")}: <span className="font-semibold text-slate-900">{depositNetworks[selectedWithdrawCoin]}</span></div>
+          <div className="text-gray-400 font-medium text-center">{t("network")}: <span className="font-black text-sky-400">{depositNetworks[selectedWithdrawCoin]}</span></div>
 
           <Field
-            label={t("withdraw_to_address")}
-            type="text"
-            required
+            label={t("withdraw_to_address")} type="text" required
             placeholder={t("paste_recipient_address", { coin: selectedWithdrawCoin })}
-            value={withdrawForm.address}
-            onChange={e => setWithdrawForm(f => ({ ...f, address: e.target.value }))}
+            value={withdrawForm.address} onChange={e => setWithdrawForm(f => ({ ...f, address: e.target.value }))}
             icon="send"
+            classInput="!bg-[#0b1020]/50 !border-[#2c3040] !text-white !font-bold"
           />
           <Field
-            label={t("amount_with_coin", { coin: selectedWithdrawCoin })}
-            type="number"
-            min={0.0001}
-            step="any"
-            required
+            label={t("amount_with_coin", { coin: selectedWithdrawCoin })} type="number" min={0.0001} step="any" required
             placeholder={t("enter_amount_with_coin", { coin: selectedWithdrawCoin })}
-            value={withdrawForm.amount}
-            onChange={e => setWithdrawForm(f => ({ ...f, amount: e.target.value }))}
+            value={withdrawForm.amount} onChange={e => setWithdrawForm(f => ({ ...f, amount: e.target.value }))}
             icon="dollar-sign"
+            classInput="!bg-[#0b1020]/50 !border-[#2c3040] !text-white !font-bold"
           />
 
-          <div className="text-sm text-amber-700 bg-amber-50 ring-1 ring-amber-200 rounded px-3 py-2">{t("double_check_withdraw")}</div>
+          <div className="text-xs text-rose-400/80 bg-rose-500/10 ring-1 ring-rose-500/20 rounded-lg px-4 py-3 text-center font-semibold">
+            {t("double_check_withdraw")}
+          </div>
 
-<div className="relative">
-  <button
-    type="submit"
-    disabled={withdrawBusy || !withdrawForm.address || !withdrawForm.amount}
-    className={`w-full h-12 rounded-xl text-white text-lg font-extrabold transition
-      ${withdrawBusy ? "bg-slate-500 cursor-not-allowed" : "bg-slate-900 hover:scale-[1.02]"}`}
-  >
-    {withdrawBusy ? (t("submitting") || "Submitting...") : t("submit_withdraw")}
-  </button>
-
-  {withdrawToast && (
-    <div className="absolute -top-12 left-1/2 -translate-x-1/2 z-[70]">
-      <div className="flex items-center gap-2 px-4 py-2 rounded-2xl shadow-2xl
-              bg-slate-900/95 backdrop-blur text-white font-semibold ring-1 ring-white/15">
-        <Icon name="check" className="w-5 h-5" />
-        <span>{withdrawToast}</span>
-      </div>
-    </div>
-  )}
-</div>
-
-          {withdrawMsg && (
-            <div className="mt-2 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 rounded-lg px-4 py-2 text-center text-base font-semibold">
-              {withdrawMsg}
-            </div>
-          )}
+          <div className="relative mt-2">
+            <button type="submit" disabled={withdrawBusy || !withdrawForm.address || !withdrawForm.amount} className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-lg ${withdrawBusy ? "bg-slate-700 cursor-not-allowed" : "bg-gradient-to-r from-blue-600 to-sky-500 hover:scale-[1.02]"}`}>
+              {withdrawBusy ? (t("submitting") || "Submitting...") : t("submit_withdraw")}
+            </button>
+            {withdrawToast && (
+              <div className="absolute -top-14 left-1/2 -translate-x-1/2 z-[70] w-full max-w-[280px]">
+                <div className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl shadow-2xl backdrop-blur text-white font-bold ring-1 ring-white/20 ${withdrawToast.includes("Failed") || withdrawToast.includes("error") ? "bg-rose-500/90" : "bg-emerald-500/90"}`}>
+                  <Icon name="check" className="w-5 h-5" /><span>{withdrawToast}</span>
+                </div>
+              </div>
+            )}
+          </div>
+          {withdrawMsg && <div className="mt-2 bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20 rounded-lg px-4 py-2 text-center text-sm font-bold">{withdrawMsg}</div>}
         </form>
       </Modal>
 
-      {/* ===== NEW: Earn Modal ===== */}
-      <Modal visible={earnModal.open} onClose={closeEarnModal}>
-        <form onSubmit={handleEarnSubmit} className="space-y-5 p-2">
-          <div className="text-2xl font-bold mb-3 flex items-center gap-2 text-slate-900">
-            <Icon name={earnModal.type === 'save' ? 'plus' : 'check-circle'} className="w-7 h-7" />
+      <Modal visible={earnModal.open} onClose={closeEarnModal} classWrap={modalGlassClass} classButtonClose="text-gray-400 hover:text-white">
+        <form onSubmit={handleEarnSubmit} className="space-y-5 p-1">
+          <div className="text-2xl font-black mb-4 flex items-center justify-center gap-2 text-white text-center">
+            <Icon name={earnModal.type === 'save' ? 'plus' : 'check-circle'} className={`w-7 h-7 ${earnModal.type === 'save' ? 'text-teal-400' : 'text-sky-400'}`} />
             {earnModal.type === 'save' ? t("save_to_earn", "Save to Earn") : t("redeem_from_earn", "Redeem from Earn")}
           </div>
 
-          <select
-            className="w-full px-4 py-3 rounded-xl bg-white ring-1 ring-slate-200 focus:ring-2 focus:ring-sky-200 outline-none"
-            value={earnModal.coin}
-            onChange={e => setEarnModal(m => ({ ...m, coin: e.target.value }))}
-          >
-            {coinSymbols.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
+          <div className="relative">
+            <select
+              className="w-full px-4 py-3.5 rounded-xl bg-[#0b1020] ring-1 ring-[#2c3040] text-white font-bold appearance-none focus:ring-2 focus:ring-sky-500 outline-none"
+              value={earnModal.coin}
+              onChange={e => setEarnModal(m => ({ ...m, coin: e.target.value }))}
+            >
+              {coinSymbols.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <Icon name="arrow-down" className="absolute right-4 top-[18px] w-4 h-4 text-gray-500 pointer-events-none"/>
+          </div>
           
           <Field
-            label={t("amount_with_coin", { coin: earnModal.coin })}
-            type="number"
-            min={0.0001}
-            step="any"
-            required
+            label={t("amount_with_coin", { coin: earnModal.coin })} type="number" min={0.0001} step="any" required
             placeholder={t("enter_amount", "Enter amount")}
-            value={earnModal.amount}
-            onChange={e => setEarnModal(m => ({ ...m, amount: e.target.value }))}
+            value={earnModal.amount} onChange={e => setEarnModal(m => ({ ...m, amount: e.target.value }))}
             icon="dollar-sign"
+            classInput="!bg-[#0b1020]/50 !border-[#2c3040] !text-white !font-bold"
           />
 
-          <div className="text-sm text-slate-600 bg-slate-50 ring-1 ring-slate-200 rounded px-3 py-2">
-            {earnModal.type === 'save'
-              ? t("save_desc", "Assets will be moved from 'My Assets' to 'Savings Earn'.")
-              : t("redeem_desc", "Assets will be moved from 'Savings Earn' to 'My Assets'.")
-            }
+          <div className="text-sm text-gray-400 bg-white/5 ring-1 ring-white/10 rounded-lg px-4 py-3 text-center font-medium">
+            {earnModal.type === 'save' ? t("save_desc", "Assets will be moved from 'My Assets' to 'Savings Earn'.") : t("redeem_desc", "Assets will be moved from 'Savings Earn' to 'My Assets'.")}
           </div>
 
-          <div className="space-y-4"> {/* Use space-y-4 to separate button and message */}
-            <button
-              type="submit"
-              disabled={earnBusy || !earnModal.amount || parseFloat(earnModal.amount) <= 0}
-              className={`w-full h-12 rounded-xl text-white text-lg font-extrabold transition
-                ${earnBusy ? "bg-slate-500 cursor-not-allowed" : "bg-slate-900 hover:scale-[1.02]"}`}
-            >
+          <div className="space-y-4 mt-2">
+            <button type="submit" disabled={earnBusy || !earnModal.amount || parseFloat(earnModal.amount) <= 0} className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-lg ${earnBusy ? "bg-slate-700 cursor-not-allowed" : (earnModal.type === 'save' ? "bg-gradient-to-r from-teal-500 to-emerald-400 hover:scale-[1.02]" : "bg-[#1a2343] hover:bg-[#202b54] border border-white/10")}`}>
               {earnBusy ? (t("submitting", "Submitting...")) : (earnModal.type === 'save' ? t("confirm_save", "Confirm Save") : t("confirm_redeem", "Confirm Redeem"))}
             </button>
 
-            {/* NEW: Message box styled exactly like the 'Convert' one */}
             {earnToast && (
-              <div className={`rounded-lg px-4 py-3 text-center text-base font-semibold ring-1
-                ${
-                  earnToast.type === 'success'
-                    ? 'bg-emerald-50 text-emerald-700 ring-emerald-200'
-                    : 'bg-rose-50 text-rose-700 ring-rose-200'
-                }`}
-              >
+              <div className={`rounded-lg px-4 py-3 text-center text-sm font-bold border ${earnToast.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}`}>
                 {earnToast.message}
               </div>
             )}
           </div>
         </form>
       </Modal>
-      {/* ============================= */}
     </div>
   );
 }

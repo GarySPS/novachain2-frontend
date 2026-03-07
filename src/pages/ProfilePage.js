@@ -314,48 +314,51 @@ useEffect(() => {
   }
 
   /* ======================= UI ======================= */
+  const cardClass = "p-6 md:p-8 rounded-3xl border border-[#1a2343] bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] shadow-[0_10px_30px_rgba(0,0,0,0.4)]";
+
   return (
     <div
-      className="min-h-screen w-full flex flex-col items-center px-3 pt-8 pb-14"
+      className="min-h-screen w-full flex flex-col items-center px-3 pt-8 pb-32"
       style={{
         background: 'url("/novachain.jpg") no-repeat center/cover fixed',
       }}
     >
       <div className="fixed inset-0 bg-[linear-gradient(120deg,#0b1020f0_0%,#0d1220d8_60%,#0a101dd1_100%)] pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-7xl space-y-10">
+      <div className="relative z-10 w-full max-w-7xl space-y-6 md:space-y-8">
 
         {/* ========= 1) Profile + Total Assets ========= */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {/* Profile */}
-          <Card className="md:col-span-2 p-8 md:p-10 rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
+          <Card className={`md:col-span-2 ${cardClass}`}>
             <div className="flex flex-col items-center text-center">
-              <img
-                src={avatarFile ? URL.createObjectURL(avatarFile) : bustCache(avatarUrl) || "/logo192_new.png"}
-                alt="Profile"
-                className="w-28 h-28 rounded-full border-4 border-[#ffd700] shadow-xl bg-white object-cover"
-                onError={(e) => { e.currentTarget.src = "/logo192_new.png"; }}
-              />
-              <div className="mt-1 flex items-center gap-2">
-                <div className="text-2xl md:text-3xl font-black text-white drop-shadow">
+              <div className="relative">
+                <img
+                  src={avatarFile ? URL.createObjectURL(avatarFile) : bustCache(avatarUrl) || "/logo192_new.png"}
+                  alt="Profile"
+                  className="w-28 h-28 rounded-full border-[3px] border-sky-500 shadow-[0_0_20px_rgba(14,165,233,0.3)] bg-[#0b1020] object-cover"
+                  onError={(e) => { e.currentTarget.src = "/logo192_new.png"; }}
+                />
+              </div>
+              <div className="mt-4 flex items-center gap-2">
+                <div className="text-2xl md:text-3xl font-black text-white tracking-tight">
                   {user.username}
                 </div>
                 {kycStatus === "approved" && (
-                  <span className="inline-flex items-center" aria-label="Verified">
-                    <svg width="26" height="26" viewBox="0 0 26 26">
-                      <circle cx="13" cy="13" r="13" fill="#26c281" />
-                      <path d="M19.25 9.25L11.75 16.75L7.75 12.75" stroke="#fff" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" />
+                  <span className="inline-flex items-center text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
                   </span>
                 )}
               </div>
 
               <div
-                className={`mt-2 inline-flex items-center px-3 py-1.5 rounded-full text-sm font-bold
-                ${kycStatus === "approved" ? "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30" :
-                  kycStatus === "pending" ? "bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30" :
-                  kycStatus === "rejected" ? "bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/30" :
-                  "bg-white/10 text-white/80 ring-1 ring-white/20"}`}
+                className={`mt-2 inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase
+                ${kycStatus === "approved" ? "bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20" :
+                  kycStatus === "pending" ? "bg-amber-500/10 text-amber-400 ring-1 ring-amber-500/20" :
+                  kycStatus === "rejected" ? "bg-rose-500/10 text-rose-400 ring-1 ring-rose-500/20" :
+                  "bg-white/5 text-gray-400 ring-1 ring-white/10"}`}
               >
                 {kycStatus === "approved" ? t("Verified")
                   : kycStatus === "pending" ? t("Automated review")
@@ -364,19 +367,19 @@ useEffect(() => {
               </div>
 
               <button
-                className="mt-8 h-11 px-6 rounded-2xl font-bold bg-white text-slate-900 hover:bg-slate-100 transition"
+                className="mt-8 h-11 px-6 rounded-xl font-bold bg-rose-500/10 text-rose-400 ring-1 ring-rose-500/20 hover:bg-rose-500/20 transition flex items-center"
                 onClick={handleLogout}
               >
-                <Icon name="logout" className="mr-2" /> {t('profile_logout')}
+                <Icon name="logout" className="mr-2 w-5 h-5" /> {t('profile_logout')}
               </button>
             </div>
           </Card>
 
           {/* Total Assets + Quick Actions */}
-          <Card className="p-8 md:p-10 rounded-3xl border border-white/10 bg-gradient-to-br from-white/85 to-white/60 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.20)]">
+          <Card className={cardClass}>
             <div className="text-center">
-              <div className="text-slate-600 font-bold">{t('profile_total_assets')}</div>
-              <div className="mt-1 text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+              <div className="text-gray-400 font-medium text-sm">{t('profile_total_assets')}</div>
+              <div className="mt-1 text-4xl md:text-5xl font-black text-white tracking-tight drop-shadow-md">
                 {typeof totalUsd === "number"
                   ? `$${totalUsd.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
                   : "--"}
@@ -385,19 +388,19 @@ useEffect(() => {
 
             <div className="mt-8 grid grid-cols-1 gap-3">
               <button 
-                className="h-12 rounded-xl font-bold bg-slate-900 text-white hover:scale-[1.02] transition flex items-center justify-center"
+                className="h-12 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:scale-[1.02] transition flex items-center justify-center border border-white/10"
                 onClick={() => navigate(`/wallet?action=deposit&coin=USDT`)}
               >
                 {t('profile_deposit')}
               </button>
               <button 
-                className="h-12 rounded-xl font-bold bg-white ring-1 ring-slate-200 text-slate-800 hover:bg-slate-50 transition flex items-center justify-center"
+                className="h-12 rounded-xl font-bold bg-[#1a2343] text-gray-200 ring-1 ring-white/5 hover:bg-[#202b54] transition flex items-center justify-center"
                 onClick={() => navigate(`/wallet?action=withdraw&coin=BTC`)}
               >
                 <Icon name="arrow-up-right" className="mr-2" /> {t('profile_withdraw')}
               </button>
               <button 
-                className="h-12 rounded-xl font-bold bg-slate-900 text-white hover:scale-[1.02] transition flex items-center justify-center"
+                className="h-12 rounded-xl font-bold bg-[#1a2343] text-gray-200 ring-1 ring-white/5 hover:bg-[#202b54] transition flex items-center justify-center"
                 onClick={() => navigate(`/wallet?action=convert`)}
               >
                 <Icon name="swap" className="mr-2" /> {t('profile_convert')}
@@ -408,30 +411,30 @@ useEffect(() => {
 
         {/* ========= 2) Chart + Assets Donut ========= */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          <Card className="p-6 md:p-8 rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
-            <div className="mb-3 text-white/80 font-bold">{t('Balance History')}</div>
+          <Card className={cardClass}>
+            <div className="mb-4 text-gray-300 font-bold uppercase tracking-wider text-sm">{t('Balance History')}</div>
             <Chart data={balanceHistory} />
           </Card>
 
-          <Card className="p-6 md:p-8 rounded-3xl border border-white/10 bg-white/10 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
-            <div className="mb-3 text-white/80 font-bold">{t('profile_assets')}</div>
+          <Card className={cardClass}>
+            <div className="mb-4 text-gray-300 font-bold uppercase tracking-wider text-sm">{t('profile_assets')}</div>
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <div className="flex-1 min-w-[220px]">
                 <AssetsDonut assets={assets} prices={prices} plain />
               </div>
-              <div className="flex-1 w-full max-w-sm">
+              <div className="flex-1 w-full max-w-sm space-y-1.5">
                 {assets.filter(a => a.balance > 0).map((a, i) => {
                   const price = prices[a.symbol] || (a.symbol === "USDT" ? 1 : 0);
                   const usd = Number(a.balance) * price;
                   const percent = totalUsd ? (usd / totalUsd * 100) : 0;
-                  const palette = ["#ffd600", "#00e676", "#2979ff", "#ff6f00", "#e040fb", "#ff1744"];
+                  const palette = ["#ffbe0b", "#0cf574", "#38bdf8", "#f3722c", "#b5179e", "#ff006e"];
                   return (
-                    <div key={a.symbol} className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-white/10 transition">
+                    <div key={a.symbol} className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 transition border border-white/5">
                       <div className="flex items-center gap-3">
-                        <span className="w-2.5 h-2.5 rounded-full" style={{ background: palette[i % palette.length] }} />
-                        <span className="w-16 font-semibold text-white/90">{a.symbol}</span>
+                        <span className="w-2.5 h-2.5 rounded-full shadow-lg" style={{ background: palette[i % palette.length], boxShadow: `0 0 10px ${palette[i % palette.length]}` }} />
+                        <span className="w-16 font-bold text-gray-200">{a.symbol}</span>
                       </div>
-                      <span className="font-bold text-white/80">{percent.toFixed(1)}%</span>
+                      <span className="font-bold text-gray-400">{percent.toFixed(1)}%</span>
                     </div>
                   );
                 })}
@@ -443,19 +446,18 @@ useEffect(() => {
         {/* ========= 3) KYC + Settings ========= */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {/* KYC */}
-          <Card className="p-8 rounded-3xl border border-white/10 bg-gradient-to-br from-white/85 to-white/65 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.20)]">
+          <Card className={cardClass}>
             <div className="text-center">
-              <div className="flex items-center justify-center gap-2 text-slate-800 font-black text-2xl">
-                <Icon name="shield-check" className="w-7 h-7 text-slate-700" />
+              <div className="flex items-center justify-center gap-2 text-white font-black text-2xl">
+                <Icon name="shield-check" className="w-7 h-7 text-sky-400 drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]" />
                 {t('Verification')}
               </div>
 
-              <div className="mt-2 inline-flex items-center text-sm font-bold px-3 py-1.5 rounded-full
-                bg-slate-900/5 ring-1 ring-slate-900/10 text-slate-700">
+              <div className="mt-3 inline-flex items-center text-xs font-bold px-3 py-1.5 rounded-full bg-[#0b1020] ring-1 ring-white/10 text-gray-300">
                 <span className={`w-2 h-2 rounded-full mr-2
-                  ${kycStatus === "approved" ? "bg-emerald-500" :
-                    kycStatus === "pending" ? "bg-amber-400" :
-                    kycStatus === "rejected" ? "bg-rose-400" : "bg-slate-400"}`} />
+                  ${kycStatus === "approved" ? "bg-emerald-400 shadow-[0_0_8px_#34d399]" :
+                    kycStatus === "pending" ? "bg-amber-400 shadow-[0_0_8px_#fbbf24]" :
+                    kycStatus === "rejected" ? "bg-rose-400 shadow-[0_0_8px_#fb7185]" : "bg-gray-500"}`} />
                 {kycStatus === "approved" ? t("Verified") :
                  kycStatus === "pending" ? t("Automated review in progress") :
                  kycStatus === "rejected" ? t("Needs new upload") : t("Not verified")}
@@ -467,13 +469,13 @@ useEffect(() => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {/* Selfie */}
                   <div>
-                    <label className="mb-2 block font-semibold text-slate-700">
+                    <label className="mb-2 block font-semibold text-gray-300 text-sm">
                       <span className="inline-flex items-center gap-2">
-                        <Icon name="user" className="w-5 h-5 text-slate-700" /> {t('Upload Selfie')}
+                        <Icon name="user" className="w-4 h-4 text-sky-400" /> {t('Upload Selfie')}
                         <Tooltip text={t('profile_tooltip_selfie')} />
                       </span>
                     </label>
-                    <div className="bg-white border-2 border-dashed border-slate-300 rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-slate-400 transition">
+                    <div className="bg-[#0b1020]/50 border-2 border-dashed border-[#2c3040] rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-sky-500/50 transition">
                       <input
                         type="file"
                         accept="image/*"
@@ -485,24 +487,24 @@ useEffect(() => {
                           if (file) { setKycSelfie(file); setKycSelfiePreview(URL.createObjectURL(file)); }
                         }}
                       />
-                      <label htmlFor="selfie" className="cursor-pointer flex flex-col items-center text-slate-700">
-                        <Icon name="upload-cloud" className="w-8 h-8 mb-1" />
+                      <label htmlFor="selfie" className="cursor-pointer flex flex-col items-center text-gray-400 hover:text-white transition">
+                        <Icon name="upload-cloud" className="w-8 h-8 mb-2 opacity-70" />
                         <span className="text-sm font-semibold">{t('Selfie')}</span>
                       </label>
                       {kycSelfiePreview && (
-                        <img src={kycSelfiePreview} alt="Selfie Preview" className="rounded-lg mt-3 border-2 border-emerald-300 shadow max-w-[110px]" />
+                        <img src={kycSelfiePreview} alt="Selfie Preview" className="rounded-lg mt-4 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] max-w-[110px]" />
                       )}
                     </div>
                   </div>
                   {/* ID */}
                   <div>
-                    <label className="mb-2 block font-semibold text-slate-700">
+                    <label className="mb-2 block font-semibold text-gray-300 text-sm">
                       <span className="inline-flex items-center gap-2">
-                        <Icon name="id-card" className="w-5 h-5 text-slate-700" /> {t('Upload ID')}
+                        <Icon name="id-card" className="w-4 h-4 text-sky-400" /> {t('Upload ID')}
                         <Tooltip text={t('profile_tooltip_id')} />
                       </span>
                     </label>
-                    <div className="bg-white border-2 border-dashed border-slate-300 rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-slate-400 transition">
+                    <div className="bg-[#0b1020]/50 border-2 border-dashed border-[#2c3040] rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-sky-500/50 transition">
                       <input
                         type="file"
                         accept="image/*"
@@ -514,12 +516,12 @@ useEffect(() => {
                           if (file) { setKycId(file); setKycIdPreview(URL.createObjectURL(file)); }
                         }}
                       />
-                      <label htmlFor="id-card" className="cursor-pointer flex flex-col items-center text-slate-700">
-                        <Icon name="upload-cloud" className="w-8 h-8 mb-1" />
+                      <label htmlFor="id-card" className="cursor-pointer flex flex-col items-center text-gray-400 hover:text-white transition">
+                        <Icon name="upload-cloud" className="w-8 h-8 mb-2 opacity-70" />
                         <span className="text-sm font-semibold">{t('ID')}</span>
                       </label>
                       {kycIdPreview && (
-                        <img src={kycIdPreview} alt="ID Preview" className="rounded-lg mt-3 border-2 border-amber-300 shadow max-w-[110px]" />
+                        <img src={kycIdPreview} alt="ID Preview" className="rounded-lg mt-4 border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.2)] max-w-[110px]" />
                       )}
                     </div>
                   </div>
@@ -528,7 +530,7 @@ useEffect(() => {
                 <div className="flex justify-center">
                   <button
                     type="submit"
-                    className="h-12 px-8 rounded-xl font-bold bg-slate-900 text-white hover:scale-[1.02] transition w-full sm:w-72"
+                    className="h-12 px-8 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:scale-[1.02] transition disabled:opacity-50 disabled:pointer-events-none w-full sm:w-72 border border-white/10"
                     disabled={!kycSelfie || !kycId || kycStatus === "pending" || kycStatus === "approved"}
                   >
                     {kycStatus === "rejected" ? t("Re-upload for review") : t("Submit for automated review")}
@@ -536,19 +538,19 @@ useEffect(() => {
                 </div>
 
                 {(kycStatus === "pending" && kycSubmitted) && (
-                  <div className="text-emerald-700 bg-emerald-50 ring-1 ring-emerald-200 rounded-lg px-4 py-2 text-center">
+                  <div className="text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-4 py-3 text-center text-sm font-medium">
                     {t("Submitted. Our automated system is analyzing your images.")}
                   </div>
                 )}
                 {kycError && (
-                  <div className="text-rose-700 bg-rose-50 ring-1 ring-rose-200 rounded-lg px-4 py-2 text-center">
+                  <div className="text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg px-4 py-3 text-center text-sm font-medium">
                     {kycError}
                   </div>
                 )}
             </form>
             )}
 
-            <div className="mt-4 text-sm text-slate-600 text-center">
+            <div className="mt-6 text-xs text-gray-500 text-center font-medium uppercase tracking-wider">
               {kycStatus === "approved" ? t("Your identity is verified.") :
                kycStatus === "pending" ? t("Typically completes shortly. You’ll be notified when done.") :
                kycStatus === "rejected" ? t("We couldn’t validate that attempt. Please re-upload clear photos.") :
@@ -557,44 +559,43 @@ useEffect(() => {
           </Card>
 
           {/* Settings */}
-          <Card className="p-8 rounded-3xl border border-white/10 bg-gradient-to-br from-white/85 to-white/65 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.20)]">
-            <div className="text-center text-slate-800 font-black text-xl mb-4">{t('Settings')}</div>
+          <Card className={cardClass}>
+            <div className="text-center text-white font-black text-xl mb-6">{t('Settings')}</div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <button
-                className="h-16 px-4 rounded-xl font-bold bg-white ring-1 ring-slate-200 text-slate-800 hover:bg-slate-50 transition flex flex-col items-center justify-center"
+                className="h-16 px-4 rounded-xl font-semibold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] hover:text-white transition flex flex-col items-center justify-center text-sm"
                 onClick={() => setShowChangePw(true)}
               >
-                <Icon name="lock" className="mb-1 w-6 h-6" /> {t('profile_change_password')}
+                <Icon name="lock" className="mb-1.5 w-5 h-5 opacity-70" /> {t('profile_change_password')}
               </button>
 
               <button
-                className="h-16 px-4 rounded-xl font-bold bg-white ring-1 ring-slate-200 text-slate-800 hover:bg-slate-50 transition flex flex-col items-center justify-center"
+                className="h-16 px-4 rounded-xl font-semibold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] hover:text-white transition flex flex-col items-center justify-center text-sm"
                 onClick={() => setShowEditPic(true)}
               >
-                <Icon name="edit" className="mb-1 w-6 h-6" /> {t('profile_change_profile')}
+                <Icon name="edit" className="mb-1.5 w-5 h-5 opacity-70" /> {t('profile_change_picture')}
               </button>
 
-              {/* New Buttons Added Below */}
               <button
-                className="h-16 px-4 rounded-xl font-bold bg-white ring-1 ring-slate-200 text-slate-800 hover:bg-slate-50 transition flex flex-col items-center justify-center"
+                className="h-16 px-4 rounded-xl font-semibold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] hover:text-white transition flex flex-col items-center justify-center text-sm"
                 onClick={() => navigate('/news')}
               >
-                <Icon name="newspaper" className="mb-1 w-6 h-6" /> {t('news')}
+                <Icon name="newspaper" className="mb-1.5 w-5 h-5 opacity-70" /> {t('news')}
               </button>
               
               <button
-                className="h-16 px-4 rounded-xl font-bold bg-white ring-1 ring-slate-200 text-slate-800 hover:bg-slate-50 transition flex flex-col items-center justify-center"
+                className="h-16 px-4 rounded-xl font-semibold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] hover:text-white transition flex flex-col items-center justify-center text-sm"
                 onClick={() => navigate('/about')}
               >
-                <Icon name="info" className="mb-1 w-6 h-6" /> {t('about_us')}
+                <Icon name="info" className="mb-1.5 w-5 h-5 opacity-70" /> {t('about_us')}
               </button>
             </div>
 
             {/* Language */}
-            <div className="mt-5">
+            <div className="mt-5 relative">
               <select
-                className="w-full h-12 pl-4 pr-6 rounded-xl bg-white ring-1 ring-slate-200 text-slate-800 font-bold focus:ring-2 focus:ring-sky-200 outline-none"
+                className="w-full h-12 pl-4 pr-6 rounded-xl bg-[#0b1020] border border-[#2c3040] text-gray-200 font-bold focus:ring-2 focus:ring-sky-500 outline-none appearance-none"
                 value={i18n.language}
                 onChange={(e) => i18n.changeLanguage(e.target.value)}
               >
@@ -602,135 +603,156 @@ useEffect(() => {
                 <option value="zh">中文</option>
                 <option value="es">Español</option>
               </select>
+              <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-500">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
             </div>
 
-{/* Install Buttons */}
-<div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-  {/* Android */}
-  <button
-    className="h-12 rounded-xl font-bold bg-white ring-1 ring-slate-200 text-slate-800 hover:bg-slate-50 transition"
-    onClick={async () => {
-      if (isInstalled) {
-        alert('App is already installed.');
-        return;
-      }
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const choice = await deferredPrompt.userChoice;
-        // clear so Chrome can re-fire later if needed
-        setDeferredPrompt(null);
-        if (choice?.outcome !== 'accepted') {
-          alert('Installation was dismissed. You can also use the browser menu → "Add to Home screen".');
-        }
-      } else {
-        alert('To install: open this site in Chrome/Brave/Opera on Android, then use the menu → "Add to Home screen".');
-      }
-    }}
-  >
-    <Icon name="download" className="mr-2" /> Android Install
-  </button>
+            {/* Install Buttons */}
+            <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                className="h-12 rounded-xl font-bold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] transition flex items-center justify-center"
+                onClick={async () => {
+                  if (isInstalled) { alert('App is already installed.'); return; }
+                  if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const choice = await deferredPrompt.userChoice;
+                    setDeferredPrompt(null);
+                    if (choice?.outcome !== 'accepted') {
+                      alert('Installation was dismissed. You can also use the browser menu → "Add to Home screen".');
+                    }
+                  } else {
+                    alert('To install: open this site in Chrome/Brave/Opera on Android, then use the menu → "Add to Home screen".');
+                  }
+                }}
+              >
+                <Icon name="download" className="mr-2 w-4 h-4" /> Android Install
+              </button>
 
-  {/* iOS */}
-  <button
-    className="h-12 rounded-xl font-bold bg-white ring-1 ring-slate-200 text-slate-800 hover:bg-slate-50 transition disabled:opacity-50"
-    onClick={() => navigate('/guide')}
-    disabled={!isIOSSafari()}
-  >
-    <Icon name="download" className="mr-2" /> iOS Install
-  </button>
-</div>
-
+              <button
+                className="h-12 rounded-xl font-bold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
+                onClick={() => navigate('/guide')}
+                disabled={!isIOSSafari()}
+              >
+                <Icon name="download" className="mr-2 w-4 h-4" /> iOS Install
+              </button>
+            </div>
           </Card>
         </div>
 
         {/* ========= 4) Referral + Support ========= */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {/* Referral */}
-          <Card className="p-8 rounded-3xl border border-white/10 bg-gradient-to-br from-white/85 to-white/65 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.20)]">
-            <div className="text-center text-slate-800 font-black text-xl">{t('profile_referral_code')}</div>
-            <div className="mt-2 flex items-center justify-center gap-3">
-              <span className="text-2xl font-black text-slate-900">{user.referral || "NC-INVITE-8437"}</span>
+          <Card className={cardClass}>
+            <div className="text-center text-white font-black text-xl">{t('profile_referral_code')}</div>
+            <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="px-5 py-2.5 rounded-xl bg-[#0b1020] border border-[#2c3040] text-xl font-mono text-sky-400 font-bold tracking-widest shadow-inner">
+                {user.referral || "NC-INVITE-8437"}
+              </div>
               <button
-                className="h-9 px-4 rounded-xl font-bold bg-slate-900 text-white hover:scale-[1.02] transition"
+                className="h-12 px-6 rounded-xl font-bold bg-white/5 text-white hover:bg-white/10 ring-1 ring-white/10 transition flex items-center"
                 onClick={() => { navigator.clipboard.writeText(user.referral || "NC-INVITE-8437"); alert(t('profile_copied_clipboard')); }}
               >
-                <Icon name="copy" className="mr-1" /> {t('profile_copy')}
+                <Icon name="copy" className="mr-2 w-4 h-4" /> {t('profile_copy')}
               </button>
             </div>
-            <div className="mt-2 text-sm text-slate-600 text-center">{t('profile_referral_invite')}</div>
+            <div className="mt-4 text-xs text-gray-500 font-medium text-center uppercase tracking-wider">{t('profile_referral_invite')}</div>
           </Card>
 
           {/* Support */}
-          <Card className="p-8 rounded-3xl border border-white/10 bg-gradient-to-br from-white/85 to-white/65 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.20)]">
+          <Card className={cardClass}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
-                className="h-12 rounded-xl font-bold text-white bg-[#25D366] hover:opacity-95 transition"
+                className="h-12 rounded-xl font-bold text-white bg-gradient-to-r from-[#1EBEA5] to-[#25D366] hover:brightness-110 shadow-[0_0_15px_rgba(37,211,102,0.2)] transition flex items-center justify-center border border-white/10"
                 onClick={() => window.open('https://wa.me/16627053615', '_blank')}
               >
-                WhatsApp
+                 WhatsApp
               </button>
               <button
-                className="h-12 rounded-xl font-bold text-white bg-[#229ED9] hover:opacity-95 transition"
+                className="h-12 rounded-xl font-bold text-white bg-gradient-to-r from-[#0088cc] to-[#229ED9] hover:brightness-110 shadow-[0_0_15px_rgba(34,158,217,0.2)] transition flex items-center justify-center border border-white/10"
                 onClick={() => window.open('https://t.me/novachainsgofficial', '_blank')}
               >
-                Telegram
+                 Telegram
               </button>
             </div>
-            <div className="mt-3 text-sm text-slate-600 text-center">
+            <div className="mt-4 text-xs text-gray-500 font-medium text-center uppercase tracking-wider">
               {t("You can contact support via WhatsApp or Telegram, 9-5 office hours.")}
             </div>
           </Card>
         </div>
       </div>
 
-      {/* ========= Modals ========= */}
-      <Modal visible={showChangePw} onClose={() => setShowChangePw(false)}>
-        <h3 className="text-title-2 font-semibold mb-4">{t('profile_change_password')}</h3>
-        <form onSubmit={handleChangePassword} className="space-y-3">
+      {/* ========= Modals (Dark UI override) ========= */}
+      <Modal 
+        visible={showChangePw} 
+        onClose={() => setShowChangePw(false)}
+        classWrap="bg-[#0f1424] border border-[#1a2343] shadow-[0_0_40px_rgba(0,0,0,0.8)] text-white"
+        classButtonClose="text-gray-400 hover:text-white"
+      >
+        <h3 className="text-xl font-black mb-6 text-white text-center">{t('profile_change_password')}</h3>
+        <form onSubmit={handleChangePassword} className="space-y-4">
           <Field type="password" placeholder={t('profile_current_password')} inputRef={pwCurrent} />
           <Field type="password" placeholder={t('profile_new_password')} inputRef={pw1} />
           <Field type="password" placeholder={t('profile_confirm_new_password')} inputRef={pw2} />
-          {pwErr && <div className="text-theme-red mb-2">{pwErr}</div>}
+          
+          {pwErr && <div className="text-rose-400 text-sm text-center font-medium bg-rose-500/10 py-2 rounded border border-rose-500/20">{pwErr}</div>}
           {pwSuccess && (
-            <div className="bg-green-100 border border-green-300 text-green-700 rounded-lg px-4 py-2 text-center mb-2">
+            <div className="text-emerald-400 text-sm text-center font-medium bg-emerald-500/10 py-2 rounded border border-emerald-500/20">
               {pwSuccess}
             </div>
           )}
-          <div className="flex justify-center gap-4 mt-4">
-            <button type="submit" className="btn-primary" disabled={!!pwSuccess}>{t('profile_save')}</button>
-            <button type="button" onClick={() => setShowChangePw(false)} className="btn-secondary">{t('profile_cancel')}</button>
+          
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mt-6">
+            <button type="submit" className="h-12 flex-1 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:scale-[1.02] transition border border-white/10" disabled={!!pwSuccess}>
+              {t('profile_save')}
+            </button>
+            <button type="button" onClick={() => setShowChangePw(false)} className="h-12 flex-1 rounded-xl font-bold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] transition">
+              {t('profile_cancel')}
+            </button>
           </div>
         </form>
       </Modal>
 
-      <Modal visible={showEditPic} onClose={() => setShowEditPic(false)}>
-        <h3 className="text-title-2 font-semibold mb-4">{t('profile_change_picture')}</h3>
-        <div className="flex flex-col items-center gap-4">
+      <Modal 
+        visible={showEditPic} 
+        onClose={() => setShowEditPic(false)}
+        classWrap="bg-[#0f1424] border border-[#1a2343] shadow-[0_0_40px_rgba(0,0,0,0.8)] text-white"
+        classButtonClose="text-gray-400 hover:text-white"
+      >
+        <h3 className="text-xl font-black mb-6 text-white text-center">{t('profile_change_picture')}</h3>
+        <div className="flex flex-col items-center gap-6">
           <img
             src={avatarFile ? URL.createObjectURL(avatarFile) : bustCache(avatarUrl) || "/logo192_new.png"}
             alt="Profile Preview"
-            className="w-28 h-28 rounded-full border-4 border-[#ffd700] shadow-xl bg-white object-cover"
+            className="w-32 h-32 rounded-full border-4 border-sky-500 shadow-[0_0_20px_rgba(14,165,233,0.3)] bg-[#0b1020] object-cover"
             onError={(e) => { e.currentTarget.src = "/logo192_new.png"; }}
           />
           <input type="file" accept="image/*" id="profile-pic-input" className="hidden" onChange={handleAvatarChange} />
-          <label htmlFor="profile-pic-input" className="w-full">
-            <span className="btn-primary mt-2 block text-center cursor-pointer">{t('profile_choose_new_photo')}</span>
+          
+          <label htmlFor="profile-pic-input" className="w-full sm:w-2/3">
+            <span className="h-12 w-full flex items-center justify-center rounded-xl font-bold bg-[#1a2343] border border-white/5 text-gray-200 hover:bg-[#202b54] hover:text-white transition cursor-pointer">
+              {t('profile_choose_new_photo')}
+            </span>
           </label>
 
           {avatarSuccess && (
-            <div className="bg-green-100 border border-green-300 text-green-700 rounded-lg px-4 py-2 text-center">
+            <div className="text-emerald-400 text-sm text-center font-medium bg-emerald-500/10 py-2 px-4 w-full rounded border border-emerald-500/20">
               {avatarSuccess}
             </div>
           )}
           {avatarError && (
-            <div className="bg-red-100 border border-red-300 text-red-700 rounded-lg px-4 py-2 text-center">
+            <div className="text-rose-400 text-sm text-center font-medium bg-rose-500/10 py-2 px-4 w-full rounded border border-rose-500/20">
               {avatarError}
             </div>
           )}
 
-          <div className="flex gap-3">
-            <button className="btn-primary" onClick={saveAvatar} disabled={!avatarFile}>{t('profile_save')}</button>
-            <button className="btn-secondary" onClick={() => setShowEditPic(false)}>{t('profile_cancel')}</button>
+          <div className="flex flex-col sm:flex-row w-full gap-3 mt-2">
+            <button className="h-12 flex-1 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:scale-[1.02] transition disabled:opacity-50 border border-white/10" onClick={saveAvatar} disabled={!avatarFile}>
+              {t('profile_save')}
+            </button>
+            <button className="h-12 flex-1 rounded-xl font-bold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] transition" onClick={() => setShowEditPic(false)}>
+              {t('profile_cancel')}
+            </button>
           </div>
         </div>
       </Modal>

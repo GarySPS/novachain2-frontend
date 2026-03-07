@@ -28,6 +28,7 @@ export default function Dashboard() {
   const [query, setQuery] = useState("");
   const [sortBy, setSortBy] = useState("mcap"); // mcap | volume | change | price | name
   const [showPromotion, setShowPromotion] = useState(false);
+  const [xauData, setXauData] = useState(null);
 
   /* ---------- prices (fetch >= 100) ---------- */
   useEffect(() => {
@@ -55,6 +56,12 @@ export default function Dashboard() {
             if (freshCoins.length >= 100) break;
           } catch {}
         }
+
+        try {
+          const xRes = await fetch(`${MAIN_API_BASE}/prices/xau`);
+          const xJson = await xRes.json();
+          if (xJson?.price) setXauData({ price: xJson.price, change: xJson.percent_change_24h });
+        } catch (e) {}
 
         if (freshCoins.length) {
           setCoins(() => {
@@ -273,6 +280,60 @@ return (
               </div>
             </div>
           </div>
+        {/* ---- ✨ Premium Quick Trade Cards ---- */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* BTC Cyberpunk Card */}
+          {(() => {
+            const btc = coins.find(c => c.symbol === 'BTC');
+            const price = btc?.quote?.USD?.price;
+            const change = btc?.quote?.USD?.percent_change_24h;
+            return (
+              <Link to="/trade?coin=BTC" className="block relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#141a2b] to-[#0b1020] border border-[#2c3040] p-4 hover:border-sky-500/50 hover:-translate-y-1 transition-all group shadow-lg">
+                <div className="absolute -right-4 -top-4 w-20 h-20 bg-sky-500/10 rounded-full blur-2xl group-hover:bg-sky-500/20 transition-all"></div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-[#0b1020] border border-white/5 flex items-center justify-center p-1.5 shadow-inner">
+                    <img src="https://assets.coincap.io/assets/icons/btc@2x.png" alt="BTC" className="w-full h-full object-contain" />
+                  </div>
+                  <div>
+                    <div className="text-white font-bold text-[15px] leading-tight">BTC/USDT</div>
+                    <div className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Bitcoin</div>
+                  </div>
+                </div>
+                <div className="flex items-end justify-between">
+                  <div className="text-xl font-black text-white tabular-nums drop-shadow-md">
+                    {price ? `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "..."}
+                  </div>
+                  <div className={`text-xs font-bold px-2 py-0.5 rounded ${change >= 0 ? "bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20" : "bg-rose-500/10 text-rose-400 ring-1 ring-rose-500/20"}`}>
+                    {change >= 0 ? "+" : ""}{change ? change.toFixed(2) : "0.00"}%
+                  </div>
+                </div>
+              </Link>
+            );
+          })()}
+
+          {/* XAU (Gold) Cyberpunk Card */}
+          <Link to="/forex" className="block relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#141a2b] to-[#0b1020] border border-[#2c3040] p-4 hover:border-amber-500/50 hover:-translate-y-1 transition-all group shadow-lg">
+            <div className="absolute -right-4 -top-4 w-20 h-20 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-all"></div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-[#0b1020] border border-white/5 flex items-center justify-center shadow-inner text-amber-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              </div>
+              <div>
+                <div className="text-white font-bold text-[15px] leading-tight">XAU/USD</div>
+                <div className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Gold Forex</div>
+              </div>
+            </div>
+            <div className="flex items-end justify-between">
+              <div className="text-xl font-black text-white tabular-nums drop-shadow-md">
+                {xauData?.price ? `$${Number(xauData.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "..."}
+              </div>
+              <div className={`text-xs font-bold px-2 py-0.5 rounded ${xauData?.change >= 0 ? "bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20" : "bg-rose-500/10 text-rose-400 ring-1 ring-rose-500/20"}`}>
+                {xauData?.change >= 0 ? "+" : ""}{xauData?.change ? Number(xauData.change).toFixed(2) : "0.00"}%
+              </div>
+            </div>
+          </Link>
+        </div>
+
         {/* --- Table Section Starts Here --- */}
 
         {/* ---- ✨ Polished Responsive Coin List ---- */}

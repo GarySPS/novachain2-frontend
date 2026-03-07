@@ -354,12 +354,12 @@ export default function ForexPage() {
               )}
 
               {/* floating price pill */}
-              <div className="absolute right-[88px] top-[46px] md:right-3 md:top-3 z-10">
-                <div className="px-2 py-1 rounded-lg bg-black/50 backdrop-blur-sm ring-1 ring-white/10 text-white font-medium shadow-sm">
-                  <div className="text-[9px] uppercase tracking-wide text-white/60 leading-none">
+              <div className="absolute right-[88px] top-[46px] md:right-4 md:top-4 z-10">
+                <div className="px-3 py-1.5 rounded-xl bg-[#0f1424]/80 backdrop-blur-md border border-[#1a2343] shadow-[0_4px_15px_rgba(0,0,0,0.5)] text-white flex flex-col items-end">
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-cyan-400 mb-0.5 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">
                     {selectedCommodity.symbol}
                   </div>
-                  <div className="text-sm tabular-nums font-bold leading-tight">
+                  <div className="text-base tabular-nums font-black leading-none tracking-tight">
                     {typeof coinPrice === "number" && !isNaN(coinPrice)
                       ? "$" + coinPrice.toLocaleString(undefined, { maximumFractionDigits: 3 })
                       : fetchError
@@ -374,73 +374,58 @@ export default function ForexPage() {
           {/* ---------------- Right: Trade panel ---------------- */}
           {/* This wrapper div holds the right column content */}
           <div className="w-full">
+            <Card className="w-full px-5 py-6 rounded-3xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343] relative overflow-hidden">
+              {/* Subtle top glow */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
 
-            <Card className="w-full px-5 py-6 rounded-2xl shadow-2xl bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343]">
               {/* header */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4 relative z-10">
                 <div className="flex flex-col">
-                  <span className="text-xs font-semibold text-gray-400">{t("pair", "Pair")}</span>
-                  <span
-                    className="font-extrabold text-[1.6rem] tracking-wide"
-                    style={{
-                      background: "linear-gradient(92deg, #1e2fff 0%, #00eaff 60%, #ffd700 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                    }}
-                  >
-                    {selectedCommodity.symbol}
+                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{t("pair", "Pair")}</span>
+                  <span className="font-black text-2xl tracking-wide text-white drop-shadow-md">
+                    <span className="text-cyan-400">{selectedCommodity.symbol.split('/')[0]}</span>/{selectedCommodity.symbol.split('/')[1] || "USD"}
                   </span>
                 </div>
-                <img src={NovaChainLogo} alt="NovaChain" className="h-9 w-auto ml-4" />
+                <img src={NovaChainLogo} alt="NovaChain" className="h-8 w-auto ml-4 opacity-90 drop-shadow-lg" />
               </div>
 
-              {/* NEW Price Stats & Selector */}
-              <div className="mb-5 border-b border-white/10 pb-5">
+              {/* Price Stats & Selector */}
+              <div className="mb-6 pb-6 border-b border-white/5 relative z-10">
                 
-                {/* --- NEW Polished Price/Stats Layout --- */}
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex justify-between items-start mb-5">
                     {/* Left: Price & % Change */}
-                    <div>
-                        <div className="text-3xl font-bold text-white tabular-nums">
+                    <div className="flex flex-col">
+                        <div className="text-3xl md:text-4xl font-black text-white tabular-nums tracking-tighter drop-shadow-[0_0_15px_rgba(255,255,255,0.15)]">
                         {typeof coinPrice === "number" && !isNaN(coinPrice)
                             ? "$" + coinPrice.toLocaleString(undefined, { maximumFractionDigits: 2 })
-                            : "Loading..."}
+                            : "..."}
                         </div>
                         {coinStats && (
-                        <div className="text-lg mt-1">
+                        <div className="text-sm mt-1.5 bg-white/5 inline-flex w-max px-2.5 py-0.5 rounded border border-white/10 shadow-inner">
                             {formatPercent(coinStats.change)}
                         </div>
                         )}
                     </div>
 
-                    {/* Right: Stats Stack (like your example) */}
-                    <div className="flex flex-col text-right text-sm pt-1">
-                        <div className="flex justify-end gap-2">
-                            <span className="text-gray-400">24h High:</span>
-                            <span className="font-semibold text-white tabular-nums">
-                            {coinStats ? "$" + coinStats.high.toLocaleString() : "..."}
-                            </span>
+                    {/* Right: Stats Stack */}
+                    <div className="flex flex-col text-right text-xs space-y-1.5 pt-1">
+                        <div className="flex justify-end gap-2 items-center">
+                            <span className="text-gray-500 font-semibold uppercase tracking-wider">24h High:</span>
+                            <span className="font-bold text-gray-200 tabular-nums">{coinStats ? "$" + coinStats.high.toLocaleString() : "..."}</span>
                         </div>
-                        <div className="flex justify-end gap-2">
-                            <span className="text-gray-400">24h Low:</span>
-                            <span className="font-semibold text-white tabular-nums">
-                            {coinStats ? "$" + coinStats.low.toLocaleString() : "..."}
-                            </span>
+                        <div className="flex justify-end gap-2 items-center">
+                            <span className="text-gray-500 font-semibold uppercase tracking-wider">24h Low:</span>
+                            <span className="font-bold text-gray-200 tabular-nums">{coinStats ? "$" + coinStats.low.toLocaleString() : "..."}</span>
                         </div>
-                        <div className="flex justify-end gap-2">
-                            <span className="text-gray-400">24h Vol:</span>
-                            <span className="font-semibold text-white tabular-nums">
-                            {/* Use the new formatter */}
-                            {coinStats ? formatVolume(coinStats.vol) : "..."}
-                            </span>
+                        <div className="flex justify-end gap-2 items-center">
+                            <span className="text-gray-500 font-semibold uppercase tracking-wider">24h Vol:</span>
+                            <span className="font-black text-cyan-400 tabular-nums">{coinStats ? formatVolume(coinStats.vol) : "..."}</span>
                         </div>
                     </div>
                 </div>
-                {/* --- End of Polished Layout --- */}
 
-
-                {/* Polished Commodity Selector */}
-                <div className="mt-4">
+                {/* Cyberpunk Commodity Selector */}
+                <div className="relative mt-2">
                   <select
                     value={selectedCommodity.symbol}
                     disabled={timerActive}
@@ -448,18 +433,17 @@ export default function ForexPage() {
                       const newCommodity = FOREX_PAIRS.find(c => c.symbol === e.target.value);
                       if (newCommodity) setSelectedCommodity(newCommodity);
                     }}
-                    className="w-full h-11 px-3 rounded-lg bg-[#2c3040] border border-gray-700 text-white font-bold text-base focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                    className="w-full h-12 px-4 rounded-xl bg-[#0b1020] border border-[#2c3040] text-white font-bold text-sm focus:ring-2 focus:ring-cyan-500 appearance-none disabled:opacity-50 transition shadow-inner outline-none"
                   >
                     {FOREX_PAIRS.map(commodity => (
-                      <option key={commodity.symbol} value={commodity.symbol}>
-                        {commodity.symbol}
-                      </option>
+                      <option key={commodity.symbol} value={commodity.symbol}>{commodity.symbol}</option>
                     ))}
                   </select>
+                  <Icon name="arrow-down" className="absolute right-4 top-[16px] w-4 h-4 text-gray-500 pointer-events-none"/>
                 </div>
               </div>
 
-              {/* Buy/Sell Buttons (Unchanged) */}
+              {/* Buy/Sell Buttons */}
               <AnimatePresence>
                 {!timerActive && !waitingResult && !tradeDetail && (
                   <motion.div
@@ -467,20 +451,20 @@ export default function ForexPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
-                    className="grid grid-cols-2 gap-4 mt-5"
+                    className="grid grid-cols-2 gap-3 relative z-10"
                   >
                     <button
                       onClick={() => openTradeModal("BUY")}
-                      className="w-full h-12 rounded-lg bg-green-500 text-white text-lg font-bold shadow-lg transition hover:bg-green-600 flex items-center justify-center gap-2"
+                      className="w-full h-14 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-white text-lg font-black shadow-[0_0_20px_rgba(16,185,129,0.3)] border border-emerald-400/50 transition hover:brightness-110 hover:scale-[1.02] flex items-center justify-center gap-2"
                     >
-                      <Icon name="arrow-up" />
+                      <Icon name="arrow-up" className="w-5 h-5 drop-shadow-md" />
                       {t("buy_long", "Buy Long")}
                     </button>
                     <button
                       onClick={() => openTradeModal("SELL")}
-                      className="w-full h-12 rounded-lg bg-red-500 text-white text-lg font-bold shadow-lg transition hover:bg-red-600 flex items-center justify-center gap-2"
+                      className="w-full h-14 rounded-xl bg-gradient-to-r from-rose-500 to-rose-400 text-white text-lg font-black shadow-[0_0_20px_rgba(244,63,94,0.3)] border border-rose-400/50 transition hover:brightness-110 hover:scale-[1.02] flex items-center justify-center gap-2"
                     >
-                      <Icon name="arrow-down" />
+                      <Icon name="arrow-down" className="w-5 h-5 drop-shadow-md" />
                       {t("sell_short", "Sell Short")}
                     </button>
                   </motion.div>
