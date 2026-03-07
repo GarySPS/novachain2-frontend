@@ -18,6 +18,9 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import NewsPage from "./components/Newspage";
 import GuidePage from './pages/GuidePage'; 
 import TermsAndConditions from "./pages/TermsAndConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import ContactUs from "./pages/ContactUs";
+import KYCPolicy from "./pages/KYCPolicy";
 import './i18n';
 
 function isDarkMode() {
@@ -78,6 +81,9 @@ function AppShell() {
             <Route path="/news" element={<NewsPage />} />
             <Route path="/guide" element={<GuidePage />} />
             <Route path="/terms" element={<TermsAndConditions />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/kyc" element={<KYCPolicy />} />
           </Routes>
         </main>
         

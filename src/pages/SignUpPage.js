@@ -1,3 +1,5 @@
+//src>pages>SignUpPage.js
+
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { MAIN_API_BASE } from "../config";
@@ -177,18 +179,18 @@ return (
 
           {/* Terms */}
           <p className="mt-7 text-center text-[11px] md:text-xs text-slate-400 font-medium leading-relaxed">
-            By signing up, you agree to the{" "}
-            <a className="text-sky-400 hover:underline" href="/" target="_blank" rel="noreferrer">
+            By signing up, you agree to our{" "}
+            <Link className="text-sky-400 hover:underline" to="/terms" target="_blank">
               Terms of Use
-            </a>
+            </Link>
             ,{" "}
-            <a className="text-sky-400 hover:underline" href="/" target="_blank" rel="noreferrer">
+            <Link className="text-sky-400 hover:underline" to="/privacy" target="_blank">
               Privacy Notice
-            </a>{" "}
+            </Link>{" "}
             and{" "}
-            <a className="text-sky-400 hover:underline" href="/" target="_blank" rel="noreferrer">
-              Cookie Notice
-            </a>
+            <Link className="text-sky-400 hover:underline" to="/kyc" target="_blank">
+              AML/KYC Policy
+            </Link>
             .
           </p>
 

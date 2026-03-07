@@ -1,4 +1,7 @@
+//src>pages>AboutUs.js
+
 import React from "react";
+import { Link } from "react-router-dom";
 import NovaChainLogo from "../components/NovaChainLogo.svg";
 import { useTranslation } from "react-i18next";
 
@@ -169,11 +172,11 @@ return (
       <h3 className="text-teal-300 text-xl md:text-2xl font-extrabold mb-3">{t("about_headquarters")}</h3>
       <div className="text-white/85 space-y-2">
         <div>
-          <span className="font-semibold">{t("about_company")}</span>
+          <span className="font-semibold">NovaChain Technologies Ltd.</span>
           <br />
-          Marina Bay Financial Centre Tower 2,
+          12 Marina Boulevard, Marina Bay Financial Centre,
           <br />
-          10 Marina Blvd, Singapore 018983.
+          Singapore 018982
           <br />
           +65 2936 0430
           <br />
@@ -194,15 +197,15 @@ return (
     </GlassCard>
 
     {/* Footer links */}
-    <div className="mt-10 flex justify-center gap-6 text-sm">
-      <a href="/terms" className="text-white/80 hover:text-white underline underline-offset-2">
-        Terms &amp; Conditions
-      </a>
+    <div className="mt-10 flex flex-wrap justify-center gap-4 md:gap-6 text-sm text-white/80">
+      <Link to="/terms" className="hover:text-white underline underline-offset-2">Terms</Link>
+      <Link to="/privacy" className="hover:text-white underline underline-offset-2">Privacy</Link>
+      <Link to="/kyc" className="hover:text-white underline underline-offset-2">AML/KYC</Link>
       <a
         href="https://wa.me/16627053615"
         target="_blank"
         rel="noreferrer"
-        className="text-white/80 hover:text-white underline underline-offset-2"
+        className="hover:text-white underline underline-offset-2"
       >
         Support
       </a>

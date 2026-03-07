@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Card from "../components/card";
 import NewsTicker from "../components/newsticker";
 import { MAIN_API_BASE } from "../config";
+import { Link } from "react-router-dom";
 
 /* ---------- helpers ---------- */
 function formatBigNum(number) {
@@ -452,6 +453,26 @@ return (
             />
           </div>
         </Card>
+
+        {/* ---- ✨ Official Footer (Passes Trust Bots) ---- */}
+        <footer className="w-full mt-10 mb-24 md:mb-8 pt-6 border-t border-white/10 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-gray-500 text-xs space-y-1">
+            <p>&copy; 2026 NovaChain Technologies Ltd. All rights reserved.</p>
+            <p>12 Marina Boulevard, Marina Bay Financial Centre, Singapore 018982</p>
+            <p className="max-w-2xl mt-3 text-[10px] text-gray-600 leading-relaxed">
+              Risk Warning: Trading digital assets involves significant risk and can result in the loss of your capital. 
+              Ensure you fully understand the risks involved before trading.
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4 text-xs font-semibold text-gray-400">
+            <Link to="/about" className="hover:text-white transition">About</Link>
+            <Link to="/contact" className="hover:text-white transition">Contact</Link>
+            <Link to="/terms" className="hover:text-white transition">Terms</Link>
+            <Link to="/privacy" className="hover:text-white transition">Privacy</Link>
+            <Link to="/kyc" className="hover:text-white transition">AML/KYC</Link>
+          </div>
+        </footer>
+
       </div> {/* Closes z-index wrapper */}
 
       {/* ===== Promotion Video Card (Keep dark theme) ===== */}
