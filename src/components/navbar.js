@@ -29,9 +29,10 @@ export default function NavBar() {
     <header
       className="sticky top-0 z-30 border-b border-theme-stroke shadow-md w-full"
       style={{
-        background: "linear-gradient(120deg, #fdfcff 0%, #f8fafd 100%)",
-        backdropFilter: "blur(8px)"
-      }}
+  background: "rgba(15, 23, 42, 0.85)",
+  backdropFilter: "blur(12px)",
+  borderBottom: "1px solid rgba(255,255,255,0.06)"
+}}
     >
       <div className="w-full flex items-center justify-between h-16 px-4 md:max-w-7xl md:mx-auto md:px-4">
         <Link to="/" className="flex items-center gap-4">
@@ -39,7 +40,7 @@ export default function NavBar() {
         </Link>
         
         {/* These nav links are now HIDDEN on mobile (hidden md:flex) */}
-        <nav className="hidden md:flex gap-2 md:gap-1">
+        <nav className="hidden md:flex gap-3">
           {navItems.map((item) => {
             const active = location.pathname === item.to;
             return (
@@ -49,8 +50,8 @@ export default function NavBar() {
                 className={
                   "px-4 py-2 rounded-full font-semibold transition-all text-base-1s whitespace-nowrap " +
                   (active
-                    ? "bg-theme-brand text-theme-white-fixed shadow-sm"
-                    : "text-theme-secondary hover:bg-theme-on-surface-2 hover:text-theme-primary")
+                    ? "bg-blue-600 text-white shadow-md"
+                    : "text-slate-400 hover:bg-slate-800 hover:text-white")
                 }
               >
                 {t(item.label)}

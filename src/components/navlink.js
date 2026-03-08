@@ -1,3 +1,5 @@
+//src>components>navlink.js
+
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import Icon from "./icon"; // Adjust path if necessary
