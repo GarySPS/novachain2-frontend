@@ -1,8 +1,10 @@
 //src>pages>LoginPage.js
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { MAIN_API_BASE } from "../config";
+import { useAppKit } from '@reown/appkit/react';
+import { useAccount } from 'wagmi';
 
 import DatabaseErrorCard from "../components/DatabaseErrorCard";
 
@@ -12,6 +14,38 @@ export default function LoginPage() {
   const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const { open } = useAppKit();
+  const { address, isConnected } = useAccount();
+
+  // Listen for successful Web3 connection
+  useEffect(() => {
+    const handleWeb3Login = async () => {
+      if (isConnected && address) {
+        try {
+          const res = await fetch(`${MAIN_API_BASE}/auth/web3-login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ walletAddress: address }),
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+            setError(data.error || "Web3 Login failed");
+            return;
+          }
+
+          if (data.token) localStorage.setItem("token", data.token);
+          if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
+          navigate("/wallet");
+        } catch {
+          setError("Web3 Login error. Please try again.");
+        }
+      }
+    };
+
+    handleWeb3Login();
+  }, [isConnected, address, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -143,26 +177,23 @@ return (
 
           <div className="my-6 flex items-center gap-3">
             <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
+            <span className="text-slate-400 font-medium text-sm">OR</span>
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <a
-              href="https://wa.me/16627053615"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-xl px-3 py-2 text-center text-sm md:text-base font-bold text-white bg-[#25D366] hover:bg-[#22b95f] transition shadow"
-            >
-              WhatsApp
-            </a>
-            <a
-              href="https://t.me/novachainsingapore"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-xl px-3 py-2 text-center text-sm md:text-base font-bold text-white bg-[#229ED9] hover:bg-[#178fca] transition shadow"
-            >
-              Telegram
-            </a>
-          </div>
+          <button
+            type="button"
+            onClick={() => open()}
+            className="mb-6 w-full h-12 rounded-xl font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 flex items-center justify-center gap-3 transition shadow"
+          >
+            <img 
+              src="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Icon/Blue%20(Default)/Icon.svg" 
+              alt="WalletConnect" 
+              className="w-5 h-5" 
+            />
+            Connect Web3 Wallet
+          </button>
+
 
           <div className="mt-5 flex justify-center">
             <Link

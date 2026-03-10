@@ -1,8 +1,11 @@
 //src>pages>SignUpPage.js
 
-import React, { useState } from "react";
+import { useAppKit } from '@reown/appkit/react';
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { MAIN_API_BASE } from "../config";
+import { useAppKit } from '@reown/appkit/react';
+import { useAccount } from 'wagmi';
 
 export default function SignUpPage() {
   const [username, setUsername] = useState("");
@@ -10,10 +13,41 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
-  const handleSignUp = async (e) => {
+  const { open } = useAppKit();
+  const { address, isConnected } = useAccount();
+
+  // Listen for successful Web3 connection
+  useEffect(() => {
+    const handleWeb3Login = async () => {
+      if (isConnected && address) {
+        try {
+          const res = await fetch(`${MAIN_API_BASE}/auth/web3-login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ walletAddress: address }),
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+            setError(data.error || "Web3 Login failed");
+            return;
+          }
+
+          if (data.token) localStorage.setItem("token", data.token);
+          if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
+          navigate("/wallet");
+        } catch {
+          setError("Web3 Login error. Please try again.");
+        }
+      }
+    };
+
+    handleWeb3Login();
+  }, [isConnected, address, navigate]);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
@@ -177,8 +211,7 @@ return (
             </button>
           </form>
 
-          {/* Terms */}
-          <p className="mt-7 text-center text-[11px] md:text-xs text-slate-400 font-medium leading-relaxed">
+          {/* Terms
             By signing up, you agree to our{" "}
             <Link className="text-sky-400 hover:underline" to="/terms" target="_blank">
               Terms of Use
