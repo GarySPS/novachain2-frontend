@@ -4,7 +4,6 @@ import { useAppKit } from '@reown/appkit/react';
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { MAIN_API_BASE } from "../config";
-import { useAppKit } from '@reown/appkit/react';
 import { useAccount } from 'wagmi';
 
 export default function SignUpPage() {
