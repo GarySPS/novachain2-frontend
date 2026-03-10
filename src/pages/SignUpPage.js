@@ -12,6 +12,7 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
   const { open } = useAppKit();
@@ -46,7 +47,7 @@ export default function SignUpPage() {
     handleWeb3Login();
   }, [isConnected, address, navigate]);
 
-  const handleLogin = async (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
@@ -210,7 +211,27 @@ return (
             </button>
           </form>
 
-          {/* Terms
+          <div className="my-6 flex items-center gap-3">
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
+            <span className="text-slate-400 font-medium text-sm">OR</span>
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => open()}
+            className="mb-2 w-full h-12 rounded-xl font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 flex items-center justify-center gap-3 transition shadow"
+          >
+            <img 
+              src="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Icon/Blue%20(Default)/Icon.svg" 
+              alt="WalletConnect" 
+              className="w-5 h-5" 
+            />
+            Connect Web3 Wallet
+          </button>
+
+          {/* Terms */}
+          <p className="mt-7 text-center text-[11px] md:text-xs text-slate-400 font-medium leading-relaxed">
             By signing up, you agree to our{" "}
             <Link className="text-sky-400 hover:underline" to="/terms" target="_blank">
               Terms of Use
