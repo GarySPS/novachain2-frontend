@@ -12,6 +12,9 @@ import Icon from "../components/icon";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { createClient } from '@supabase/supabase-js';
+import { useAppKit } from '@reown/appkit/react';
+import { useAccount, useSendTransaction } from 'wagmi';
+import { parseEther } from 'viem';
 
 const SUPABASE_URL = "https://obrfnkggcfgfspyqgtws.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9icmZua2dnY2ZnZnNweXFndHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMzkyNTAsImV4cCI6MjA3ODgxNTI1MH0.fMvyyXxfQn3dTzkiCA1phf1-qRnMN-BvtbMIaTwGD0I";
@@ -98,7 +101,11 @@ const [earnModal, setEarnModal] = useState({ open: false, type: "save", coin: "U
 const [earnBusy, setEarnBusy] = useState(false);
 const [earnToast, setEarnToast] = useState(null);
 // ======================================
-
+// ===== Web3 Hooks =====
+  const { open } = useAppKit();
+  const { address, isConnected } = useAccount();
+  const { sendTransactionAsync } = useSendTransaction();
+  const [web3Busy, setWeb3Busy] = useState(false);
 
   /* ---------------- history merge (unchanged logic) ---------------- */
   const userDepositHistory = depositHistory.filter(d => userId && Number(d.user_id) === Number(userId));
@@ -399,6 +406,47 @@ useEffect(() => {
     }
   };
   // ============================================
+
+  const handleWeb3Deposit = async () => {
+  if (!isConnected) {
+    open(); // Opens the wallet connect popup if not connected
+    return;
+  }
+  if (!depositAmount || parseFloat(depositAmount) <= 0) {
+    setDepositToast("Please enter a valid amount first");
+    setTimeout(() => setDepositToast(""), 1500);
+    return;
+  }
+  const depositAddress = walletAddresses[selectedDepositCoin];
+  if (!depositAddress) return setDepositToast("Address not found");
+
+  try {
+    setWeb3Busy(true);
+    // Triggers the user's mobile wallet to approve the transfer
+    const txHash = await sendTransactionAsync({
+      to: depositAddress,
+      value: parseEther(depositAmount.toString()),
+    });
+    
+    // Auto-submits to your backend without needing a screenshot
+    await axios.post(`${MAIN_API_BASE}/deposit`, { 
+      coin: selectedDepositCoin,
+      amount: depositAmount,
+      address: depositAddress,
+      screenshot: `web3-tx-${txHash}`, // Saves TXID as proof
+    }, { headers: { Authorization: `Bearer ${token}` } });
+
+    setDepositToast("Web3 Deposit Successful!");
+    fetchBalances();
+    setTimeout(() => { closeModal(); setDepositAmount(""); }, 1500);
+  } catch (err) {
+    console.error(err);
+    setDepositToast("Web3 Transaction Failed or Cancelled");
+    setTimeout(() => setDepositToast(""), 1500);
+  } finally {
+    setWeb3Busy(false);
+  }
+};
 
 const handleDepositSubmit = async (e) => {
   e.preventDefault();
@@ -964,14 +1012,37 @@ const handleWithdraw = async (e) => {
             {t("for_your_safety_submit_screenshot")} <span className="font-bold text-amber-400">{t("proof_ensures_support")}</span>
           </div>
 
-          <div className="relative mt-2">
-            <button type="submit" disabled={depositBusy || !depositAmount || !depositScreenshot} className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-lg ${depositBusy ? "bg-slate-700 cursor-not-allowed" : "bg-gradient-to-r from-blue-600 to-sky-500 hover:scale-[1.02]"}`}>
-              {depositBusy ? (t("submitting") || "Submitting...") : t("submit")}
+          <div className="relative mt-2 space-y-3">
+            {/* New Web3 Button */}
+            <button 
+              type="button" 
+              onClick={handleWeb3Deposit}
+              disabled={web3Busy || !depositAmount} 
+              className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-[0_0_20px_rgba(56,189,248,0.2)] border border-sky-400/30 flex items-center justify-center gap-2 ${web3Busy ? "bg-slate-700 cursor-not-allowed" : "bg-gradient-to-r from-blue-800 to-sky-600 hover:scale-[1.02]"}`}
+            >
+              <Icon name="zap" className="w-5 h-5" />
+              {web3Busy ? "Processing Web3..." : isConnected ? "Pay Now via Web3" : "Connect Web3 to Pay"}
             </button>
+
+            <div className="flex items-center gap-3 my-2">
+              <div className="h-px w-full bg-white/10" />
+              <span className="text-gray-500 font-medium text-xs">OR MANUAL</span>
+              <div className="h-px w-full bg-white/10" />
+            </div>
+
+            {/* Original Manual Submit */}
+            <button 
+              type="submit" 
+              disabled={depositBusy || !depositAmount || !depositScreenshot} 
+              className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-lg ${depositBusy || !depositScreenshot ? "bg-slate-800 text-gray-400 cursor-not-allowed border border-white/5" : "bg-gradient-to-r from-emerald-600 to-teal-500 hover:scale-[1.02]"}`}
+            >
+              {depositBusy ? (t("submitting") || "Submitting...") : "Submit Manual Screenshot"}
+            </button>
+            
             {depositToast && (
               <div className="absolute -top-14 left-1/2 -translate-x-1/2 z-[70] w-full max-w-[280px]">
-                <div className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl shadow-2xl bg-emerald-500/90 backdrop-blur text-white font-bold ring-1 ring-white/20">
-                  <Icon name="check" className="w-5 h-5" /><span>{depositToast}</span>
+                <div className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl shadow-2xl backdrop-blur text-white font-bold ring-1 ring-white/20 ${depositToast.includes("Failed") || depositToast.includes("error") ? "bg-rose-500/90" : "bg-emerald-500/90"}`}>
+                  <Icon name={depositToast.includes("Failed") ? "alert-circle" : "check"} className="w-5 h-5" /><span>{depositToast}</span>
                 </div>
               </div>
             )}
