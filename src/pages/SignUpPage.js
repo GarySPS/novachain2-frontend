@@ -92,7 +92,7 @@ export default function SignUpPage() {
           setSuccess("Unverified email. New OTP sent.");
           setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
         } else {
-          setSuccess("Account exists but is pending Admin approval.");
+          setSuccess("Account creating pending.");
         }
         return;
       }
@@ -106,10 +106,10 @@ export default function SignUpPage() {
         setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
       } else {
   if (signupMethod === "phone" && !codeStage) {
-    setSuccess("Phone registered. Please enter the 5-digit code from admin.");
+    setSuccess("Phone registered. Please enter Telegram veification code.");
     setCodeStage(true);
   } else {
-    setSuccess("Code submitted. Waiting for admin approval.");
+    setSuccess("Code submitted. Waiting for verification.");
   }
 }
     } catch {
@@ -211,7 +211,7 @@ return (
                   onClick={() => setSignupMethod("phone")}
                   className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${signupMethod === "phone" ? "bg-sky-500 text-white shadow" : "text-slate-400 hover:text-slate-200"}`}
                 >
-                  Phone
+                  Telegram
                 </button>
               </div>
 
