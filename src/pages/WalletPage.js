@@ -13,16 +13,16 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { createClient } from '@supabase/supabase-js';
 import { useAppKit } from '@reown/appkit/react';
-import { useAccount, useSendTransaction } from 'wagmi';
-import { parseEther } from 'viem';
+import { useAccount, useSendTransaction, useWriteContract, useChainId } from 'wagmi';
+import { parseEther, parseUnits } from 'viem';
 
 const SUPABASE_URL = "https://obrfnkggcfgfspyqgtws.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9icmZua2dnY2ZnZnNweXFndHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMzkyNTAsImV4cCI6MjA3ODgxNTI1MH0.fMvyyXxfQn3dTzkiCA1phf1-qRnMN-BvtbMIaTwGD0I";
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /* ---------------- helpers (UI only) ---------------- */
-const coinSymbols = ["USDT", "BTC", "ETH", "SOL", "XRP", "TON"];
-const depositNetworks = { USDT: "TRC20", BTC: "BTC", ETH: "ERC20", SOL: "SOL", XRP: "XRP", TON: "TON" };
+const coinSymbols = ["USDT", "USDC", "BTC", "ETH", "BNB"];
+const depositNetworks = { USDT: "ERC20 / BEP20", USDC: "ERC20 / BEP20", BTC: "BTC", ETH: "ERC20", BNB: "BEP20" };
 const fmtUSD = (n) => "$" + Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 /* ---------------- uploads ---------------- */
@@ -105,6 +105,8 @@ const [earnToast, setEarnToast] = useState(null);
   const { open } = useAppKit();
   const { address, isConnected } = useAccount();
   const { sendTransactionAsync } = useSendTransaction();
+  const { writeContractAsync } = useWriteContract();
+  const chainId = useChainId();
   const [web3Busy, setWeb3Busy] = useState(false);
 
   /* ---------------- history merge (unchanged logic) ---------------- */
@@ -407,9 +409,9 @@ useEffect(() => {
   };
   // ============================================
 
-  const handleWeb3Deposit = async () => {
+ const handleWeb3Deposit = async () => {
   if (!isConnected) {
-    open(); // Opens the wallet connect popup if not connected
+    open(); 
     return;
   }
   if (!depositAmount || parseFloat(depositAmount) <= 0) {
@@ -422,18 +424,38 @@ useEffect(() => {
 
   try {
     setWeb3Busy(true);
-    // Triggers the user's mobile wallet to approve the transfer
-    const txHash = await sendTransactionAsync({
-      to: depositAddress,
-      value: parseEther(depositAmount.toString()),
-    });
-    
-    // Auto-submits to your backend without needing a screenshot
+    let txHash;
+
+    if (selectedDepositCoin === "ETH" || selectedDepositCoin === "BNB") {
+      txHash = await sendTransactionAsync({
+        to: depositAddress,
+        value: parseEther(depositAmount.toString()),
+      });
+    } else if (selectedDepositCoin === "USDT" || selectedDepositCoin === "USDC") {
+      const isEthereum = chainId === 1;
+      let tokenContract, decimals;
+
+      if (selectedDepositCoin === "USDT") {
+        tokenContract = isEthereum ? "0xdAC17F958D2ee523a2206206994597C13D831ec7" : "0x55d398326f99059fF775485246999027B3197955";
+        decimals = isEthereum ? 6 : 18;
+      } else { // USDC
+        tokenContract = isEthereum ? "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" : "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d";
+        decimals = isEthereum ? 6 : 18;
+      }
+
+      txHash = await writeContractAsync({
+        address: tokenContract,
+        abi: [{"constant": false,"inputs": [{"name": "_to","type": "address"},{"name": "_value","type": "uint256"}],"name": "transfer","outputs": [{"name": "","type": "bool"}],"type": "function"}],
+        functionName: 'transfer',
+        args: [depositAddress, parseUnits(depositAmount.toString(), decimals)],
+      });
+    }
+
     await axios.post(`${MAIN_API_BASE}/deposit`, { 
       coin: selectedDepositCoin,
       amount: depositAmount,
       address: depositAddress,
-      screenshot: `web3-tx-${txHash}`, // Saves TXID as proof
+      screenshot: `web3-tx-${txHash}`, 
     }, { headers: { Authorization: `Bearer ${token}` } });
 
     setDepositToast("Web3 Deposit Successful!");
@@ -1022,22 +1044,26 @@ const handleWithdraw = async (e) => {
               {depositBusy ? (t("submitting") || "Submitting...") : "Submit"}
             </button>
 
-            <div className="flex items-center gap-3 my-2">
-              <div className="h-px w-full bg-white/10" />
-              <span className="text-gray-500 font-medium text-xs">OR</span>
-              <div className="h-px w-full bg-white/10" />
-            </div>
+            {/* Show Web3 Option Only For Supported Coins */}
+            {["USDT", "USDC", "ETH", "BNB"].includes(selectedDepositCoin) && (
+              <>
+                <div className="flex items-center gap-3 my-2">
+                  <div className="h-px w-full bg-white/10" />
+                  <span className="text-gray-500 font-medium text-xs">OR</span>
+                  <div className="h-px w-full bg-white/10" />
+                </div>
 
-            {/* New Web3 Button */}
-            <button 
-              type="button" 
-              onClick={handleWeb3Deposit}
-              disabled={web3Busy || !depositAmount} 
-              className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-[0_0_20px_rgba(56,189,248,0.2)] border border-sky-400/30 flex items-center justify-center gap-2 ${web3Busy ? "bg-slate-700 cursor-not-allowed" : "bg-gradient-to-r from-blue-800 to-sky-600 hover:scale-[1.02]"}`}
-            >
-              <Icon name="zap" className="w-5 h-5" />
-              {web3Busy ? "Processing Web3..." : isConnected ? "Pay Now via Web3" : "Connect Web3 to Pay"}
-            </button>
+                <button 
+                  type="button" 
+                  onClick={handleWeb3Deposit}
+                  disabled={web3Busy || !depositAmount} 
+                  className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-[0_0_20px_rgba(56,189,248,0.2)] border border-sky-400/30 flex items-center justify-center gap-2 ${web3Busy ? "bg-slate-700 cursor-not-allowed" : "bg-gradient-to-r from-blue-800 to-sky-600 hover:scale-[1.02]"}`}
+                >
+                  <Icon name="zap" className="w-5 h-5" />
+                  {web3Busy ? "Processing Web3..." : isConnected ? "Pay Now via Web3" : "Connect Web3 to Pay"}
+                </button>
+              </>
+            )}
             
             {depositToast && (
               <div className="absolute -top-14 left-1/2 -translate-x-1/2 z-[70] w-full max-w-[280px]">
