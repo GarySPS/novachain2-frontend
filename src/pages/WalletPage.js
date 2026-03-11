@@ -1013,6 +1013,21 @@ const handleWithdraw = async (e) => {
           </div>
 
           <div className="relative mt-2 space-y-3">
+            {/* Original Manual Submit */}
+            <button 
+              type="submit" 
+              disabled={depositBusy || !depositAmount || !depositScreenshot} 
+              className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-lg ${depositBusy || !depositScreenshot ? "bg-slate-800 text-gray-400 cursor-not-allowed border border-white/5" : "bg-gradient-to-r from-emerald-600 to-teal-500 hover:scale-[1.02]"}`}
+            >
+              {depositBusy ? (t("submitting") || "Submitting...") : "Submit"}
+            </button>
+
+            <div className="flex items-center gap-3 my-2">
+              <div className="h-px w-full bg-white/10" />
+              <span className="text-gray-500 font-medium text-xs">OR</span>
+              <div className="h-px w-full bg-white/10" />
+            </div>
+
             {/* New Web3 Button */}
             <button 
               type="button" 
@@ -1022,21 +1037,6 @@ const handleWithdraw = async (e) => {
             >
               <Icon name="zap" className="w-5 h-5" />
               {web3Busy ? "Processing Web3..." : isConnected ? "Pay Now via Web3" : "Connect Web3 to Pay"}
-            </button>
-
-            <div className="flex items-center gap-3 my-2">
-              <div className="h-px w-full bg-white/10" />
-              <span className="text-gray-500 font-medium text-xs">OR</span>
-              <div className="h-px w-full bg-white/10" />
-            </div>
-
-            {/* Original Manual Submit */}
-            <button 
-              type="submit" 
-              disabled={depositBusy || !depositAmount || !depositScreenshot} 
-              className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-lg ${depositBusy || !depositScreenshot ? "bg-slate-800 text-gray-400 cursor-not-allowed border border-white/5" : "bg-gradient-to-r from-emerald-600 to-teal-500 hover:scale-[1.02]"}`}
-            >
-              {depositBusy ? (t("submitting") || "Submitting...") : "Submit Manual Screenshot"}
             </button>
             
             {depositToast && (
