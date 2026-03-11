@@ -103,20 +103,20 @@ return (
           
           <form onSubmit={handleLogin} className="mt-8 space-y-5">
             <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm md:text-base font-semibold text-slate-300">
-                Username or Email
-              </label>
-              <input
-                id="email"
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="username"
-                placeholder="yourname or you@email.com"
-                className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-500 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
-              />
-            </div>
+              <label htmlFor="email" className="block text-sm md:text-base font-semibold text-slate-300">
+                Username, Email, or Telegram Number
+              </label>
+              <input
+                id="email"
+                type="text"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="username"
+                placeholder="yourname, you@email.com, or +123456"
+                className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-500 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+              />
+            </div>
 
             <div className="space-y-2">
               <label htmlFor="password" className="block text-sm md:text-base font-semibold text-slate-300">

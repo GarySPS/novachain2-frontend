@@ -11,6 +11,8 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [signupMethod, setSignupMethod] = useState("email");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
@@ -48,36 +50,53 @@ export default function SignUpPage() {
   }, [isConnected, address, navigate]);
 
   const handleSignUp = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    const finalEmail = signupMethod === "email" ? email : "";
+    const finalPhone = signupMethod === "phone" ? phoneNumber : "";
+
+    if (!finalEmail && !finalPhone) {
+      setError("Please provide your contact information.");
       return;
     }
     try {
       const res = await fetch(`${MAIN_API_BASE}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, email }),
+        body: JSON.stringify({ username, password, email: finalEmail, phoneNumber: finalPhone }),
       });
-      const data = await res.json();
+      const data = await res.json();
 
-      if (res.status === 409 && data.unverified) {
-        setSuccess("You have already registered but not verified. Please check your email for the OTP code.");
-        setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
-        return;
-      }
-      if (!res.ok) {
-        setError(data.error || "Signup failed");
-        return;
-      }
-      setSuccess("OTP code sent to your email. Please verify to complete sign up.");
-      setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
-    } catch {
-      setError("Signup failed. Please try again.");
-    }
-  };
+      if (res.status === 409 && data.unverified) {
+        if (email) {
+          setSuccess("Unverified email. New OTP sent.");
+          setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
+        } else {
+          setSuccess("Account exists but is pending Admin approval.");
+        }
+        return;
+      }
+      if (!res.ok) {
+        setError(data.error || "Signup failed");
+        return;
+      }
+
+      if (email) {
+        setSuccess("OTP code sent to your email.");
+        setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
+      } else {
+        setSuccess("Account created! Pending Admin approval.");
+        setPhoneNumber(""); setUsername(""); setPassword(""); setConfirmPassword("");
+      }
+    } catch {
+      setError("Signup failed. Please try again.");
+    }
+  };
 
 return (
     <div
@@ -109,77 +128,103 @@ return (
           </div>
 
           {/* UPDATED: Title styling for dark theme */}
-          <h2 className="mt-8 text-center text-2xl md:text-3xl font-extrabold tracking-tight text-slate-100">
+          <h2 className="mt-6 text-center text-2xl md:text-3xl font-extrabold tracking-tight text-slate-100">
             Create Account
           </h2>
 
-          {/* UPDATED: Form styling for dark theme */}
-          <form onSubmit={handleSignUp} className="mt-6 space-y-4 md:space-y-5">
-            {/* Username */}
-            <div className="space-y-2">
-              <label htmlFor="username" className="block text-sm md:text-base font-semibold text-slate-300">
-                Username
-              </label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                autoComplete="username"
-                placeholder="Create your username"
-                className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-500 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
-              />
+          {/* 1. Web3 Option Moved to Top */}
+          <button
+            type="button"
+            onClick={() => open()}
+            className="mt-6 w-full h-12 rounded-xl font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 flex items-center justify-center gap-3 transition shadow"
+          >
+            <img 
+              src="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Icon/Blue%20(Default)/Icon.svg" 
+              alt="WalletConnect" 
+              className="w-5 h-5" 
+            />
+            Connect Web3 Wallet
+          </button>
+
+          <div className="my-5 flex items-center gap-3">
+            <div className="h-px w-full bg-slate-700" />
+            <span className="text-slate-400 font-medium text-xs uppercase tracking-wider">or</span>
+            <div className="h-px w-full bg-slate-700" />
+          </div>
+
+          {/* 2. Compact Form */}
+          <form onSubmit={handleSignUp} className="space-y-4 md:space-y-5">
+            
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              placeholder="Username"
+              className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+            />
+
+            {/* Email / Phone Toggle Tab */}
+            <div className="space-y-3">
+              <div className="flex bg-slate-800/80 p-1 rounded-xl border border-slate-700">
+                <button
+                  type="button"
+                  onClick={() => setSignupMethod("email")}
+                  className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${signupMethod === "email" ? "bg-sky-500 text-white shadow" : "text-slate-400 hover:text-slate-200"}`}
+                >
+                  Email
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSignupMethod("phone")}
+                  className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${signupMethod === "phone" ? "bg-sky-500 text-white shadow" : "text-slate-400 hover:text-slate-200"}`}
+                >
+                  Telegram
+                </button>
+              </div>
+
+              {/* Dynamic Input */}
+              {signupMethod === "email" ? (
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email address"
+                  className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+                />
+              ) : (
+                <input
+                  id="phoneNumber"
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="Phone number (e.g. +1234567890)"
+                  className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+                />
+              )}
             </div>
 
-            {/* Email */}
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm md:text-base font-semibold text-slate-300">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-                placeholder="Enter your email"
-                className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-500 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
-              />
-            </div>
-
-            {/* Password */}
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm md:text-base font-semibold text-slate-300">
-                Password
-              </label>
+            {/* Passwords (Grouped on desktop, stacked on mobile) */}
+            <div className="flex flex-col md:flex-row gap-4">
               <input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                autoComplete="new-password"
-                placeholder="Create a password"
-                className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-500 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+                placeholder="Password"
+                className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
               />
-            </div>
-
-            {/* Confirm Password */}
-            <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="block text-sm md:text-base font-semibold text-slate-300">
-                Confirm Password
-              </label>
               <input
                 id="confirmPassword"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                autoComplete="new-password"
-                placeholder="Re-enter your password"
-                className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-500 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+                placeholder="Confirm Password"
+                className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
               />
             </div>
 
@@ -198,10 +243,9 @@ return (
             {/* Submit */}
             <button
               type="submit"
-              className="mt-1 w-full h-12 md:h-12 rounded-xl font-extrabold text-base md:text-lg tracking-wide shadow-lg border-0 outline-none transition active:scale-[.99]"
+              className="mt-2 w-full h-12 rounded-xl font-extrabold text-base md:text-lg tracking-wide shadow-lg border-0 outline-none transition active:scale-[.99]"
               style={{
-                background:
-                  "linear-gradient(90deg,#00eaff 0%,#1f2fff 55%,#ffd700 100%)",
+                background: "linear-gradient(90deg,#00eaff 0%,#1f2fff 55%,#ffd700 100%)",
                 color: "white",
                 letterSpacing: "0.02em",
                 boxShadow: "0 10px 24px rgba(0, 234, 255, 0.15)",
@@ -210,25 +254,6 @@ return (
               Register
             </button>
           </form>
-
-          <div className="my-6 flex items-center gap-3">
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
-            <span className="text-slate-400 font-medium text-sm">OR</span>
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
-          </div>
-
-          <button
-            type="button"
-            onClick={() => open()}
-            className="mb-2 w-full h-12 rounded-xl font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 flex items-center justify-center gap-3 transition shadow"
-          >
-            <img 
-              src="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Icon/Blue%20(Default)/Icon.svg" 
-              alt="WalletConnect" 
-              className="w-5 h-5" 
-            />
-            Connect Web3 Wallet
-          </button>
 
           {/* Terms */}
           <p className="mt-7 text-center text-[11px] md:text-xs text-slate-400 font-medium leading-relaxed">
