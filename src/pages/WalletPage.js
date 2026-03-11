@@ -1026,7 +1026,7 @@ const handleWithdraw = async (e) => {
 
             <div className="flex items-center gap-3 my-2">
               <div className="h-px w-full bg-white/10" />
-              <span className="text-gray-500 font-medium text-xs">OR MANUAL</span>
+              <span className="text-gray-500 font-medium text-xs">OR</span>
               <div className="h-px w-full bg-white/10" />
             </div>
 
