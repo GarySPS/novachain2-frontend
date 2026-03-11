@@ -1060,7 +1060,7 @@ const handleWithdraw = async (e) => {
                   className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-[0_0_20px_rgba(56,189,248,0.2)] border border-sky-400/30 flex items-center justify-center gap-2 ${web3Busy ? "bg-slate-700 cursor-not-allowed" : "bg-gradient-to-r from-blue-800 to-sky-600 hover:scale-[1.02]"}`}
                 >
                   <Icon name="zap" className="w-5 h-5" />
-                  {web3Busy ? "Processing Web3..." : isConnected ? "Pay Now via Web3" : "Connect Web3 to Pay"}
+                  {web3Busy ? "Processing Wallet..." : isConnected ? "Deposit" : "Connect to Pay"}
                 </button>
               </>
             )}
