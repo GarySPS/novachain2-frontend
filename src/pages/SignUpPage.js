@@ -210,7 +210,7 @@ return (
                   onClick={() => setSignupMethod("phone")}
                   className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${signupMethod === "phone" ? "bg-sky-500 text-white shadow" : "text-slate-400 hover:text-slate-200"}`}
                 >
-                  Phone
+                  Telegram
                 </button>
               </div>
 
