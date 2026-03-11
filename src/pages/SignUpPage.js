@@ -242,7 +242,7 @@ return (
   <div className="mt-3">
 
     <p className="text-xs text-slate-400 mb-2">
-      Enter 5-digit member code from customer service
+      Enter Telegram verification code
     </p>
 
     <div className="flex gap-2 justify-between">
