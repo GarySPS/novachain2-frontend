@@ -16,6 +16,7 @@ export default function SignUpPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
+  const [memberCode, setMemberCode] = useState(["", "", "", "", ""]);
 
   const { open } = useAppKit();
   const { address, isConnected } = useAccount();
@@ -50,25 +51,38 @@ export default function SignUpPage() {
   }, [isConnected, address, navigate]);
 
   const handleSignUp = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-    const finalEmail = signupMethod === "email" ? email : "";
-    const finalPhone = signupMethod === "phone" ? phoneNumber : "";
+  e.preventDefault();
+  setError("");
+  setSuccess("");
 
-    if (!finalEmail && !finalPhone) {
-      setError("Please provide your contact information.");
-      return;
-    }
+  if (password !== confirmPassword) {
+    setError("Passwords do not match.");
+    return;
+  }
+
+  const finalEmail = signupMethod === "email" ? email : "";
+  const finalPhone = signupMethod === "phone" ? phoneNumber : "";
+
+  if (signupMethod === "phone" && memberCode.join("").length !== 5) {
+    setError("Please enter your 5-digit member code.");
+    return;
+  }
+
+  if (!finalEmail && !finalPhone) {
+    setError("Please provide your contact information.");
+    return;
+  }
     try {
       const res = await fetch(`${MAIN_API_BASE}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, email: finalEmail, phoneNumber: finalPhone }),
+        body: JSON.stringify({
+  username,
+  password,
+  email: finalEmail,
+  phoneNumber: finalPhone,
+  memberCode: memberCode.join("")
+}),
       });
       const data = await res.json();
 
@@ -97,6 +111,18 @@ export default function SignUpPage() {
       setError("Signup failed. Please try again.");
     }
   };
+
+const handleCodeChange = (index, value) => {
+  if (!/^[0-9]?$/.test(value)) return;
+
+  const newCode = [...memberCode];
+  newCode[index] = value;
+  setMemberCode(newCode);
+
+  if (value && index < 4) {
+    document.getElementById(`code-${index + 1}`)?.focus();
+  }
+};
 
 return (
     <div
@@ -203,8 +229,33 @@ return (
                   placeholder="Phone number (e.g. +1234567890)"
                   className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
                 />
+                
               )}
             </div>
+
+            {signupMethod === "phone" && (
+  <div className="mt-3">
+
+    <p className="text-xs text-slate-400 mb-2">
+      Enter 5-digit member code from customer service
+    </p>
+
+    <div className="flex gap-2 justify-between">
+      {[0,1,2,3,4].map((i) => (
+        <input
+          key={i}
+          id={`code-${i}`}
+          type="text"
+          maxLength="1"
+          value={memberCode[i]}
+          onChange={(e)=>handleCodeChange(i,e.target.value)}
+          className="w-full h-12 text-center text-xl rounded-xl bg-slate-800/60 text-white border border-slate-700 focus:ring-2 focus:ring-sky-400"
+        />
+      ))}
+    </div>
+
+  </div>
+)}
 
             {/* Passwords (Grouped on desktop, stacked on mobile) */}
             <div className="flex flex-col md:flex-row gap-4">
