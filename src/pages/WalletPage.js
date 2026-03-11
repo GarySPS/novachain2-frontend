@@ -463,7 +463,7 @@ useEffect(() => {
     setTimeout(() => { closeModal(); setDepositAmount(""); }, 1500);
   } catch (err) {
     console.error(err);
-    setDepositToast("Web3 Transaction Failed or Cancelled");
+    setDepositToast("Transaction Failed or Cancelled");
     setTimeout(() => setDepositToast(""), 1500);
   } finally {
     setWeb3Busy(false);
