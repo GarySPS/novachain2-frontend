@@ -17,6 +17,7 @@ export default function SignUpPage() {
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
   const [codeStage, setCodeStage] = useState(false);
+  const [memberCode, setMemberCode] = useState(["", "", "", "", ""]);
 
   const { open } = useAppKit();
   const { address, isConnected } = useAccount();
@@ -210,7 +211,7 @@ return (
                   onClick={() => setSignupMethod("phone")}
                   className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${signupMethod === "phone" ? "bg-sky-500 text-white shadow" : "text-slate-400 hover:text-slate-200"}`}
                 >
-                  Telegram
+                  Phone
                 </button>
               </div>
 
