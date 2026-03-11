@@ -16,7 +16,7 @@ export default function SignUpPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
-  const [memberCode, setMemberCode] = useState(["", "", "", "", ""]);
+  const [codeStage, setCodeStage] = useState(false);
 
   const { open } = useAppKit();
   const { address, isConnected } = useAccount();
@@ -63,10 +63,10 @@ export default function SignUpPage() {
   const finalEmail = signupMethod === "email" ? email : "";
   const finalPhone = signupMethod === "phone" ? phoneNumber : "";
 
-  if (signupMethod === "phone" && memberCode.join("").length !== 5) {
-    setError("Please enter your 5-digit member code.");
-    return;
-  }
+  if (signupMethod === "phone" && codeStage && memberCode.join("").length !== 5) {
+  setError("Please enter your 5-digit member code.");
+  return;
+}
 
   if (!finalEmail && !finalPhone) {
     setError("Please provide your contact information.");
@@ -81,7 +81,7 @@ export default function SignUpPage() {
   password,
   email: finalEmail,
   phoneNumber: finalPhone,
-  memberCode: memberCode.join("")
+  memberCode: codeStage ? memberCode.join("") : null
 }),
       });
       const data = await res.json();
@@ -104,9 +104,13 @@ export default function SignUpPage() {
         setSuccess("OTP code sent to your email.");
         setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
       } else {
-        setSuccess("Account created! Pending Admin approval.");
-        setPhoneNumber(""); setUsername(""); setPassword(""); setConfirmPassword("");
-      }
+  if (signupMethod === "phone" && !codeStage) {
+    setSuccess("Phone registered. Please enter the 5-digit code from admin.");
+    setCodeStage(true);
+  } else {
+    setSuccess("Code submitted. Waiting for admin approval.");
+  }
+}
     } catch {
       setError("Signup failed. Please try again.");
     }
@@ -206,7 +210,7 @@ return (
                   onClick={() => setSignupMethod("phone")}
                   className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${signupMethod === "phone" ? "bg-sky-500 text-white shadow" : "text-slate-400 hover:text-slate-200"}`}
                 >
-                  Telegram
+                  Phone
                 </button>
               </div>
 
@@ -233,7 +237,7 @@ return (
               )}
             </div>
 
-            {signupMethod === "phone" && (
+            {signupMethod === "phone" && codeStage && (
   <div className="mt-3">
 
     <p className="text-xs text-slate-400 mb-2">

@@ -136,7 +136,7 @@ return (
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="username"
-              placeholder="Username, Email, or Telegram Number"
+              placeholder="Username, Email, or Telegram"
               className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
             />
 
