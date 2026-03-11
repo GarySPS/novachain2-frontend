@@ -89,8 +89,9 @@ return (
 
       <div className="relative z-10 w-full">
         <div className="mx-auto w-full max-w-[480px] rounded-3xl bg-[#10162F]/80 backdrop-blur-xl shadow-2xl border border-sky-500/30 px-6 py-8 md:px-10 md:py-10">
-
-          <div className="mt-8 w-full h-36 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-sky-400/20">
+          
+          {/* Video Header (Removed mt-8 to match signup) */}
+          <div className="w-full h-36 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-sky-400/20">
               <video
                   src="/login.mp4"
                   autoPlay
@@ -100,55 +101,72 @@ return (
                   className="w-full h-full object-cover"
               />
           </div>
-          
-          <form onSubmit={handleLogin} className="mt-8 space-y-5">
-            <div className="space-y-2">
-              <label htmlFor="email" className="block text-sm md:text-base font-semibold text-slate-300">
-                Username, Email, or Telegram Number
-              </label>
-              <input
-                id="email"
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="username"
-                placeholder="yourname, you@email.com, or +123456"
-                className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-500 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
-              />
-            </div>
 
-            <div className="space-y-2">
-              <label htmlFor="password" className="block text-sm md:text-base font-semibold text-slate-300">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  id="password"
-                  type={showPwd ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                  placeholder="Enter your password"
-                  className="w-full h-12 rounded-xl px-4 pr-12 bg-slate-800/60 text-slate-100 placeholder-slate-500 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPwd((s) => !s)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md px-2 py-1 text-xs font-semibold text-slate-300 bg-slate-700/50 border border-slate-600 hover:bg-slate-700"
-                >
-                  {showPwd ? "Hide" : "Show"}
-                </button>
-              </div>
-              <div className="flex justify-end">
-                <Link
-                  to="/forgot"
-                  className="text-xs md:text-sm font-semibold text-sky-400 hover:text-sky-300 hover:underline"
-                >
-                  Forgot password?
-                </Link>
-              </div>
+          {/* Added Missing Title */}
+          <h2 className="mt-6 text-center text-2xl md:text-3xl font-extrabold tracking-tight text-slate-100">
+            Login
+          </h2>
+
+          {/* Moved Web3 Button Above the Form */}
+          <button
+            type="button"
+            onClick={() => open()}
+            className="mt-6 w-full h-12 rounded-xl font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 flex items-center justify-center gap-3 transition shadow"
+          >
+            <img 
+              src="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Icon/Blue%20(Default)/Icon.svg" 
+              alt="WalletConnect" 
+              className="w-5 h-5" 
+            />
+            Connect Web3 Wallet
+          </button>
+
+          <div className="my-5 flex items-center gap-3">
+            <div className="h-px w-full bg-slate-700" />
+            <span className="text-slate-400 font-medium text-xs uppercase tracking-wider">or</span>
+            <div className="h-px w-full bg-slate-700" />
+          </div>
+          
+          {/* Compact Form Without Labels */}
+          <form onSubmit={handleLogin} className="space-y-4 md:space-y-5">
+            <input
+              id="email"
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="username"
+              placeholder="Username, Email, or Telegram Number"
+              className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+            />
+
+            <div className="relative">
+              <input
+                id="password"
+                type={showPwd ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+                placeholder="Password"
+                className="w-full h-12 rounded-xl px-4 pr-12 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPwd((s) => !s)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md px-2 py-1 text-xs font-semibold text-slate-300 bg-slate-700/50 border border-slate-600 hover:bg-slate-700"
+              >
+                {showPwd ? "Hide" : "Show"}
+              </button>
+            </div>
+
+            <div className="flex justify-end">
+              <Link
+                to="/forgot"
+                className="text-xs md:text-sm font-semibold text-sky-400 hover:text-sky-300 hover:underline"
+              >
+                Forgot password?
+              </Link>
             </div>
 
             {error &&
@@ -162,7 +180,7 @@ return (
 
             <button
               type="submit"
-              className="w-full h-12 md:h-12 rounded-xl font-extrabold text-base md:text-lg tracking-wide shadow-lg border-0 outline-none transition active:scale-[.99]"
+              className="mt-2 w-full h-12 md:h-12 rounded-xl font-extrabold text-base md:text-lg tracking-wide shadow-lg border-0 outline-none transition active:scale-[.99]"
               style={{
                 background:
                   "linear-gradient(90deg,#00eaff 0%,#1f2fff 55%,#ffd700 100%)",
@@ -174,26 +192,6 @@ return (
               Login
             </button>
           </form>
-
-          <div className="my-6 flex items-center gap-3">
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
-            <span className="text-slate-400 font-medium text-sm">OR</span>
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
-          </div>
-
-          <button
-            type="button"
-            onClick={() => open()}
-            className="mb-6 w-full h-12 rounded-xl font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 flex items-center justify-center gap-3 transition shadow"
-          >
-            <img 
-              src="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Icon/Blue%20(Default)/Icon.svg" 
-              alt="WalletConnect" 
-              className="w-5 h-5" 
-            />
-            Connect Web3 Wallet
-          </button>
-
 
           <div className="mt-5 flex justify-center">
             <Link
