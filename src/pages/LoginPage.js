@@ -80,18 +80,19 @@ return (
     <div
       className="min-h-screen w-full relative flex items-center justify-center px-4 py-10 md:py-14"
       style={{
-        backgroundImage: 'url("/login.jpg")',
+        backgroundImage: 'url("/novachain.jpg")',
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      {/* ---- OVERLAY DIV REMOVED FROM HERE ---- */}
+      {/* Dark overlay to make the glass card pop against the background */}
+      <div className="absolute inset-0 bg-black/60 pointer-events-none" />
 
       <div className="relative z-10 w-full">
-        <div className="mx-auto w-full max-w-[480px] rounded-3xl bg-[#10162F]/80 backdrop-blur-xl shadow-2xl border border-sky-500/30 px-6 py-8 md:px-10 md:py-10">
+        <div className="mx-auto w-full max-w-[400px] md:max-w-[480px] rounded-[2rem] bg-[#0a0a0a]/60 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-white/10 px-5 py-6 md:px-10 md:py-10">
           
-          {/* Video Header (Removed mt-8 to match signup) */}
-          <div className="w-full h-36 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-sky-400/20">
+                    {/* Video Header - smaller on mobile */}
+          <div className="w-full h-28 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-sky-400/20">
               <video
                   src="/login.mp4"
                   autoPlay
@@ -102,29 +103,29 @@ return (
               />
           </div>
 
-          {/* Added Missing Title */}
-          <h2 className="mt-6 text-center text-2xl md:text-3xl font-extrabold tracking-tight text-slate-100">
+          {/* Title - slightly smaller on mobile */}
+          <h2 className="mt-4 md:mt-6 text-center text-xl md:text-3xl font-extrabold tracking-tight text-slate-100">
             Login
           </h2>
 
-          {/* Moved Web3 Button Above the Form */}
+          {/* Web3 Button */}
           <button
             type="button"
             onClick={() => open()}
-            className="mt-6 w-full h-12 rounded-xl font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 flex items-center justify-center gap-3 transition shadow"
+            className="mt-4 md:mt-6 w-full h-11 md:h-12 rounded-xl font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center gap-3 transition-all shadow-sm text-sm md:text-base"
           >
             <img 
               src="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Icon/Blue%20(Default)/Icon.svg" 
               alt="WalletConnect" 
-              className="w-5 h-5" 
+              className="w-4 h-4 md:w-5 md:h-5 drop-shadow-md" 
             />
             Connect Web3 Wallet
           </button>
 
-          <div className="my-5 flex items-center gap-3">
-            <div className="h-px w-full bg-slate-700" />
-            <span className="text-slate-400 font-medium text-xs uppercase tracking-wider">or</span>
-            <div className="h-px w-full bg-slate-700" />
+          <div className="my-6 flex items-center gap-4">
+            <div className="h-[1px] w-full bg-gradient-to-r from-transparent to-white/10" />
+            <span className="text-gray-500 font-bold text-[10px] uppercase tracking-[0.2em]">or</span>
+            <div className="h-[1px] w-full bg-gradient-to-l from-transparent to-white/10" />
           </div>
           
           {/* Compact Form Without Labels */}
@@ -137,7 +138,7 @@ return (
               required
               autoComplete="username"
               placeholder="Username, Email, or Telegram"
-              className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+              className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
             />
 
             <div className="relative">
@@ -149,23 +150,24 @@ return (
                 required
                 autoComplete="current-password"
                 placeholder="Password"
-                className="w-full h-12 rounded-xl px-4 pr-12 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+                className="w-full h-12 md:h-14 rounded-xl px-4 pr-20 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
               />
               <button
                 type="button"
                 onClick={() => setShowPwd((s) => !s)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md px-2 py-1 text-xs font-semibold text-slate-300 bg-slate-700/50 border border-slate-600 hover:bg-slate-700"
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-200 hover:text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all shadow-sm"
               >
                 {showPwd ? "Hide" : "Show"}
               </button>
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-end pt-1">
               <Link
                 to="/forgot"
-                className="text-xs md:text-sm font-semibold text-sky-400 hover:text-sky-300 hover:underline"
+                className="group flex items-center gap-1.5 text-[11px] font-bold text-gray-400 hover:text-white transition-colors tracking-wide uppercase"
               >
                 Forgot password?
+                <span className="text-gray-600 group-hover:text-white group-hover:translate-x-0.5 transition-all">→</span>
               </Link>
             </div>
 
@@ -173,30 +175,23 @@ return (
               (error.toLowerCase().includes("maintain") || error.toLowerCase().includes("database") ? (
                 <DatabaseErrorCard />
               ) : (
-                <div className="w-full rounded-lg border border-red-400/50 bg-red-500/20 px-3 py-2 text-sm md:text-base text-red-200">
+                <div className="w-full rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs md:text-sm text-red-400 text-center">
                   {error}
                 </div>
               ))}
 
             <button
               type="submit"
-              className="mt-2 w-full h-12 md:h-12 rounded-xl font-extrabold text-base md:text-lg tracking-wide shadow-lg border-0 outline-none transition active:scale-[.99]"
-              style={{
-                background:
-                  "linear-gradient(90deg,#00eaff 0%,#1f2fff 55%,#ffd700 100%)",
-                color: "white",
-                letterSpacing: "0.02em",
-                boxShadow: "0 10px 24px rgba(0, 234, 255, 0.15)",
-              }}
+              className="mt-4 w-full h-12 md:h-14 rounded-xl font-black text-sm md:text-base tracking-[0.1em] uppercase transition-all active:scale-[.99] bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
             >
               Login
             </button>
           </form>
 
-          <div className="mt-5 flex justify-center">
+          <div className="mt-5 md:mt-6 flex justify-center">
             <Link
               to="/signup"
-              className="text-sm md:text-base font-bold text-sky-400 hover:text-sky-300 hover:underline"
+              className="text-sm md:text-base font-bold text-gray-400 hover:text-white transition-colors"
             >
               New here? Create an account
             </Link>

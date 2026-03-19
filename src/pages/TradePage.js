@@ -339,146 +339,312 @@ export default function TradePage() {
           <div className="w-full">
             {/* The coin selector div inside was correctly removed */}
 
-            {/* chart box - THIS is what needs to be here */}
-            <div className="relative w-full rounded-2xl shadow-2xl bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343] overflow-hidden">
-              <div id="tradingview_chart_container" className="w-full h-[420px]" />
-              {loadingChart && (
-                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#0c1323e6] backdrop-blur-sm">
-                  <svg className="animate-spin mb-4" width="54" height="54" viewBox="0 0 54 54" fill="none">
-                    <circle cx="27" cy="27" r="24" stroke="#2474ff44" strokeWidth="5" />
-                    <path d="M51 27a24 24 0 1 1-48 0" stroke="#FFD700" strokeWidth="5" strokeLinecap="round" />
-                  </svg>
-                  <div className="text-lg font-bold text-sky-100">{t("refreshing_price", "Refreshing Price...")}</div>
-                </div>
-              )}
-
-              {/* floating price pill */}
-              <div className="absolute right-[88px] top-[46px] md:right-4 md:top-4 z-10">
-                <div className="px-3 py-1.5 rounded-xl bg-[#0f1424]/80 backdrop-blur-md border border-[#1a2343] shadow-[0_4px_15px_rgba(0,0,0,0.5)] text-white flex flex-col items-end">
-                  <div className="text-[10px] font-bold uppercase tracking-widest text-cyan-400 mb-0.5 drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">
-                    {selectedCoin.symbol}/USDT
+             {/* MOBILE PRICE STATS CARD - Only visible on mobile */}
+            <div className="lg:hidden mb-4 relative z-10">
+              {/* Changed <Card> to <div> to remove conflicting hidden styles */}
+              <div 
+                className="w-full px-4 py-4 rounded-2xl bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343] relative overflow-hidden group"
+                style={{ 
+                  boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5), 0 0 30px rgba(34,211,238,0.2), inset 0 1px 1px rgba(255,255,255,0.05)'
+                }}
+              >
+                {/* Animated top gradient glow */}
+                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                {/* Corner glows */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 blur-2xl rounded-full pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 blur-2xl rounded-full pointer-events-none" />
+                
+                <div className="relative z-10">
+                  {/* Asset Selection at the TOP - Centered */}
+                  <div className="flex overflow-x-auto pb-3 mb-3 border-b border-white/5 no-scrollbar">
+                    <div className="flex gap-2 mx-auto">
+                      {COINS.map((coin) => (
+                        <button
+                          key={coin.symbol}
+                          disabled={timerActive}
+                          onClick={() => setSelectedCoin(coin)}
+                          className={`
+                            px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all flex-shrink-0
+                            ${selectedCoin.symbol === coin.symbol
+                              ? "bg-gradient-to-br from-cyan-500/30 to-blue-500/20 text-white border border-cyan-400/50 shadow-[0_0_15px_rgba(34,211,238,0.3)]"
+                              : "bg-[#0b1020] text-gray-400 border border-[#2c3040] hover:text-white hover:border-cyan-500/40 hover:shadow-[0_0_10px_rgba(34,211,238,0.1)]"}
+                            ${timerActive ? "opacity-40" : ""}
+                          `}
+                        >
+                          {coin.symbol}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="text-base tabular-nums font-black leading-none tracking-tight">
-                    {typeof coinPrice === "number" && !isNaN(coinPrice)
-                      ? "$" + coinPrice.toLocaleString(undefined, { maximumFractionDigits: 3 })
-                      : fetchError
-                      ? t("api_error", "API Error")
-                      : t("loading", "Loading...")}
+
+                  {/* Price and Change Row */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">
+                        {selectedCoin.symbol}/USDT
+                      </span>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-3xl font-black text-white tabular-nums drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">
+                          {typeof coinPrice === "number" && !isNaN(coinPrice)
+                            ? "$" + coinPrice.toLocaleString(undefined, { maximumFractionDigits: 2 })
+                            : fetchError ? "Error" : "..."}
+                        </span>
+                        {coinStats && (
+                          <div className="text-xs bg-white/5 px-2 py-0.5 rounded border border-white/10 shadow-inner">
+                            {formatPercent(coinStats.change)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Small indicator for selected asset */}
+                    <div className="text-xs font-black text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-3 py-1.5 rounded-lg drop-shadow-[0_0_5px_rgba(34,211,238,0.3)]">
+                      #{selectedCoin.symbol}
+                    </div>
+                  </div>
+
+                  {/* Stats row - 24h High/Low/Vol */}
+                  <div className="grid grid-cols-3 gap-2 mt-2 pt-3 border-t border-white/5">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">24h High</span>
+                      <span className="text-xs font-bold text-gray-200 tabular-nums">
+                        {coinStats ? "$" + coinStats.high.toLocaleString() : "..."}
+                      </span>
+                    </div>
+                    <div className="flex flex-col text-center border-x border-white/5">
+                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">24h Low</span>
+                      <span className="text-xs font-bold text-gray-200 tabular-nums">
+                        {coinStats ? "$" + coinStats.low.toLocaleString() : "..."}
+                      </span>
+                    </div>
+                    <div className="flex flex-col text-right">
+                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">Volume</span>
+                      <span className="text-xs font-black text-cyan-400 tabular-nums drop-shadow-[0_0_5px_rgba(34,211,238,0.3)]">
+                        {coinStats ? formatVolume(coinStats.vol) : "..."}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* chart box - enhanced premium glow effect */}
+<div 
+  className="relative w-full rounded-2xl bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343] overflow-hidden group"
+  style={{ 
+    boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5), 0 0 30px rgba(34,211,238,0.2), inset 0 1px 1px rgba(255,255,255,0.05)'
+  }}
+>
+  {/* Animated top gradient glow */}
+  <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
+  
+  {/* Corner glows */}
+  <div className="absolute top-0 left-0 w-20 h-20 bg-cyan-500/5 blur-3xl rounded-full" />
+  <div className="absolute bottom-0 right-0 w-20 h-20 bg-blue-500/5 blur-3xl rounded-full" />
+  
+  <div id="tradingview_chart_container" className="w-full h-[420px] relative z-10" />
+  {loadingChart && (
+    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0c1323e6] backdrop-blur-sm">
+      <svg className="animate-spin mb-4" width="54" height="54" viewBox="0 0 54 54" fill="none">
+        <circle cx="27" cy="27" r="24" stroke="#2474ff44" strokeWidth="5" />
+        <path d="M51 27a24 24 0 1 1-48 0" stroke="#FFD700" strokeWidth="5" strokeLinecap="round" />
+      </svg>
+      <div className="text-lg font-bold text-sky-100">{t("refreshing_price", "Refreshing Price...")}</div>
+    </div>
+  )}
+
+  {/* floating price pill - enhanced */}
+  <div className="hidden md:block absolute right-4 top-4 z-20">
+    <div className="px-4 py-2 rounded-xl bg-[#0f1424]/90 backdrop-blur-md border border-cyan-500/30 shadow-[0_10px_25px_rgba(0,0,0,0.5)] text-white flex flex-col items-end hover:border-cyan-400/50 transition-all duration-300">
+      <div className="text-[10px] font-bold uppercase tracking-widest text-cyan-400 mb-0.5 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]">
+        {selectedCoin.symbol}/USDT
+      </div>
+      <div className="text-base tabular-nums font-black leading-none tracking-tight">
+        {typeof coinPrice === "number" && !isNaN(coinPrice)
+          ? "$" + coinPrice.toLocaleString(undefined, { maximumFractionDigits: 3 })
+          : fetchError
+          ? t("api_error", "API Error")
+          : t("loading", "Loading...")}
+      </div>
+    </div>
+  </div>
+</div>
+            {/* 🔥 MOBILE INLINE BUY/SELL (under chart) */}
+{!timerActive && !waitingResult && !tradeDetail && (
+  <div className="lg:hidden mt-3 grid grid-cols-2 gap-3">
+    <button
+      onClick={() => openTradeModal("BUY")}
+      className="h-14 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-white text-lg font-black shadow-lg"
+    >
+      Buy
+    </button>
+
+    <button
+      onClick={() => openTradeModal("SELL")}
+      className="h-14 rounded-xl bg-gradient-to-r from-rose-500 to-rose-400 text-white text-lg font-black shadow-lg"
+    >
+      Sell
+    </button>
+  </div>
+)}
+
+{(timerActive || waitingResult) && (
+  <div className="lg:hidden mt-4 flex justify-center">
+    <ActiveTradeTimer
+      timerActive={timerActive}
+      waitingResult={waitingResult}
+      tradeState={tradeState}
+      timerKey={timerKey}
+      onTimerComplete={onTimerComplete}
+      t={t}
+    />
+  </div>
+)}
+{/* ADD THIS FOR MOBILE RESULT DISPLAY */}
+{tradeDetail && (
+  <div className="lg:hidden mt-4 relative">
+    {/* Close Button for mobile */}
+    <button
+      onClick={() => {
+        setTradeDetail(null);
+        setTradeResult(null);
+      }}
+      className="absolute top-3 right-3 z-20 h-7 w-7 rounded-full bg-black/40 text-white hover:bg-black/70 transition-colors flex items-center justify-center backdrop-blur-sm"
+      aria-label="Close Result"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    
+    <TradeResult
+      tradeDetail={tradeDetail}
+      t={t}
+    />
+  </div>
+)}
           </div>
 
-          {/* ---------------- Right: Trade panel ---------------- */}
-          <div className="w-full">
-            <Card className="w-full px-5 py-6 rounded-3xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343] relative overflow-hidden">
-              {/* Subtle top glow */}
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+          {/* ---------------- Right: Trade panel (Desktop only) ---------------- */}
+<div className="hidden lg:block w-full">
+  <Card 
+    className="w-full px-5 py-6 rounded-3xl bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343] relative overflow-hidden group"
+    style={{ 
+      boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5), 0 0 30px rgba(34,211,238,0.2), inset 0 1px 1px rgba(255,255,255,0.05)'
+    }}
+  >
+    {/* Enhanced top glow */}
+    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
+    
+    {/* Corner glows */}
+    <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 blur-3xl rounded-full" />
+    <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500/5 blur-3xl rounded-full" />
 
-              {/* header */}
-              <div className="flex items-center justify-between mb-4 relative z-10">
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{t("pair", "Pair")}</span>
-                  <span className="font-black text-2xl tracking-wide text-white drop-shadow-md">
-                    <span className="text-cyan-400">{selectedCoin.symbol}</span>/USDT
-                  </span>
-                </div>
-                <img src={NovaChainLogo} alt="NovaChain" className="h-8 w-auto ml-4 opacity-90 drop-shadow-lg" />
+    {/* header */}
+    <div className="flex items-center justify-between mb-4 relative z-10">
+      <div className="flex flex-col">
+        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">{t("pair", "Pair")}</span>
+        <span className="font-black text-2xl tracking-wide text-white drop-shadow-md">
+          <span className="text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">{selectedCoin.symbol}</span>/USDT
+        </span>
+      </div>
+      <img src={NovaChainLogo} alt="NovaChain" className="h-8 w-auto ml-4 opacity-90 drop-shadow-lg" />
+    </div>
+
+    {/* Price Stats & Selector */}
+    <div className="mb-6 pb-6 border-b border-white/5 relative z-10">
+      
+      <div className="flex justify-between items-start mb-5">
+          {/* Left: Price & % Change */}
+          <div className="flex flex-col">
+              <div className="text-3xl md:text-4xl font-black text-white tabular-nums tracking-tighter drop-shadow-[0_0_15px_rgba(255,255,255,0.15)]">
+              {typeof coinPrice === "number" && !isNaN(coinPrice)
+                  ? "$" + coinPrice.toLocaleString(undefined, { maximumFractionDigits: 2 })
+                  : "..."}
               </div>
-
-              {/* Price Stats & Selector */}
-              <div className="mb-6 pb-6 border-b border-white/5 relative z-10">
-                
-                <div className="flex justify-between items-start mb-5">
-                    {/* Left: Price & % Change */}
-                    <div className="flex flex-col">
-                        <div className="text-3xl md:text-4xl font-black text-white tabular-nums tracking-tighter drop-shadow-[0_0_15px_rgba(255,255,255,0.15)]">
-                        {typeof coinPrice === "number" && !isNaN(coinPrice)
-                            ? "$" + coinPrice.toLocaleString(undefined, { maximumFractionDigits: 2 })
-                            : "..."}
-                        </div>
-                        {coinStats && (
-                        <div className="text-sm mt-1.5 bg-white/5 inline-flex w-max px-2.5 py-0.5 rounded border border-white/10 shadow-inner">
-                            {formatPercent(coinStats.change)}
-                        </div>
-                        )}
-                    </div>
-
-                    {/* Right: Stats Stack */}
-                    <div className="flex flex-col text-right text-xs space-y-1.5 pt-1">
-                        <div className="flex justify-end gap-2 items-center">
-                            <span className="text-gray-500 font-semibold uppercase tracking-wider">24h High:</span>
-                            <span className="font-bold text-gray-200 tabular-nums">{coinStats ? "$" + coinStats.high.toLocaleString() : "..."}</span>
-                        </div>
-                        <div className="flex justify-end gap-2 items-center">
-                            <span className="text-gray-500 font-semibold uppercase tracking-wider">24h Low:</span>
-                            <span className="font-bold text-gray-200 tabular-nums">{coinStats ? "$" + coinStats.low.toLocaleString() : "..."}</span>
-                        </div>
-                        <div className="flex justify-end gap-2 items-center">
-                            <span className="text-gray-500 font-semibold uppercase tracking-wider">24h Vol:</span>
-                            <span className="font-black text-cyan-400 tabular-nums">{coinStats ? formatVolume(coinStats.vol) : "..."}</span>
-                        </div>
-                    </div>
-                </div>
-
-<div className="grid grid-cols-5 gap-2 mt-2">
-  {COINS.map((coin) => {
-    const active = selectedCoin.symbol === coin.symbol;
-
-    return (
-      <button
-        key={coin.symbol}
-        disabled={timerActive}
-        onClick={() => setSelectedCoin(coin)}
-        className={`
-          relative h-12 rounded-xl border transition-all duration-200
-          flex items-center justify-center text-sm font-bold
-          ${active
-            ? "bg-gradient-to-br from-cyan-500/30 to-blue-500/20 border-cyan-400 text-white shadow-[0_0_15px_rgba(34,211,238,0.5)]"
-            : "bg-[#0b1020] border-[#2c3040] text-gray-400 hover:text-white hover:border-cyan-500/40"}
-          ${timerActive ? "opacity-40" : ""}
-        `}
-      >
-        {coin.symbol}
-
-        {active && (
-          <div className="absolute inset-0 rounded-xl pointer-events-none
-          ring-1 ring-cyan-400/40" />
-        )}
-      </button>
-    );
-  })}
-</div>
+              {coinStats && (
+              <div className="text-sm mt-1.5 bg-white/5 inline-flex w-max px-2.5 py-0.5 rounded border border-white/10 shadow-inner">
+                  {formatPercent(coinStats.change)}
               </div>
+              )}
+          </div>
 
-              {/* Buy/Sell Buttons */}
-              <AnimatePresence>
-                {!timerActive && !waitingResult && !tradeDetail && (
-                  <motion.div
-                    key="trade-buttons"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    className="grid grid-cols-2 gap-3 relative z-10"
-                  >
-                    <button
-                      onClick={() => openTradeModal("BUY")}
-                      className="w-full h-14 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-white text-lg font-black shadow-[0_0_20px_rgba(16,185,129,0.3)] border border-emerald-400/50 transition hover:brightness-110 hover:scale-[1.02] flex items-center justify-center gap-2"
-                    >
-                      <Icon name="arrow-up" className="w-5 h-5 drop-shadow-md" />
-                      {t("buy_long", "Buy Long")}
-                    </button>
-                    <button
-                      onClick={() => openTradeModal("SELL")}
-                      className="w-full h-14 rounded-xl bg-gradient-to-r from-rose-500 to-rose-400 text-white text-lg font-black shadow-[0_0_20px_rgba(244,63,94,0.3)] border border-rose-400/50 transition hover:brightness-110 hover:scale-[1.02] flex items-center justify-center gap-2"
-                    >
-                      <Icon name="arrow-down" className="w-5 h-5 drop-shadow-md" />
-                      {t("sell_short", "Sell Short")}
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+          {/* Right: Stats Stack */}
+          <div className="flex flex-col text-right text-xs space-y-1.5 pt-1">
+              <div className="flex justify-end gap-2 items-center">
+                  <span className="text-gray-500 font-semibold uppercase tracking-wider">24h High:</span>
+                  <span className="font-bold text-gray-200 tabular-nums">{coinStats ? "$" + coinStats.high.toLocaleString() : "..."}</span>
+              </div>
+              <div className="flex justify-end gap-2 items-center">
+                  <span className="text-gray-500 font-semibold uppercase tracking-wider">24h Low:</span>
+                  <span className="font-bold text-gray-200 tabular-nums">{coinStats ? "$" + coinStats.low.toLocaleString() : "..."}</span>
+              </div>
+              <div className="flex justify-end gap-2 items-center">
+                  <span className="text-gray-500 font-semibold uppercase tracking-wider">24h Vol:</span>
+                  <span className="font-black text-cyan-400 tabular-nums drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]">{coinStats ? formatVolume(coinStats.vol) : "..."}</span>
+              </div>
+          </div>
+      </div>
+
+      <div className="grid grid-cols-5 gap-2 mt-2">
+        {COINS.map((coin) => {
+          const active = selectedCoin.symbol === coin.symbol;
+
+          return (
+            <button
+              key={coin.symbol}
+              disabled={timerActive}
+              onClick={() => setSelectedCoin(coin)}
+              className={`
+                relative h-12 rounded-xl border transition-all duration-200
+                flex items-center justify-center text-sm font-bold
+                ${active
+                  ? "bg-gradient-to-br from-cyan-500/30 to-blue-500/20 border-cyan-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.5)]"
+                  : "bg-[#0b1020] border-[#2c3040] text-gray-400 hover:text-white hover:border-cyan-500/40 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]"}
+                ${timerActive ? "opacity-40" : ""}
+              `}
+            >
+              {coin.symbol}
+
+              {active && (
+                <div className="absolute inset-0 rounded-xl pointer-events-none
+                ring-2 ring-cyan-400/50 ring-offset-0" />
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+
+    {/* Buy/Sell Buttons */}
+    <AnimatePresence>
+      {!timerActive && !waitingResult && !tradeDetail && (
+        <motion.div
+          key="trade-buttons"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className="grid grid-cols-2 gap-3 relative z-10"
+        >
+          <button
+            onClick={() => openTradeModal("BUY")}
+            className="w-full h-14 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-white text-lg font-black shadow-[0_0_25px_rgba(16,185,129,0.4)] border border-emerald-400/50 transition hover:brightness-110 hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2"
+          >
+            <Icon name="arrow-up" className="w-5 h-5 drop-shadow-md" />
+            {t("buy_long", "Buy Long")}
+          </button>
+          <button
+            onClick={() => openTradeModal("SELL")}
+            className="w-full h-14 rounded-xl bg-gradient-to-r from-rose-500 to-rose-400 text-white text-lg font-black shadow-[0_0_25px_rgba(244,63,94,0.4)] border border-rose-400/50 transition hover:brightness-110 hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(244,63,94,0.5)] flex items-center justify-center gap-2"
+          >
+            <Icon name="arrow-down" className="w-5 h-5 drop-shadow-md" />
+            {t("sell_short", "Sell Short")}
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
 
               {/* --- Polished Timer/Waiting --- */}
               <div className="mt-5 text-center"> {/* Add margin top and center alignment */}

@@ -20,10 +20,10 @@ export default function Card({
 }) {
   return (
     <section
-  className={`card border border-theme-stroke shadow-depth-1 rounded-2xl p-1 md:p-2 transition-all ${
-    className?.includes("bg-") ? className : "bg-theme-on-surface-1/90 " + (className || "")
-  }`}
->
+      className={`card border border-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.5)] rounded-2xl p-1 md:p-2 transition-all backdrop-blur-xl ${
+        className?.includes("bg-") ? className : "bg-[#080808]/60 " + (className || "")
+      }`}
+    >
       <div className="relative z-2 flex flex-wrap items-center justify-between min-h-[2.5rem] mb-0 gap-0">
         {leftContent}
         {title && (

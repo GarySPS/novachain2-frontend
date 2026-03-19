@@ -1,13 +1,15 @@
+//src>pages>ForgotPasswordPage.js
+
 import React, { useState } from "react";
 import { MAIN_API_BASE } from '../config';
-import { useNavigate } from "react-router-dom";
-import NovaChainLogo from "../components/NovaChainLogo.svg";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [step, setStep] = useState(1); // 1: email, 2: otp+password, 3: done
   const [otp, setOtp] = useState("");
   const [newPw, setNewPw] = useState("");
+  const [showPwd, setShowPwd] = useState(false);
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,7 +33,7 @@ export default function ForgotPasswordPage() {
       } else {
         setErr(data.error || "Failed to send OTP.");
       }
-    } catch (err) {
+    } catch {
       setLoading(false);
       setErr("Network error.");
     }
@@ -85,206 +87,166 @@ export default function ForgotPasswordPage() {
 
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center relative px-2 py-4"
+      className="min-h-screen w-full relative flex items-center justify-center px-4 py-10 md:py-14"
       style={{
         backgroundImage: 'url("/novachain.jpg")',
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Blurred overlay */}
-      <div className="absolute inset-0 bg-[#181c2cbb] backdrop-blur-[2px]" style={{ zIndex: 1 }} />
-      {/* Centered Card */}
-      <div className="relative z-10 w-full flex flex-col items-center">
-        <div
-          className="w-full rounded-2xl shadow-2xl border-0 bg-white/90 mx-auto"
-          style={{
-            maxWidth: "410px",
-            minWidth: 0,
-            padding: "2.2rem 2rem 1.8rem 2rem",
-            margin: "0 auto",
-            boxSizing: "border-box",
-          }}
-        >
-          {/* Logo with Glow */}
-          <div className="flex items-center justify-center w-full mb-6 mt-[-10px]">
-            <img
-              src={NovaChainLogo}
-              alt="NovaChain Logo"
-              className="block select-none pointer-events-none"
-              style={{
-                width: "90%",
-                maxWidth: 180,
-                minWidth: 110,
-                height: "auto",
-                objectFit: "contain"
-              }}
-              draggable={false}
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/60 pointer-events-none" />
+
+      <div className="relative z-10 w-full">
+        {/* Responsive card - matching Login/Signup */}
+        <div className="mx-auto w-full max-w-[400px] md:max-w-[480px] rounded-[2rem] bg-[#0a0a0a]/60 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-white/10 px-5 py-6 md:px-10 md:py-10">
+          
+          {/* Video Header */}
+          <div className="w-full h-28 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-white/10">
+            <video
+              src="/login.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
             />
           </div>
-          <h2 className="font-extrabold text-2xl mb-7 text-[#1f2fff] text-center tracking-tight">
-            Reset Password
+
+          {/* Title - Dynamic based on step */}
+          <h2 className="mt-5 md:mt-8 text-center text-xl md:text-3xl font-extrabold text-white tracking-tight">
+            {step === 1 && "Reset Password"}
+            {step === 2 && "Enter Verification"}
+            {step === 3 && "Password Changed"}
           </h2>
+          <p className="text-xs md:text-sm text-gray-400 text-center mt-2 mb-6 font-medium">
+            {step === 1 && "Enter your email to receive an OTP."}
+            {step === 2 && "Check your email for the reset code."}
+            {step === 3 && "Your account is secure."}
+          </p>
 
           {/* --- Step 1: Email --- */}
           {step === 1 && (
-            <form onSubmit={handleRequestOtp} className="flex flex-col gap-5 items-center w-full">
-              <div className="w-full flex flex-col items-center">
-                <label className="block text-lg font-bold text-[#232836] mb-1 w-full text-left">Email</label>
-                <input
-                  type="email"
-                  className="w-full h-12 rounded-xl px-4 bg-[#eaf1fb] text-base font-medium border border-[#c9e3fc] focus:border-[#00eaff] focus:ring-2 focus:ring-[#1f2fff22] outline-none transition"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                  placeholder="Enter your email"
-                  autoFocus
-                  style={{ maxWidth: 300, fontSize: "1.05rem" }}
-                />
-              </div>
+            <form onSubmit={handleRequestOtp} className="space-y-4 md:space-y-5">
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                placeholder="Enter your email address"
+                className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
+                autoFocus
+              />
+
+              {err && (
+                <div className="w-full rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs md:text-sm text-center text-red-400">
+                  {err}
+                </div>
+              )}
+              {msg && (
+                <div className="w-full rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs md:text-sm text-center text-emerald-400">
+                  {msg}
+                </div>
+              )}
+
               <button
                 type="submit"
-                disabled={loading}
-                className="h-12 rounded-xl font-extrabold text-lg tracking-wide shadow-md transition-all block mx-auto w-full"
-                style={{
-                  width: "100%",
-                  maxWidth: 300,
-                  minWidth: 110,
-                  background: "linear-gradient(90deg,#00eaff 0%,#1f2fff 53%,#ffd700 100%)",
-                  color: "#232836",
-                  letterSpacing: 1.2,
-                  boxShadow: "0 2px 16px #1f2fff14, 0 1.5px 0 #ffd70044",
-                  border: "none",
-                  outline: "none",
-                  fontSize: "1.08rem"
-                }}
-                onMouseDown={e => { e.target.style.filter = "brightness(0.93)"; }}
-                onMouseUp={e => { e.target.style.filter = ""; }}
-                onMouseLeave={e => { e.target.style.filter = ""; }}
+                disabled={loading || !email}
+                className="mt-2 w-full h-12 md:h-14 rounded-xl font-black text-sm md:text-base tracking-[0.1em] uppercase transition-all active:scale-[.99] disabled:opacity-50 disabled:cursor-not-allowed bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
               >
-                {loading ? "Sending OTP..." : "Request OTP"}
+                {loading ? "Sending..." : "Send Reset Code"}
               </button>
             </form>
           )}
 
           {/* --- Step 2: OTP + new password --- */}
           {step === 2 && (
-            <form onSubmit={handleResetPw} className="flex flex-col gap-5 items-center w-full">
-              <div className="w-full flex flex-col items-center">
-                <label className="block text-lg font-bold text-[#232836] mb-1 w-full text-left">OTP Code</label>
+            <form onSubmit={handleResetPw} className="space-y-4 md:space-y-5">
+              <input
+                type="text"
+                value={otp}
+                onChange={e => setOtp(e.target.value)}
+                required
+                placeholder="Enter 6-digit OTP code"
+                className="w-full h-12 md:h-14 rounded-xl px-4 text-center tracking-widest bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner font-mono"
+                autoFocus
+                maxLength={8}
+              />
+              
+              <div className="relative">
                 <input
-                  type="text"
-                  className="w-full h-12 rounded-xl px-4 bg-[#eaf1fb] text-base font-medium border border-[#c9e3fc] focus:border-[#00eaff] transition outline-none"
-                  value={otp}
-                  onChange={e => setOtp(e.target.value)}
+                  type={showPwd ? "text" : "password"}
+                  value={newPw}
+                  onChange={e => setNewPw(e.target.value)}
                   required
-                  placeholder="Enter OTP sent to email"
-                  autoFocus
-                  maxLength={8}
-                  style={{ maxWidth: 210, fontSize: "1.03rem" }}
+                  placeholder="New password"
+                  className="w-full h-12 md:h-14 rounded-xl px-4 pr-16 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
                 />
                 <button
                   type="button"
-                  className="mt-1 text-sm text-[#1f2fff] hover:underline"
+                  onClick={() => setShowPwd((s) => !s)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-300 hover:text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all shadow-sm"
+                >
+                  {showPwd ? "Hide" : "Show"}
+                </button>
+              </div>
+
+              <div className="flex justify-end pt-1">
+                <button
+                  type="button"
                   onClick={handleResendOtp}
                   disabled={loading}
-                  style={{
-                    background: "none", border: "none", padding: 0, fontWeight: 600, marginLeft: 2
-                  }}
+                  className="text-[11px] font-bold text-gray-400 hover:text-white transition-colors tracking-wide uppercase disabled:opacity-50"
                 >
                   Resend OTP
                 </button>
               </div>
-              <div className="w-full flex flex-col items-center">
-                <label className="block text-lg font-bold text-[#232836] mb-1 w-full text-left">New Password</label>
-                <input
-                  type="password"
-                  className="w-full h-12 rounded-xl px-4 bg-[#eaf1fb] text-base font-medium border border-[#c9e3fc] focus:border-[#ffd700] focus:ring-2 focus:ring-[#ffd70044] outline-none transition"
-                  value={newPw}
-                  onChange={e => setNewPw(e.target.value)}
-                  required
-                  placeholder="Enter new password"
-                  style={{ maxWidth: 300, fontSize: "1.05rem" }}
-                />
-              </div>
+
+              {(err || msg) && (
+                <div className={`w-full rounded-lg border ${err ? 'border-red-500/30 bg-red-500/10 text-red-400' : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'} px-3 py-2 text-xs md:text-sm text-center`}>
+                  {err || msg}
+                </div>
+              )}
+
               <button
                 type="submit"
-                disabled={loading}
-                className="h-12 rounded-xl font-extrabold text-lg tracking-wide shadow-md transition-all block mx-auto w-full"
-                style={{
-                  width: "100%",
-                  maxWidth: 300,
-                  minWidth: 110,
-                  background: "linear-gradient(90deg,#00eaff 0%,#1f2fff 53%,#ffd700 100%)",
-                  color: "#232836",
-                  letterSpacing: 1.2,
-                  boxShadow: "0 2px 16px #1f2fff14, 0 1.5px 0 #ffd70044",
-                  border: "none",
-                  outline: "none",
-                  fontSize: "1.08rem"
-                }}
-                onMouseDown={e => { e.target.style.filter = "brightness(0.93)"; }}
-                onMouseUp={e => { e.target.style.filter = ""; }}
-                onMouseLeave={e => { e.target.style.filter = ""; }}
+                disabled={loading || !otp || !newPw}
+                className="mt-2 w-full h-12 md:h-14 rounded-xl font-black text-sm md:text-base tracking-[0.1em] uppercase transition-all active:scale-[.99] disabled:opacity-50 disabled:cursor-not-allowed bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
               >
-                {loading ? "Changing..." : "Change Password"}
+                {loading ? "Updating..." : "Reset Password"}
               </button>
             </form>
           )}
 
           {/* --- Step 3: Done --- */}
           {step === 3 && (
-            <div className="text-center space-y-6">
-              <div className="text-green-600 font-bold text-lg">{msg}</div>
+            <div className="space-y-6">
+              <div className="w-full rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-5 py-6 text-center shadow-inner">
+                <p className="text-emerald-400 font-black text-lg">{msg}</p>
+              </div>
+              
               <button
-                className="h-12 rounded-xl font-extrabold text-lg tracking-wide shadow-md transition-all block mx-auto w-full"
-                style={{
-                  width: "100%",
-                  maxWidth: 260,
-                  minWidth: 100,
-                  background: "linear-gradient(90deg,#00eaff 0%,#1f2fff 53%,#ffd700 100%)",
-                  color: "#232836",
-                  letterSpacing: 1.2,
-                  boxShadow: "0 2px 16px #1f2fff14, 0 1.5px 0 #ffd70044",
-                  border: "none",
-                  outline: "none",
-                  fontSize: "1.06rem"
-                }}
                 onClick={() => navigate("/login")}
+                className="w-full h-12 md:h-14 rounded-xl font-black text-sm md:text-base tracking-[0.1em] uppercase transition-all active:scale-[.99] bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
               >
                 Go to Login
               </button>
             </div>
           )}
 
-          {(msg || err) && step !== 3 && (
-            <div className={`mt-5 text-center rounded-md py-2 px-4 ${msg ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600"}`}>
-              {msg || err}
+          {/* Back to Login Link (except on step 3) */}
+          {step !== 3 && (
+            <div className="mt-6 flex justify-center">
+              <Link
+                to="/login"
+                className="group flex items-center justify-center gap-1.5 text-xs font-bold text-gray-500 hover:text-white transition-colors tracking-wide uppercase"
+              >
+                <span className="group-hover:-translate-x-0.5 transition-transform">←</span> Back to login
+              </Link>
             </div>
           )}
         </div>
       </div>
-      {/* Logo Glow Animation */}
-      <style>
-        {`
-        @media (max-width: 480px) {
-          .responsive-card {
-            max-width: 340px !important;
-            padding-left: 1.1rem !important;
-            padding-right: 1.1rem !important;
-          }
-        }
-        @keyframes logoGlow {
-          0% { filter: drop-shadow(0 0 16px #00eaff99); }
-          48% { filter: drop-shadow(0 0 52px #00eaff66); }
-          100% { filter: drop-shadow(0 0 16px #00eaff99); }
-        }
-        img[alt="NovaChain Logo"] {
-          animation: logoGlow 2.8s ease-in-out infinite alternate;
-        }
-        `}
-      </style>
     </div>
   );
 }

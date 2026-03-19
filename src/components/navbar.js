@@ -29,10 +29,10 @@ export default function NavBar() {
     <header
       className="sticky top-0 z-30 border-b border-theme-stroke shadow-md w-full"
       style={{
-  background: "rgba(15, 23, 42, 0.85)",
-  backdropFilter: "blur(12px)",
-  borderBottom: "1px solid rgba(255,255,255,0.06)"
-}}
+        background: "rgba(5, 5, 5, 0.65)",
+        backdropFilter: "blur(16px)",
+        borderBottom: "1px solid rgba(255, 255, 255, 0.03)"
+      }}
     >
       <div className="w-full flex items-center justify-between h-16 px-4 md:max-w-7xl md:mx-auto md:px-4">
         <Link to="/" className="flex items-center gap-4">
@@ -48,10 +48,10 @@ export default function NavBar() {
                 key={item.to}
                 to={item.to}
                 className={
-                  "px-4 py-2 rounded-full font-semibold transition-all text-base-1s whitespace-nowrap " +
+                  "px-4 py-2 font-medium transition-colors text-[15px] whitespace-nowrap " +
                   (active
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-slate-400 hover:bg-slate-800 hover:text-white")
+                    ? "text-white"
+                    : "text-[#666666] hover:text-[#cccccc]")
                 }
               >
                 {t(item.label)}

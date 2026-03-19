@@ -29,6 +29,10 @@ export default function TradeHistory() {
   const [sortBy, setSortBy] = useState("time"); // time | profit | amount | duration
   const [sortDir, setSortDir] = useState("desc"); // desc | asc
   const [q, setQ] = useState(""); // simple search across id/direction/result
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   /* ---------- fetch unchanged ---------- */
   useEffect(() => {
@@ -66,6 +70,11 @@ export default function TradeHistory() {
       });
   }, []);
 
+  // Reset to page 1 whenever a filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [resultFilter, sortBy, sortDir, q]);
+
   /* ---------- derive UI list ---------- */
   const rows = useMemo(() => {
     let list = Array.isArray(history) ? [...history] : [];
@@ -75,17 +84,17 @@ export default function TradeHistory() {
       list = list.filter((t) => (t.result || "").toUpperCase() === resultFilter);
     }
 
-    // simple search (id, direction, result)
+    // simple search (id, direction, result, symbol)
     const query = q.trim().toLowerCase();
     if (query) {
-      list = list.filter((t) => {
-        const id = String(t.id || "").toLowerCase();
-        const dir = String(t.direction || "").toLowerCase();
-        const res = String(t.result || "").toLowerCase();
-        const sym = String(t.symbol || "").toLowerCase(); // <-- ADD THIS
-        return id.includes(query) || dir.includes(query) || res.includes(query) || sym.includes(query); // <-- UPDATE THIS
-      });
-    }
+      list = list.filter((t) => {
+        const id = String(t.id || "").toLowerCase();
+        const dir = String(t.direction || "").toLowerCase();
+        const res = String(t.result || "").toLowerCase();
+        const sym = String(t.symbol || "").toLowerCase();
+        return id.includes(query) || dir.includes(query) || res.includes(query) || sym.includes(query);
+      });
+    }
 
     // sort
     list.sort((a, b) => {
@@ -112,6 +121,10 @@ export default function TradeHistory() {
     return list;
   }, [history, resultFilter, sortBy, sortDir, q]);
 
+  // Derived Pagination Data
+  const totalPages = Math.ceil(rows.length / ITEMS_PER_PAGE);
+  const currentRows = rows.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   /* ---------- UI skeleton ---------- */
   const SkeletonRow = ({ i }) => (
     <tr key={`sk-${i}`} className="animate-pulse border-b border-white/5">
@@ -136,7 +149,7 @@ export default function TradeHistory() {
       <div className="fixed inset-0 bg-[linear-gradient(120deg,#0b1020f0_0%,#0d1220d8_60%,#0a101dd1_100%)] pointer-events-none" />
       
       {/* pb-32 prevents mobile navbar overlap */}
-      <div style={{ position: "relative", zIndex: 1 }} className="w-full max-w-7xl pb-32">
+      <div style={{ position: "relative", zIndex: 1 }} className="w-full max-w-7xl pb-48 md:pb-32">
         
         {/* ----- Header + Controls ----- */}
         <Card className={`${cardClass} mb-6`}>
@@ -233,24 +246,37 @@ export default function TradeHistory() {
             <div className="text-gray-500 text-sm font-medium">Completed trades will be recorded here.</div>
           </Card>
         ) : (
-          <Card className={`${cardClass} p-0`}>
-            <div className="w-full">
+          <Card className={`${cardClass} p-0 flex flex-col`}>
+            <div className="w-full flex-1">
               
               {/* 📱 MOBILE CARD VIEW */}
               <div className="md:hidden flex flex-col divide-y divide-white/5">
-                {rows.map((t, idx) => {
+                {currentRows.map((t, idx) => {
                   const isBuy = String(t.direction).toUpperCase() === "BUY";
                   const res = String(t.result || "").toUpperCase();
+                  const baseCoin = (t.symbol || "btc").split(/[/_-]/)[0].toLowerCase();
+                  
                   return (
                     <div key={`trade-mob-${t.id || idx}`} className="p-4 hover:bg-white/[0.02] transition-colors flex flex-col gap-3">
                       {/* Top row: Direction, Symbol, Result */}
                       <div className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-inner ${isBuy ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'}`}>
-                            <Icon name={isBuy ? "arrow-up" : "arrow-down"} className="w-5 h-5" />
+                          <div className="w-10 h-10 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center shadow-inner shrink-0 relative overflow-hidden">
+                            <span className="absolute text-xs font-black text-gray-500 tracking-widest">{baseCoin.substring(0,2).toUpperCase()}</span>
+                            <img 
+                              src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${baseCoin}.svg`} 
+                              alt={t.symbol} 
+                              className="w-7 h-7 object-contain drop-shadow-md relative z-10"
+                              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                            />
                           </div>
                           <div className="flex flex-col">
-                            <span className="font-black text-white text-lg tracking-wide">{(t.symbol || "N/A").toUpperCase()}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="font-black text-white text-lg tracking-wide">{(t.symbol || "N/A").toUpperCase()}</span>
+                              <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold tracking-widest ${isBuy ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                                {isBuy ? 'BUY' : 'SELL'}
+                              </span>
+                            </div>
                             <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{t.id}</span>
                           </div>
                         </div>
@@ -306,9 +332,11 @@ export default function TradeHistory() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
-                    {rows.map((t, idx) => {
+                    {currentRows.map((t, idx) => {
                       const isBuy = String(t.direction).toUpperCase() === "BUY";
                       const res = String(t.result || "").toUpperCase();
+                      const baseCoin = (t.symbol || "btc").split(/[/_-]/)[0].toLowerCase();
+
                       return (
                         <tr key={`trade-${t.id || idx}`} className="group hover:bg-white/[0.02] transition-colors" style={{ height: 72 }}>
                           <td className="py-3 pl-6 pr-3 font-mono text-gray-500 text-xs">{t.id}</td>
@@ -319,7 +347,18 @@ export default function TradeHistory() {
                             </span>
                           </td>
                           <td className="py-3 px-3 text-left font-black text-white tracking-wide">
-                            {(t.symbol || "N/A").toUpperCase()}
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center shadow-inner shrink-0 relative overflow-hidden">
+                                <span className="absolute text-[9px] font-black text-gray-500">{baseCoin.substring(0,1).toUpperCase()}</span>
+                                <img 
+                                  src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${baseCoin}.svg`} 
+                                  alt={t.symbol} 
+                                  className="w-4 h-4 object-contain relative z-10"
+                                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                />
+                              </div>
+                              <span>{(t.symbol || "N/A").toUpperCase()}</span>
+                            </div>
                           </td>
                           <td className="py-3 px-3 text-right font-bold text-gray-200 tabular-nums">
                             {fmtUSD(Number(t.amount))}
@@ -351,6 +390,31 @@ export default function TradeHistory() {
                 </table>
               </div>
             </div>
+
+            {/* ----- Pagination Footer ----- */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between px-5 py-4 bg-[#0b1020]/90 border-t border-cyan-500/10">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="h-10 px-4 rounded-xl bg-[#1a2343] text-white font-bold text-sm ring-1 ring-white/10 hover:bg-[#202b54] hover:ring-cyan-500/50 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                   <Icon name="arrow-left" className="w-4 h-4" /> Prev
+                </button>
+                
+                <div className="text-gray-400 text-sm font-medium">
+                  Page <span className="text-white font-black">{currentPage}</span> of {totalPages}
+                </div>
+
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="h-10 px-4 rounded-xl bg-[#1a2343] text-white font-bold text-sm ring-1 ring-white/10 hover:bg-[#202b54] hover:ring-cyan-500/50 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  Next <Icon name="arrow-right" className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </Card>
         )}
       </div>

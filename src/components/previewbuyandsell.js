@@ -1,3 +1,5 @@
+//src>components>previewbuyandsell.js
+
 import React, { useState } from "react";
 import ButtonBack from "./buttonback";
 import Switch from "../components/switch";

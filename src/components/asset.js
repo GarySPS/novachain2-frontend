@@ -1,3 +1,4 @@
+//src>components>asset.js
 import React from "react";
 import { Link } from "react-router-dom";
 import Image from "./image";      // Adjust import if needed
@@ -7,8 +8,7 @@ export default function Asset({ item }) {
   return (
     <Link
       to="/token"
-      className="flex items-center gap-4 px-5 py-3 rounded-2xl bg-theme-on-surface-2/80 hover:bg-theme-on-surface-2 transition-all shadow-sm
-        group cursor-pointer"
+      className="flex items-center gap-4 px-5 py-3 rounded-2xl bg-[#080808]/60 backdrop-blur-md border border-white/5 hover:bg-[#111111]/80 hover:border-white/10 hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-all duration-300 group cursor-pointer"
       style={{ minHeight: "4.5rem" }}
     >
       {/* Logo */}

@@ -636,8 +636,13 @@ const handleWithdraw = async (e) => {
                   <div key={symbol} className="flex flex-col p-4 hover:bg-white/[0.02] transition-colors">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center p-2 shadow-inner">
-                           <Icon name={symbol?.toLowerCase() || "coin"} className="w-full h-full object-contain" />
+                        <div className="w-10 h-10 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center p-1.5 shadow-inner">
+                          <img 
+                            src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${symbol.toLowerCase()}.svg`} 
+                            alt={symbol} 
+                            className="w-full h-full object-contain drop-shadow-md"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          />
                         </div>
                         <div className="flex flex-col">
                           <span className="font-bold text-gray-100 text-lg">{symbol}</span>
@@ -680,12 +685,17 @@ const handleWithdraw = async (e) => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
-                    {balances.map(({ symbol, icon, balance, frozen }) => (
+                    {balances.map(({ symbol, balance, frozen }) => (
                       <tr key={symbol} className="group hover:bg-white/[0.02] transition-colors" style={{ height: 72 }}>
                         <td className="py-3 pl-6 pr-2">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center p-1.5 shadow-inner">
-                              <Icon name={symbol?.toLowerCase() || "coin"} className="w-full h-full object-contain" />
+                              <img 
+                                src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${symbol.toLowerCase()}.svg`} 
+                                alt={symbol} 
+                                className="w-full h-full object-contain drop-shadow-md"
+                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                              />
                             </div>
                             <span className="font-bold text-gray-100">{symbol}</span>
                           </div>
@@ -722,57 +732,84 @@ const handleWithdraw = async (e) => {
         </div>
 
         {/* ===== AI Trading Investment Card ===== */}
-        <Card id="earn-section" className={`${cardClass} p-0 relative overflow-hidden`}>
-          {/* Subtle tech background glow */}
-          <div className="absolute top-0 right-0 w-72 h-72 bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-          
-          <div className="bg-[#0f1424] px-5 py-5 md:px-6 md:py-6 border-b border-indigo-500/20 flex justify-between items-center relative z-10">
-            <div className="flex items-center gap-3 text-white text-xl md:text-2xl font-black">
-              <div className="relative flex h-8 w-8 items-center justify-center">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-20"></span>
-                <Icon name="cpu" className="relative z-10 w-6 h-6 text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
+        <Card id="earn-section" className={`${cardClass} p-0 relative overflow-hidden border-cyan-500/20 shadow-[0_0_40px_rgba(34,211,238,0.05)]`}>
+          {/* Premium Tech Background Effects */}
+          <div className="absolute top-[-50px] right-[-50px] w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+          <div className="absolute bottom-[-50px] left-[-50px] w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+          {/* Header */}
+          <div className="bg-[#0b1020]/80 backdrop-blur-md px-6 py-5 border-b border-cyan-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
+            <div className="flex items-center gap-4">
+              
+              {/* Premium Fail-Proof AI Logo Lockup */}
+              <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0d1425] to-[#161f38] border border-cyan-500/40 shadow-[0_0_20px_rgba(34,211,238,0.25)]">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-xl bg-cyan-400 opacity-20"></span>
+                <span className="relative z-10 font-black text-xl italic bg-gradient-to-br from-white via-cyan-300 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] tracking-tighter pr-0.5">
+                  AI
+                </span>
               </div>
-              {t("ai_trading_investment", "AI Trading Investment")}
+
+              <div>
+                <h2 className="text-xl md:text-2xl font-black bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                  {t("ai_trading_investment", "AI Trading Investment")}
+                </h2>
+                <p className="text-xs text-cyan-400/80 font-medium tracking-widest uppercase mt-0.5">Automated Yield Generation</p>
+              </div>
             </div>
+            
             {/* AI Active Badge */}
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[10px] sm:text-xs font-bold tracking-widest uppercase">
-              <span className={`w-1.5 h-1.5 rounded-full ${totalEarnUsd > 0 ? "bg-cyan-400 animate-pulse shadow-[0_0_5px_#22d3ee]" : "bg-gray-500"}`}></span>
-              {totalEarnUsd > 0 ? "Bot Active" : "Standby"}
+            <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full border ${totalEarnUsd > 0 ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.2)]" : "bg-white/5 border-white/10 text-gray-400"}`}>
+              <span className={`w-2 h-2 rounded-full ${totalEarnUsd > 0 ? "bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]" : "bg-gray-500"}`}></span>
+              <span className="text-[11px] font-bold tracking-widest uppercase">{totalEarnUsd > 0 ? "System Active" : "Standby Mode"}</span>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-5 py-5 border-b border-white/5 relative z-10">
-            <div className="flex flex-col items-center justify-center p-5 rounded-2xl bg-[#0b1020] ring-1 ring-white/5 shadow-inner relative overflow-hidden group">
-              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">{t("deployed_capital", "Deployed Capital")}</div>
-              <div className="text-3xl font-black text-white tabular-nums drop-shadow-md">{fmtUSD(totalEarnUsd)}</div>
-            </div>
-            <div className="flex flex-col items-center justify-center p-5 rounded-2xl bg-indigo-900/10 ring-1 ring-indigo-500/30 shadow-[inset_0_0_20px_rgba(99,102,241,0.05)] relative overflow-hidden">
-              <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent"></div>
-              <div className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-1">{t("projected_roi", "AI Projected ROI")}</div>
-              <div className="text-3xl font-black text-cyan-400 tabular-nums drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">~{currentEarnRate}% / mo</div>
+          {/* Data Readouts */}
+          <div className="px-6 py-6 md:py-8 border-b border-white/5 relative z-10 bg-gradient-to-b from-white/[0.02] to-transparent">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+              {/* Capital Box */}
+              <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#0b1020]/80 backdrop-blur-sm border border-white/10 shadow-[inset_0_4px_20px_rgba(255,255,255,0.02)] relative overflow-hidden group hover:border-indigo-500/30 transition-colors duration-500">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
+                <div className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">{t("deployed_capital", "Deployed Capital")}</div>
+                <div className="text-4xl font-black text-white tabular-nums drop-shadow-lg tracking-tight">{fmtUSD(totalEarnUsd)}</div>
+              </div>
+              
+              {/* ROI Box */}
+              <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-cyan-900/10 backdrop-blur-sm border border-cyan-500/20 shadow-[inset_0_4px_30px_rgba(34,211,238,0.05)] relative overflow-hidden group hover:border-cyan-500/40 transition-colors duration-500">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-cyan-400/80 to-transparent"></div>
+                <div className="text-sm font-bold text-cyan-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                  <Icon name="activity" className="w-4 h-4 animate-pulse" /> {t("projected_roi", "AI Projected ROI")}
+                </div>
+                <div className="text-4xl font-black text-cyan-300 tabular-nums drop-shadow-[0_0_15px_rgba(34,211,238,0.4)] tracking-tight">
+                  ~{currentEarnRate}% <span className="text-xl text-cyan-500/80 font-bold">/ mo</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-3 px-5 py-5 border-b border-white/5 relative z-10">
-            <button onClick={() => openEarnModal('save')} className="flex-1 h-12 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-500 text-white text-lg font-black hover:scale-[1.02] transition shadow-[0_0_20px_rgba(34,211,238,0.25)] border border-cyan-400/30">
-              <span className="inline-flex items-center gap-2"><Icon name="zap" className="w-5 h-5" /> {t("deploy_funds", "Deploy Funds")}</span>
+          {/* Action Buttons */}
+          <div className="flex flex-col gap-3 px-6 py-6 border-b border-white/5 relative z-10 bg-gradient-to-b from-transparent to-[#0a0e17]/50">
+            <button onClick={() => openEarnModal('save')} className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-400 text-white text-[15px] md:text-base font-black tracking-wide shadow-[0_0_20px_rgba(34,211,238,0.25)] border border-cyan-400/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] transition-all duration-300 hover:scale-[1.02] flex items-center justify-center">
+              {t("deploy_funds", "Deploy Capital to AI")}
             </button>
-            <button onClick={() => openEarnModal('redeem')} className="flex-1 h-12 rounded-xl bg-[#0b1020] ring-1 ring-rose-500/20 text-rose-400 hover:bg-rose-500/10 text-lg font-bold transition">
-              <span className="inline-flex items-center gap-2"><Icon name="power" className="w-5 h-5" /> {t("withdraw_capital", "Withdraw Capital")}</span>
+            <button onClick={() => openEarnModal('redeem')} className="w-full h-12 rounded-xl bg-[#0b1020] border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/50 text-[15px] md:text-base font-bold tracking-wide transition-all duration-300 flex items-center justify-center">
+              {t("withdraw_capital", "Withdraw")}
             </button>
           </div>
 
-          <div className="w-full relative z-10">
+          <div className="w-full relative z-10 bg-[#0b1020]/30">
             {/* MOBILE AI LIST */}
             <div className="md:hidden flex flex-col divide-y divide-white/5">
               {earnBalances.length > 0 ? earnBalances.map(({ symbol, balance }) => (
-                <div key={`earn-${symbol}`} className="flex items-center justify-between p-4 hover:bg-white/[0.02]">
-                  <div className="flex items-center gap-3">
-                    <Icon name={symbol?.toLowerCase() || "coin"} className="w-8 h-8 drop-shadow-md" />
-                    <span className="font-bold text-gray-100">{symbol}</span>
+                <div key={`earn-${symbol}`} className="flex items-center justify-between p-5 hover:bg-white/[0.02]">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center p-2 shadow-inner">
+                      <Icon name={symbol?.toLowerCase() || "coin"} className="w-full h-full object-contain drop-shadow-md" />
+                    </div>
+                    <span className="font-bold text-gray-100 text-lg">{symbol}</span>
                   </div>
                   <div className="flex flex-col items-end">
-                    <span className="font-bold text-cyan-400">
+                    <span className="font-bold text-cyan-400 text-lg">
                       {(() => {
                         const p = prices[symbol] ?? (symbol === "USDT" ? 1 : undefined);
                         return p !== undefined ? fmtUSD(Number(balance) * p) : "--";
@@ -782,33 +819,38 @@ const handleWithdraw = async (e) => {
                   </div>
                 </div>
               )) : (
-                <div className="text-center py-8 text-indigo-500/50 text-sm font-medium">{t("no_ai_capital", "No capital deployed to AI currently.")}</div>
+                <div className="text-center py-10 text-indigo-400/50 text-sm font-medium flex flex-col items-center gap-2">
+                  <Icon name="cpu" className="w-8 h-8 opacity-50" />
+                  {t("no_ai_capital", "No capital deployed to AI currently.")}
+                </div>
               )}
             </div>
             
             {/* DESKTOP AI TABLE */}
             <div className="hidden md:block w-full overflow-x-auto">
               <table className="w-full min-w-[600px] text-base">
-                <thead className="bg-[#0b1020] sticky top-0">
+                <thead className="bg-[#0b1020]/80 sticky top-0 backdrop-blur-sm">
                   <tr className="text-left text-gray-400 border-y border-indigo-500/10 text-sm uppercase tracking-wider">
-                    <th className="py-4 pl-6 pr-2 font-semibold">{t("asset", "Asset")}</th>
+                    <th className="py-4 pl-8 pr-2 font-semibold">{t("asset", "Asset")}</th>
                     <th className="py-4 px-2 text-right font-semibold">{t("deployed", "Deployed Amount")}</th>
-                    <th className="py-4 px-6 text-right font-semibold">{t("usd_value", "USD Value")}</th>
+                    <th className="py-4 px-8 text-right font-semibold">{t("usd_value", "USD Value")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
                   {earnBalances.length > 0 ? earnBalances.map(({ symbol, balance }) => (
-                    <tr key={`earn-${symbol}`} className="group hover:bg-white/[0.02]" style={{ height: 60 }}>
-                      <td className="py-3 pl-6 pr-2">
-                        <div className="flex items-center gap-3">
-                          <Icon name={symbol?.toLowerCase() || "coin"} className="w-6 h-6" />
+                    <tr key={`earn-${symbol}`} className="group hover:bg-white/[0.03] transition-colors" style={{ height: 68 }}>
+                      <td className="py-3 pl-8 pr-2">
+                        <div className="flex items-center gap-4">
+                          <div className="w-8 h-8 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center p-1.5 shadow-inner">
+                            <Icon name={symbol?.toLowerCase() || "coin"} className="w-full h-full object-contain" />
+                          </div>
                           <span className="font-bold text-gray-100">{symbol}</span>
                         </div>
                       </td>
                       <td className="py-3 px-2 text-right tabular-nums font-semibold text-gray-300">
                         {Number(balance).toLocaleString(undefined, { maximumFractionDigits: 6 })}
                       </td>
-                      <td className="py-3 px-6 text-right tabular-nums font-bold text-cyan-400">
+                      <td className="py-3 px-8 text-right tabular-nums font-black text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.2)]">
                         {(() => {
                           const p = prices[symbol] ?? (symbol === "USDT" ? 1 : undefined);
                           return p !== undefined ? fmtUSD(Number(balance) * p) : "--";
@@ -817,8 +859,11 @@ const handleWithdraw = async (e) => {
                     </tr>
                   )) : (
                     <tr>
-                      <td colSpan="3" className="text-center py-10 text-indigo-500/50 font-medium">
-                        {t("no_ai_capital", "No capital deployed to AI currently.")}
+                      <td colSpan="3" className="text-center py-12 text-indigo-400/50 font-medium">
+                        <div className="flex flex-col items-center justify-center gap-3">
+                          <Icon name="cpu" className="w-10 h-10 opacity-50" />
+                          {t("no_ai_capital", "No capital deployed to AI currently.")}
+                        </div>
                       </td>
                     </tr>
                   )}

@@ -56,7 +56,8 @@ function AppShell() {
           position: "fixed",
           zIndex: -1,
           inset: 0,
-          background: `linear-gradient(120deg, #15192ae0 0%, #181c25bb 70%, #101622cc 100%), url("/novachain.jpg") center center / cover no-repeat fixed`,
+          backgroundColor: "#050505",
+          backgroundImage: "radial-gradient(circle at 50% 0%, #111a24 0%, #050505 60%)",
           pointerEvents: "none",
         }}
       />

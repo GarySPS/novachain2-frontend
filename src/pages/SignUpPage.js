@@ -18,6 +18,8 @@ export default function SignUpPage() {
   const navigate = useNavigate();
   const [codeStage, setCodeStage] = useState(false);
   const [memberCode, setMemberCode] = useState(["", "", "", "", ""]);
+  const [showPwd, setShowPwd] = useState(false);
+  const [showConfirmPwd, setShowConfirmPwd] = useState(false);
 
   const { open } = useAppKit();
   const { address, isConnected } = useAccount();
@@ -52,138 +54,138 @@ export default function SignUpPage() {
   }, [isConnected, address, navigate]);
 
   const handleSignUp = async (e) => {
-  e.preventDefault();
-  setError("");
-  setSuccess("");
+    e.preventDefault();
+    setError("");
+    setSuccess("");
 
-  if (password !== confirmPassword) {
-    setError("Passwords do not match.");
-    return;
-  }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
 
-  const finalEmail = signupMethod === "email" ? email : "";
-  const finalPhone = signupMethod === "phone" ? phoneNumber : "";
+    const finalEmail = signupMethod === "email" ? email : "";
+    const finalPhone = signupMethod === "phone" ? phoneNumber : "";
 
-  if (signupMethod === "phone" && codeStage && memberCode.join("").length !== 5) {
-  setError("Please enter your 5-digit member code.");
-  return;
-}
+    if (signupMethod === "phone" && codeStage && memberCode.join("").length !== 5) {
+      setError("Please enter your 5-digit member code.");
+      return;
+    }
 
-  if (!finalEmail && !finalPhone) {
-    setError("Please provide your contact information.");
-    return;
-  }
+    if (!finalEmail && !finalPhone) {
+      setError("Please provide your contact information.");
+      return;
+    }
+    
     try {
       const res = await fetch(`${MAIN_API_BASE}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-  username,
-  password,
-  email: finalEmail,
-  phoneNumber: finalPhone,
-  memberCode: codeStage ? memberCode.join("") : null
-}),
+          username,
+          password,
+          email: finalEmail,
+          phoneNumber: finalPhone,
+          memberCode: codeStage ? memberCode.join("") : null
+        }),
       });
-      const data = await res.json();
+      const data = await res.json();
 
-      if (res.status === 409 && data.unverified) {
-        if (email) {
-          setSuccess("Unverified email. New OTP sent.");
-          setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
-        } else {
-          setSuccess("Account creating pending.");
-        }
-        return;
-      }
-      if (!res.ok) {
-        setError(data.error || "Signup failed");
-        return;
-      }
+      if (res.status === 409 && data.unverified) {
+        if (email) {
+          setSuccess("Unverified email. New OTP sent.");
+          setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
+        } else {
+          setSuccess("Account creating pending.");
+        }
+        return;
+      }
+      if (!res.ok) {
+        setError(data.error || "Signup failed");
+        return;
+      }
 
-      if (email) {
-        setSuccess("OTP code sent to your email.");
-        setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
-      } else {
-  if (signupMethod === "phone" && !codeStage) {
-    setSuccess("Phone registered. Please enter Telegram veification code.");
-    setCodeStage(true);
-  } else {
-    setSuccess("Code submitted. Waiting for verification.");
-  }
-}
-    } catch {
-      setError("Signup failed. Please try again.");
-    }
-  };
+      if (email) {
+        setSuccess("OTP code sent to your email.");
+        setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
+      } else {
+        if (signupMethod === "phone" && !codeStage) {
+          setSuccess("Phone registered. Please enter Telegram verification code.");
+          setCodeStage(true);
+        } else {
+          setSuccess("Code submitted. Waiting for verification.");
+        }
+      }
+    } catch {
+      setError("Signup failed. Please try again.");
+    }
+  };
 
-const handleCodeChange = (index, value) => {
-  if (!/^[0-9]?$/.test(value)) return;
+  const handleCodeChange = (index, value) => {
+    if (!/^[0-9]?$/.test(value)) return;
 
-  const newCode = [...memberCode];
-  newCode[index] = value;
-  setMemberCode(newCode);
+    const newCode = [...memberCode];
+    newCode[index] = value;
+    setMemberCode(newCode);
 
-  if (value && index < 4) {
-    document.getElementById(`code-${index + 1}`)?.focus();
-  }
-};
+    if (value && index < 4) {
+      document.getElementById(`code-${index + 1}`)?.focus();
+    }
+  };
 
-return (
+  return (
     <div
       className="min-h-screen w-full relative flex items-center justify-center px-4 py-10 md:py-14"
       style={{
-        backgroundImage: 'url("/login.jpg")',
+        backgroundImage: 'url("/novachain.jpg")',
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      {/* Overlay has been removed */}
+      {/* Dark overlay to make the glass card pop against the background */}
+      <div className="absolute inset-0 bg-black/60 pointer-events-none" />
 
       <div className="relative z-10 w-full">
-        {/* UPDATED: Card styling to match login page */}
-        <div className="mx-auto w-full max-w-[480px] rounded-3xl bg-[#10162F]/80 backdrop-blur-xl shadow-2xl border border-sky-500/30 px-6 py-8 md:px-10 md:py-10">
+        {/* Responsive card - matching Login */}
+        <div className="mx-auto w-full max-w-[400px] md:max-w-[480px] rounded-[2rem] bg-[#0a0a0a]/60 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-white/10 px-5 py-6 md:px-10 md:py-10">
           
-          {/* Logo has been removed */}
-
-          {/* ADDED: Inner video to match login page */}
-          <div className="w-full h-36 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-sky-400/20">
-              <video
-                  src="/login.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-              />
+          {/* Video Header */}
+          <div className="w-full h-28 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-white/10">
+            <video
+              src="/login.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            />
           </div>
 
-          {/* UPDATED: Title styling for dark theme */}
-          <h2 className="mt-6 text-center text-2xl md:text-3xl font-extrabold tracking-tight text-slate-100">
+          {/* Title */}
+          <h2 className="mt-4 md:mt-6 text-center text-xl md:text-3xl font-extrabold tracking-tight text-slate-100">
             Create Account
           </h2>
 
-          {/* 1. Web3 Option Moved to Top */}
+          {/* Web3 Button */}
           <button
             type="button"
             onClick={() => open()}
-            className="mt-6 w-full h-12 rounded-xl font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-600 flex items-center justify-center gap-3 transition shadow"
+            className="mt-4 md:mt-6 w-full h-11 md:h-12 rounded-xl font-semibold text-white bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center gap-3 transition-all shadow-sm text-sm md:text-base"
           >
             <img 
               src="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Icon/Blue%20(Default)/Icon.svg" 
               alt="WalletConnect" 
-              className="w-5 h-5" 
+              className="w-4 h-4 md:w-5 md:h-5 drop-shadow-md" 
             />
             Connect Web3 Wallet
           </button>
 
-          <div className="my-5 flex items-center gap-3">
-            <div className="h-px w-full bg-slate-700" />
-            <span className="text-slate-400 font-medium text-xs uppercase tracking-wider">or</span>
-            <div className="h-px w-full bg-slate-700" />
+          <div className="my-6 flex items-center gap-4">
+            <div className="h-[1px] w-full bg-gradient-to-r from-transparent to-white/10" />
+            <span className="text-gray-500 font-bold text-[10px] uppercase tracking-[0.2em]">or</span>
+            <div className="h-[1px] w-full bg-gradient-to-l from-transparent to-white/10" />
           </div>
 
-          {/* 2. Compact Form */}
+          {/* Compact Form */}
           <form onSubmit={handleSignUp} className="space-y-4 md:space-y-5">
             
             <input
@@ -193,23 +195,31 @@ return (
               onChange={(e) => setUsername(e.target.value)}
               required
               placeholder="Username"
-              className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+              className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
             />
 
-            {/* Email / Phone Toggle Tab */}
-            <div className="space-y-3">
-              <div className="flex bg-slate-800/80 p-1 rounded-xl border border-slate-700">
+            {/* Email / Phone Toggle Tab - Premium UI Update */}
+            <div className="space-y-4">
+              <div className="flex bg-white/[0.04] p-1.5 rounded-xl border border-white/5">
                 <button
                   type="button"
                   onClick={() => setSignupMethod("email")}
-                  className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${signupMethod === "email" ? "bg-sky-500 text-white shadow" : "text-slate-400 hover:text-slate-200"}`}
+                  className={`flex-1 py-2 text-xs md:text-sm font-bold uppercase tracking-wider rounded-lg transition-all ${
+                    signupMethod === "email" 
+                      ? "bg-white text-black shadow-md" 
+                      : "text-gray-500 hover:text-white"
+                  }`}
                 >
                   Email
                 </button>
                 <button
                   type="button"
                   onClick={() => setSignupMethod("phone")}
-                  className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${signupMethod === "phone" ? "bg-sky-500 text-white shadow" : "text-slate-400 hover:text-slate-200"}`}
+                  className={`flex-1 py-2 text-xs md:text-sm font-bold uppercase tracking-wider rounded-lg transition-all ${
+                    signupMethod === "phone" 
+                      ? "bg-white text-black shadow-md" 
+                      : "text-gray-500 hover:text-white"
+                  }`}
                 >
                   Telegram
                 </button>
@@ -223,7 +233,7 @@ return (
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email address"
-                  className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+                  className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
                 />
               ) : (
                 <input
@@ -231,108 +241,117 @@ return (
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  placeholder="Phone number (e.g. +1234567890)"
-                  className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
+                  placeholder="Phone number"
+                  className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
                 />
-                
               )}
             </div>
 
             {signupMethod === "phone" && codeStage && (
-  <div className="mt-3">
+              <div className="space-y-3">
+                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">
+                  Enter Telegram verification code
+                </p>
+                <div className="flex gap-2 justify-between">
+                  {[0,1,2,3,4].map((i) => (
+                    <input
+                      key={i}
+                      id={`code-${i}`}
+                      type="text"
+                      maxLength="1"
+                      value={memberCode[i]}
+                      onChange={(e)=>handleCodeChange(i,e.target.value)}
+                      className="w-full h-12 md:h-14 text-center text-xl font-black rounded-xl bg-white/[0.04] text-white border border-white/10 focus:border-white/40 focus:bg-white/[0.08] focus:outline-none transition-all shadow-inner"
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
 
-    <p className="text-xs text-slate-400 mb-2">
-      Enter Telegram verification code
-    </p>
+            {/* Password fields with show/hide toggles */}
+            <div className="space-y-4 md:space-y-0 md:flex md:gap-4">
+              <div className="relative w-full">
+                <input
+                  id="password"
+                  type={showPwd ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="Password"
+                  className="w-full h-12 md:h-14 rounded-xl px-4 pr-16 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPwd((s) => !s)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-300 hover:text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all shadow-sm"
+                >
+                  {showPwd ? "Hide" : "Show"}
+                </button>
+              </div>
 
-    <div className="flex gap-2 justify-between">
-      {[0,1,2,3,4].map((i) => (
-        <input
-          key={i}
-          id={`code-${i}`}
-          type="text"
-          maxLength="1"
-          value={memberCode[i]}
-          onChange={(e)=>handleCodeChange(i,e.target.value)}
-          className="w-full h-12 text-center text-xl rounded-xl bg-slate-800/60 text-white border border-slate-700 focus:ring-2 focus:ring-sky-400"
-        />
-      ))}
-    </div>
-
-  </div>
-)}
-
-            {/* Passwords (Grouped on desktop, stacked on mobile) */}
-            <div className="flex flex-col md:flex-row gap-4">
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="Password"
-                className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
-              />
-              <input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                placeholder="Confirm Password"
-                className="w-full h-12 rounded-xl px-4 bg-slate-800/60 text-slate-100 placeholder-slate-400 border border-slate-700 focus:outline-none focus:ring-4 focus:ring-sky-400/20 focus:border-sky-400 transition"
-              />
+              <div className="relative w-full">
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPwd ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  placeholder="Confirm Password"
+                  className="w-full h-12 md:h-14 rounded-xl px-4 pr-16 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPwd((s) => !s)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-300 hover:text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all shadow-sm"
+                >
+                  {showConfirmPwd ? "Hide" : "Show"}
+                </button>
+              </div>
             </div>
 
             {/* Alerts */}
             {error && (
-              <div className="w-full rounded-lg border border-red-400/50 bg-red-500/20 px-3 py-2 text-sm md:text-base text-red-200">
+              <div className="w-full rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs md:text-sm text-red-400 text-center">
                 {error}
               </div>
             )}
             {success && (
-              <div className="w-full rounded-lg border border-emerald-400/50 bg-emerald-500/20 px-3 py-2 text-sm md:text-base text-emerald-200">
+              <div className="w-full rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs md:text-sm text-emerald-400 text-center">
                 {success}
               </div>
             )}
 
-            {/* Submit */}
+            {/* Submit Button */}
             <button
               type="submit"
-              className="mt-2 w-full h-12 rounded-xl font-extrabold text-base md:text-lg tracking-wide shadow-lg border-0 outline-none transition active:scale-[.99]"
-              style={{
-                background: "linear-gradient(90deg,#00eaff 0%,#1f2fff 55%,#ffd700 100%)",
-                color: "white",
-                letterSpacing: "0.02em",
-                boxShadow: "0 10px 24px rgba(0, 234, 255, 0.15)",
-              }}
+              className="mt-4 w-full h-12 md:h-14 rounded-xl font-black text-sm md:text-base tracking-[0.1em] uppercase transition-all active:scale-[.99] bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
             >
               Register
             </button>
           </form>
 
           {/* Terms */}
-          <p className="mt-7 text-center text-[11px] md:text-xs text-slate-400 font-medium leading-relaxed">
+          <p className="mt-6 md:mt-8 text-center text-[10px] md:text-xs text-gray-500 font-medium leading-relaxed">
             By signing up, you agree to our{" "}
-            <Link className="text-sky-400 hover:underline" to="/terms" target="_blank">
+            <Link className="text-white hover:underline transition-colors font-bold" to="/terms" target="_blank">
               Terms of Use
             </Link>
             ,{" "}
-            <Link className="text-sky-400 hover:underline" to="/privacy" target="_blank">
+            <Link className="text-white hover:underline transition-colors font-bold" to="/privacy" target="_blank">
               Privacy Notice
             </Link>{" "}
             and{" "}
-            <Link className="text-sky-400 hover:underline" to="/kyc" target="_blank">
+            <Link className="text-white hover:underline transition-colors font-bold" to="/kyc" target="_blank">
               AML/KYC Policy
             </Link>
             .
           </p>
 
           {/* Login Link */}
-          <div className="mt-4 flex justify-center">
+          <div className="mt-5 md:mt-6 flex justify-center">
             <Link
               to="/login"
-              className="text-sm md:text-base font-bold text-sky-400 hover:text-sky-300 hover:underline"
+              className="text-sm md:text-base font-bold text-gray-400 hover:text-white transition-colors"
             >
               Already have an account? Login
             </Link>

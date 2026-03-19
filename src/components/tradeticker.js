@@ -1,4 +1,7 @@
+//src>components>tradeticker.js
+
 import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Fake data
 const usernames = ['User123', 'Satoshi21', 'CryptoQueen', 'ElonX', 'Whale9', 'GaryBTC', 'NovaVIP'];
@@ -15,41 +18,45 @@ export default function TradeTicker() {
 
       setMessages(prev => [
         { id: Date.now() + Math.random(), user, amount, coin },
-        ...prev.slice(0, 5)
+        ...prev.slice(0, 8)
       ]);
     };
+
     generateMessage();
     const interval = setInterval(generateMessage, 3000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="relative w-full overflow-hidden bg-theme-on-surface-2 rounded-xl shadow-md border border-theme-stroke my-2">
-      <div className="flex animate-marquee whitespace-nowrap py-3 px-6">
-        {messages.map(({ id, user, amount, coin }) => (
-          <span key={id} className="flex items-center mx-6 font-medium text-base-2">
-            <span className="mr-2">⚡</span>
-            <span className="text-theme-yellow font-bold">{user}</span>
-            <span className="mx-1">won</span>
-            <span className="text-theme-green font-semibold">${amount}</span>
-            <span className="mx-1">on</span>
-            <span className="text-theme-brand font-bold">{coin}/USDT</span>
-          </span>
-        ))}
+    <div className="relative w-full overflow-hidden bg-[#050505]/40 backdrop-blur-md rounded-xl border border-white/5 my-4">
+      
+      {/* LEFT FADE (Darker for Exfacto theme) */}
+      <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-[#050505] to-transparent z-10 pointer-events-none" />
+
+      {/* RIGHT FADE */}
+      <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-[#050505] to-transparent z-10 pointer-events-none" />
+
+      <div className="flex whitespace-nowrap py-3 px-6 overflow-hidden">
+        <AnimatePresence initial={false}>
+          {messages.map(({ id, user, amount, coin }) => (
+            <motion.span
+              key={id}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="flex items-center mx-6 font-medium text-[13px] tracking-wide"
+            >
+              <span className="text-gray-400 mr-2">⚡</span>
+              <span className="text-white font-bold">{user}</span>
+              <span className="mx-2 text-gray-500">won</span>
+              <span className="text-emerald-400 font-black drop-shadow-[0_0_8px_rgba(52,211,153,0.3)]">${amount}</span>
+              <span className="mx-2 text-gray-500">on</span>
+              <span className="text-cyan-400 font-bold">{coin}/USDT</span>
+            </motion.span>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );
 }
-
-// Add to your globals.css or tailwind.css (for animation)
- /*
-@layer utilities {
-  .animate-marquee {
-    animation: marquee 24s linear infinite;
-  }
-  @keyframes marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-50%); }
-  }
-}
-*/

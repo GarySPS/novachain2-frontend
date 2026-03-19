@@ -1,3 +1,5 @@
+//src>components>butonback.js
+
 import Icon from "./icon"; // Adjust import path if needed
 
 export default function ButtonBack({ className = "", title = "Back", onClick }) {

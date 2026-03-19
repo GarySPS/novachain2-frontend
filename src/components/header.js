@@ -1,3 +1,5 @@
+//src>components>header.js
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Icon from "./icon";
@@ -16,11 +18,11 @@ export default function Header({ title, visible, showMenu, onClickBurger }) {
   return (
     <>
       <header
-        className={`fixed top-0 right-0 z-30 w-full bg-theme-on-surface-1/80 backdrop-blur-md border-b border-theme-stroke transition-colors duration-200 ${
+        className={`fixed top-0 right-0 z-30 w-full bg-[#050505]/60 backdrop-blur-xl border-b border-white/5 transition-colors duration-300 ${
           visible
             ? "left-[21.25rem] 2xl:left-76 xl:left-20 md:left-0"
             : "left-20 md:left-0"
-        } ${showMenu ? "md:!bg-theme-on-surface-1" : ""}`}
+        } ${showMenu ? "md:!bg-[#0a0a0a]" : ""}`}
       >
         <div
           className={`flex items-center h-20 md:h-16 max-w-7xl mx-auto px-10 lg:px-6 md:px-4 transition-shadow duration-200 ${
