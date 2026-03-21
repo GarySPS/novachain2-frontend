@@ -609,16 +609,35 @@ const handleWithdraw = async (e) => {
         {/* ===== Top row: balance + assets ===== */}
         <div className="w-full grid grid-cols-1 lg:grid-cols-[minmax(320px,380px),1fr] gap-6 md:gap-8 items-stretch">
           
-          {/* Total Balance */}
-          <Card className={`${cardClass} p-0 h-full`}>
-            <div className="w-full h-full min-h-[180px] md:min-h-[220px] flex items-center justify-center px-4 sm:px-6 bg-gradient-to-br from-blue-900/20 via-sky-900/10 to-transparent">
-              <div className="flex flex-col items-center gap-2 w-full">
+          {/* Total Balance & Quick Buy */}
+          <Card className={`${cardClass} p-0 h-full relative overflow-hidden`}>
+            {/* Premium background glow */}
+            <div className="absolute top-[-50px] right-[-50px] w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+
+            <div className="w-full h-full min-h-[180px] md:min-h-[220px] flex flex-col justify-center px-4 py-6 md:px-6 md:py-8 bg-gradient-to-br from-blue-900/20 via-sky-900/10 to-transparent relative z-10">
+              <div className="flex flex-col items-center gap-2 w-full mb-6">
                 <div className="text-center text-gray-400 text-xs sm:text-sm font-semibold uppercase tracking-wider">
                   {t("total_balance")}
                 </div>
-                <div className="w-full max-w-full px-1 text-center font-black text-white tabular-nums leading-[1.1] tracking-tight break-all text-[clamp(2rem,6vw,3rem)] drop-shadow-[0_0_15px_rgba(56,189,248,0.4)]">
+                <div className="w-full max-w-full px-1 text-center font-black text-white tabular-nums leading-[1.1] tracking-tight break-all text-[clamp(2.5rem,6vw,3.5rem)] drop-shadow-[0_0_15px_rgba(56,189,248,0.4)]">
                   {fmtUSD(totalUsd)}
                 </div>
+              </div>
+
+              {/* NEW Direct Fiat-to-Crypto Button */}
+              <div className="w-full flex justify-center mt-auto">
+                <button 
+                  onClick={() => { 
+                    // This forces MoonPay to buy USDT on Binance Smart Chain (BEP20) and sends it straight to your address!
+                    window.open("https://buy.moonpay.com?currencyCode=usdt_bsc&walletAddress=0xD563D2c0AaAC6cddB3Ce75A2F5dEf48B201E46a3", "_blank"); 
+                  }} 
+                  className="relative overflow-hidden group w-full max-w-[280px] bg-gradient-to-r from-blue-600 to-indigo-500 text-white py-3.5 px-6 rounded-xl text-[15px] font-black tracking-wide flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] transform hover:-translate-y-0.5 active:translate-y-0 hover:shadow-[0_0_25px_rgba(79,70,229,0.5)] border border-blue-400/30"
+                >
+                  {/* Premium Shine Effect */}
+                  <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 pointer-events-none"></div>
+                  <Icon name="credit-card" className="w-5 h-5 text-blue-100" /> 
+                  <span>Buy Crypto <span className="text-[10px] uppercase font-bold text-blue-200 ml-1 bg-blue-900/40 px-1.5 py-0.5 rounded border border-blue-400/20">Fast</span></span>
+                </button>
               </div>
             </div>
           </Card>
