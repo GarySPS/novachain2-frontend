@@ -145,23 +145,18 @@ export default function TradePage() {
     return () => clearInterval(interval);
   }, [selectedCoin]);
 
-  /* ---------------- TradingView loader (Fixed) ---------------- */
+  /* ---------------- TradingView loader (Fixed Cleanly) ---------------- */
   useEffect(() => {
     setLoadingChart(true);
+    let tvWidget = null; // Store the widget instance so we can cleanly destroy it
 
-    // This function creates the widget
     const createWidget = () => {
-      // Make sure the container is ready and empty
       const container = document.getElementById("tradingview_chart_container");
-      if (!container) {
-        console.error("TradingView container not found");
-        return;
-      }
+      if (!container) return;
       container.innerHTML = ""; // Clear container before creating new widget
 
-      // Check if TradingView library is loaded
       if (window.TradingView) {
-        new window.TradingView.widget({
+        tvWidget = new window.TradingView.widget({
           container_id: "tradingview_chart_container",
           width: "100%",
           height: 420,
@@ -185,33 +180,33 @@ export default function TradePage() {
           loading_screen: { backgroundColor: "#101726", foregroundColor: "#ffd700" },
         });
         setTimeout(() => setLoadingChart(false), 1400);
-      } else {
-        console.error("TradingView library not loaded");
       }
     };
 
-    // Check if script is already on the page
     if (document.getElementById("tradingview-widget-script")) {
-      // If script is already loaded, just create the widget
       createWidget();
     } else {
-      // If script is not loaded, create and load it
       const script = document.createElement("script");
       script.id = "tradingview-widget-script";
       script.src = "https://s3.tradingview.com/tv.js";
       script.async = true;
-      script.onload = () => createWidget(); // Create widget *after* script loads
+      script.onload = () => createWidget(); 
       document.body.appendChild(script);
     }
 
-    // The new cleanup function
     return () => {
+      // The graceful shutdown: Tell TradingView to properly close its WebSockets
+      if (tvWidget && typeof tvWidget.remove === 'function') {
+        try {
+          tvWidget.remove();
+        } catch (e) {}
+      }
       const container = document.getElementById("tradingview_chart_container");
       if (container) {
-        container.innerHTML = ""; // Just empty the container
+        container.innerHTML = ""; 
       }
     };
-  }, [selectedCoin]); // This still re-runs correctly when selectedCoin changes
+  }, [selectedCoin]);
 
   /* ---------------- Result polling (unchanged) ---------------- */
   async function pollResult(trade_id, user_id) {
