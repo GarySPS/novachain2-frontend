@@ -39,22 +39,29 @@ export default function Dashboard() {
 
     const fetchPrices = async () => {
       try {
-        // ask backend for lots (most CoinMarketCap-style proxies accept limit)
         const urls = [
           `${MAIN_API_BASE}/prices?limit=200`,
           `${MAIN_API_BASE}/prices?limit=150`,
           `${MAIN_API_BASE}/prices?limit=100`,
-          `${MAIN_API_BASE}/prices`, // final fallback
+          `${MAIN_API_BASE}/prices`, 
         ];
         let freshCoins = [];
+        
         for (const u of urls) {
           try {
             const r = await fetch(u);
+            
+            // FIX: If the server is offline or crashing (503), stop hammering it!
+            if (!r.ok && r.status >= 500) break; 
+
             const j = await r.json();
             const arr = j?.data || [];
             if (arr.length > freshCoins.length) freshCoins = arr;
             if (freshCoins.length >= 100) break;
-          } catch {}
+          } catch {
+            // FIX: If there is a total network failure, stop trying the other limits
+            break; 
+          }
         }
 
         try {
@@ -79,7 +86,8 @@ export default function Dashboard() {
     };
 
     fetchPrices();
-    const interval = setInterval(fetchPrices, 12000);
+    // FIX: Increased to 30 seconds so your server doesn't get overloaded
+    const interval = setInterval(fetchPrices, 30000); 
     return () => clearInterval(interval);
   }, []);
 
