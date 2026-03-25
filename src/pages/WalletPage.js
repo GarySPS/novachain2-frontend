@@ -1,9 +1,8 @@
 //src>pages>WalletPage.js
-import { MAIN_API_BASE, ADMIN_API_BASE } from '../config';
+import { MAIN_API_BASE } from '../config';
 import { jwtDecode } from "jwt-decode";
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { QRCodeCanvas } from "qrcode.react";
 import axios from "axios";
 import Card from "../components/card";
 import Field from "../components/field";
@@ -36,13 +35,6 @@ async function uploadDepositScreenshot(file, userId) {
   if (error) throw error;
   return filePath;
 }
-async function getSignedUrl(path, bucket) {
-  if (!path) return null;
-  if (path.startsWith('http')) return path;
-  const filename = path.split('/').pop();
-  const res = await axios.get(`${MAIN_API_BASE}/upload/${bucket}/signed-url/${filename}`);
-  return res.data.url;
-}
 
 export default function WalletPage() {
   const navigate = useNavigate();
@@ -74,7 +66,6 @@ export default function WalletPage() {
   const fileInputRef = useRef();
   const [selectedWithdrawCoin, setSelectedWithdrawCoin] = useState("USDT");
   const [withdrawForm, setWithdrawForm] = useState({ address: "", amount: "" });
-  const [withdrawMsg, setWithdrawMsg] = useState("");
   const [fromCoin, setFromCoin] = useState("USDT");
   const [toCoin, setToCoin] = useState("BTC");
   const [amount, setAmount] = useState("");
@@ -85,7 +76,6 @@ export default function WalletPage() {
   const [fileLocked, setFileLocked] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
-  const [historyScreenshots, setHistoryScreenshots] = useState({});
   const [totalUsd, setTotalUsd] = useState(0);
   // lock + inline toasts
 const [depositBusy, setDepositBusy] = useState(false);
@@ -103,7 +93,7 @@ const [earnToast, setEarnToast] = useState(null);
 // ======================================
 // ===== Web3 Hooks =====
   const { open } = useAppKit();
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const { sendTransactionAsync } = useSendTransaction();
   const { writeContractAsync } = useWriteContract();
   const chainId = useChainId();
@@ -158,25 +148,6 @@ const [earnToast, setEarnToast] = useState(null);
     }
   }, [totalEarnUsd]);
   // ===============================================================
-
-  useEffect(() => {
-    async function fetchHistoryScreenshots() {
-      let shots = {};
-      for (let row of allHistory) {
-        if (row.screenshot) {
-          if (!row.screenshot.includes("/")) {
-            shots[row.id] = `https://obrfnkggcfgfspyqgtws.supabase.co/storage/v1/object/public/deposit/${encodeURIComponent(row.screenshot)}`;
-          } else if (row.screenshot.startsWith("/uploads/")) {
-            shots[row.id] = `${MAIN_API_BASE}${row.screenshot}`;
-          } else if (row.screenshot.startsWith("http")) {
-            shots[row.id] = row.screenshot;
-          }
-        }
-      }
-      setHistoryScreenshots(shots);
-    }
-    fetchHistoryScreenshots();
-  }, [JSON.stringify(allHistory)]);
 
   /* ---------------- auth / redirects (unchanged) ---------------- */
   useEffect(() => {
@@ -233,7 +204,7 @@ const [earnToast, setEarnToast] = useState(null);
     load();
     const id = setInterval(load, 10_000);
     return () => { stopped = true; clearInterval(id); };
-  }, [MAIN_API_BASE]);
+  }, []);
 
   useEffect(() => {
     let canceled = false;
@@ -258,7 +229,7 @@ const [earnToast, setEarnToast] = useState(null);
     refreshPair();
     const id = setInterval(refreshPair, 10_000);
     return () => { canceled = true; clearInterval(id); };
-  }, [fromCoin, toCoin, MAIN_API_BASE]);
+  }, [fromCoin, toCoin]);
 
 /* ---------------- wallet & histories (unchanged) ---------------- */
 useEffect(() => {
@@ -305,6 +276,7 @@ useEffect(() => {
       .then(res => setDepositHistory(res.data)).catch(() => setDepositHistory([]));
     axios.get(`${MAIN_API_BASE}/withdrawals`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => setWithdrawHistory(res.data)).catch(() => setWithdrawHistory([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, userId]);
   // ===============================================
 
