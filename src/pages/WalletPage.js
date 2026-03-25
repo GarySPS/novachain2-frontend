@@ -1162,7 +1162,6 @@ const handleWithdraw = async (e) => {
               </div>
             )}
           </div>
-          {withdrawMsg && <div className="mt-2 bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/20 rounded-lg px-4 py-2 text-center text-sm font-bold">{withdrawMsg}</div>}
         </form>
       </Modal>
 
