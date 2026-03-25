@@ -14,7 +14,9 @@
     "@walletconnect/ethereum-provider": "^2.23.8",
     "autoprefixer": "^10.4.19",
     "axios": "^1.9.0",
+    "buffer": "^6.0.3",
     "build": "^0.1.4",
+    "crypto-browserify": "^3.12.1",
     "framer-motion": "^12.16.0",
     "i18next": "^21.9.2",
     "jwt-decode": "^4.0.0",
@@ -22,8 +24,10 @@
     "lucide-react": "^0.511.0",
     "porto": "^0.2.37",
     "postcss": "^8.4.38",
+    "process": "^0.11.10",
     "qrcode.react": "^4.2.0",
     "react": "^19.1.0",
+    "react-app-rewired": "^2.2.1",
     "react-codes-input": "^2.2.3",
     "react-countdown-circle-timer": "^3.2.1",
     "react-currency-input-field": "^3.10.0",
@@ -34,6 +38,7 @@
     "react-scripts": "5.0.1",
     "react-tooltip": "^5.29.1",
     "recharts": "^2.15.4",
+    "stream-browserify": "^3.0.0",
     "tailwind-merge": "^3.3.1",
     "tailwind-scrollbar": "^3.1.0",
     "tailwindcss": "^3.4.17",
@@ -41,9 +46,9 @@
     "wagmi": "^3.5.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "CI=false react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "CI=false react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
