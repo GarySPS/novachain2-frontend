@@ -6,6 +6,7 @@ module.exports = function override(config) {
     "crypto": require.resolve("crypto-browserify"),
     "stream": require.resolve("stream-browserify"),
     "buffer": require.resolve("buffer/"),
+    "vm": false  // Add this line to fix the vm warning
   });
   
   config.resolve.fallback = fallback;

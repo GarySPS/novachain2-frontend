@@ -86,7 +86,7 @@
   "team_compliance": "首席合规官",
   "team_compliance_desc": "Victor 负责确保 NovaChain 合规与风险管理领先业界，拥有多年金融机构合规管理经验，致力于为用户建立信任与透明。",
 
-
+  "Settings": "环境",
   "Verification": "身份认证",
   "Verified": "已认证",
   "Automated review": "自动审核中",
@@ -104,6 +104,7 @@
   "support_hours": "您可以通过 WhatsApp 或 Telegram 联系客服，办公时间 9-5。",
 
   "profile_balance_history": "余额历史",
+  "profile_support_note": "您可以通过 WhatsApp 或 Telegram 联系客服，服务时间为办公时段（9:00-17:00）。",
 "profile_whatsapp": "WhatsApp",
 "profile_telegram": "Telegram",
 "profile_android_install": "安卓安装",
