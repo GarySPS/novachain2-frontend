@@ -125,7 +125,18 @@
 "forex": "外汇",
 "contact_us": "联系我们",
 "privacy": "隐私政策",
-"kyc": "KYC认证"
+"kyc": "KYC认证",
+
+"login_title": "登录",
+"connect_web3_wallet": "连接Web3钱包",
+"or": "或",
+"username_email_telegram": "用户名、邮箱或Telegram",
+"password": "密码",
+"show": "显示",
+"hide": "隐藏",
+"forgot_password": "忘记密码？",
+"login_button": "登录",
+"create_account": "新用户？创建账户"
 
 
 }

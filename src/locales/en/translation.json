@@ -145,7 +145,18 @@
 "forex": "Forex",
 "contact_us": "Contact Us",
 "privacy": "Privacy",
-"kyc": "KYC"
+"kyc": "KYC",
+
+"login_title": "Login",
+"connect_web3_wallet": "Connect Web3 Wallet",
+"or": "or",
+"username_email_telegram": "Username, Email, or Telegram",
+"password": "Password",
+"show": "Show",
+"hide": "Hide",
+"forgot_password": "Forgot password?",
+"login_button": "Login",
+"create_account": "New here? Create an account"
 
 
 }
