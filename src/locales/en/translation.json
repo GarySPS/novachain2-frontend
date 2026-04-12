@@ -156,7 +156,37 @@
 "hide": "Hide",
 "forgot_password": "Forgot password?",
 "login_button": "Login",
-"create_account": "New here? Create an account"
+"create_account": "New here? Create an account",
+
+"ai_trading_investment": "AI Trading Investment",
+"automated_yield": "Automated Yield Generation",
+"system_active": "System Active",
+"standby_mode": "Standby Mode",
+"deployed_capital": "Deployed Capital",
+"ai_projected_roi": "AI Projected ROI",
+"per_month": "/ mo",
+"deploy_capital_ai": "Deploy Capital to AI",
+"withdraw_capital": "Withdraw Capital",
+"no_ai_capital": "No capital deployed to AI currently.",
+"asset": "Asset",
+"deployed_amount": "Deployed Amount",
+"usd_value": "USD Value",
+"frozen": "Frozen",
+"buy_crypto": "Buy Crypto",
+"fast_badge": "Fast",
+"no_history": "No history found.",
+"processing_wallet": "Processing Wallet...",
+"connect_to_pay": "Connect to Pay",
+"no_qr": "No QR",
+"address_not_available": "Address not available",
+"submitting": "Submitting...",
+"save_to_earn": "Save to Earn",
+"redeem_from_earn": "Redeem from Earn",
+"enter_amount": "Enter amount",
+"save_desc": "Assets will be moved from 'My Assets' to 'Savings Earn'.",
+"redeem_desc": "Assets will be moved from 'Savings Earn' to 'My Assets'.",
+"confirm_save": "Confirm Save",
+"confirm_redeem": "Confirm Redeem"
 
 
 }

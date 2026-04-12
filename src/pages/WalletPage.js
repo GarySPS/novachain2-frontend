@@ -608,7 +608,7 @@ const handleWithdraw = async (e) => {
                   {/* Premium Shine Effect */}
                   <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 pointer-events-none"></div>
                   <Icon name="credit-card" className="w-5 h-5 text-blue-100" /> 
-                  <span>Buy Crypto <span className="text-[10px] uppercase font-bold text-blue-200 ml-1 bg-blue-900/40 px-1.5 py-0.5 rounded border border-blue-400/20">Fast</span></span>
+                  <span>t("buy_crypto") <span className="text-[10px] uppercase font-bold text-blue-200 ml-1 bg-blue-900/40 px-1.5 py-0.5 rounded border border-blue-400/20">t("fast_badge")</span></span>
                 </button>
               </div>
             </div>
@@ -742,16 +742,16 @@ const handleWithdraw = async (e) => {
 
               <div>
                 <h2 className="text-xl md:text-2xl font-black bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                  {t("ai_trading_investment", "AI Trading Investment")}
+                  {t("ai_trading_investment")}
                 </h2>
-                <p className="text-xs text-cyan-400/80 font-medium tracking-widest uppercase mt-0.5">Automated Yield Generation</p>
+                <p className="text-xs text-cyan-400/80 font-medium tracking-widest uppercase mt-0.5">t("automated_yield")</p>
               </div>
             </div>
             
             {/* AI Active Badge */}
             <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full border ${totalEarnUsd > 0 ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.2)]" : "bg-white/5 border-white/10 text-gray-400"}`}>
               <span className={`w-2 h-2 rounded-full ${totalEarnUsd > 0 ? "bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]" : "bg-gray-500"}`}></span>
-              <span className="text-[11px] font-bold tracking-widest uppercase">{totalEarnUsd > 0 ? "System Active" : "Standby Mode"}</span>
+              <span className="text-[11px] font-bold tracking-widest uppercase">{totalEarnUsd > 0 ? t("system_active") : t("standby_mode")}</span>
             </div>
           </div>
           
@@ -761,7 +761,7 @@ const handleWithdraw = async (e) => {
               {/* Capital Box */}
               <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#0b1020]/80 backdrop-blur-sm border border-white/10 shadow-[inset_0_4px_20px_rgba(255,255,255,0.02)] relative overflow-hidden group hover:border-indigo-500/30 transition-colors duration-500">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
-                <div className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">{t("deployed_capital", "Deployed Capital")}</div>
+                <div className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">{t("deployed_capital", t("deployed_capital"))}</div>
                 <div className="text-4xl font-black text-white tabular-nums drop-shadow-lg tracking-tight">{fmtUSD(totalEarnUsd)}</div>
               </div>
               
@@ -769,10 +769,10 @@ const handleWithdraw = async (e) => {
               <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-cyan-900/10 backdrop-blur-sm border border-cyan-500/20 shadow-[inset_0_4px_30px_rgba(34,211,238,0.05)] relative overflow-hidden group hover:border-cyan-500/40 transition-colors duration-500">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-cyan-400/80 to-transparent"></div>
                 <div className="text-sm font-bold text-cyan-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <Icon name="activity" className="w-4 h-4 animate-pulse" /> {t("projected_roi", "AI Projected ROI")}
+                  <Icon name="activity" className="w-4 h-4 animate-pulse" /> {t("projected_roi", t("ai_projected_roi"))}
                 </div>
                 <div className="text-4xl font-black text-cyan-300 tabular-nums drop-shadow-[0_0_15px_rgba(34,211,238,0.4)] tracking-tight">
-                  ~{currentEarnRate}% <span className="text-xl text-cyan-500/80 font-bold">/ mo</span>
+                  ~{currentEarnRate}% <span className="text-xl text-cyan-500/80 font-bold">t("per_month")</span>
                 </div>
               </div>
             </div>
@@ -781,10 +781,10 @@ const handleWithdraw = async (e) => {
           {/* Action Buttons */}
           <div className="flex flex-col gap-3 px-6 py-6 border-b border-white/5 relative z-10 bg-gradient-to-b from-transparent to-[#0a0e17]/50">
             <button onClick={() => openEarnModal('save')} className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-400 text-white text-[15px] md:text-base font-black tracking-wide shadow-[0_0_20px_rgba(34,211,238,0.25)] border border-cyan-400/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] transition-all duration-300 hover:scale-[1.02] flex items-center justify-center">
-              {t("deploy_funds", "Deploy Capital to AI")}
+              {t("deploy_funds", t("deploy_capital_ai"))}
             </button>
             <button onClick={() => openEarnModal('redeem')} className="w-full h-12 rounded-xl bg-[#0b1020] border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/50 text-[15px] md:text-base font-bold tracking-wide transition-all duration-300 flex items-center justify-center">
-              {t("withdraw_capital", "Withdraw")}
+              {t("withdraw_capital")}
             </button>
           </div>
 
@@ -812,7 +812,7 @@ const handleWithdraw = async (e) => {
               )) : (
                 <div className="text-center py-10 text-indigo-400/50 text-sm font-medium flex flex-col items-center gap-2">
                   <Icon name="cpu" className="w-8 h-8 opacity-50" />
-                  {t("no_ai_capital", "No capital deployed to AI currently.")}
+                  {t("no_ai_capital")}
                 </div>
               )}
             </div>
@@ -822,8 +822,8 @@ const handleWithdraw = async (e) => {
               <table className="w-full min-w-[600px] text-base">
                 <thead className="bg-[#0b1020]/80 sticky top-0 backdrop-blur-sm">
                   <tr className="text-left text-gray-400 border-y border-indigo-500/10 text-sm uppercase tracking-wider">
-                    <th className="py-4 pl-8 pr-2 font-semibold">{t("asset", "Asset")}</th>
-                    <th className="py-4 px-2 text-right font-semibold">{t("deployed", "Deployed Amount")}</th>
+                    <th className="py-4 pl-8 pr-2 font-semibold">{t("asset")}</th>
+                    <th className="py-4 px-2 text-right font-semibold">{t("deployed_amount")}</th>
                     <th className="py-4 px-8 text-right font-semibold">{t("usd_value", "USD Value")}</th>
                   </tr>
                 </thead>
@@ -964,7 +964,7 @@ const handleWithdraw = async (e) => {
                  </div>
               ))}
               {(!allHistory || allHistory.length === 0) && (
-                 <div className="text-center py-8 text-gray-500 text-sm font-medium">No history found.</div>
+                 <div className="text-center py-8 text-gray-500 text-sm font-medium">t("no_history")</div>
               )}
             </div>
 
@@ -1002,7 +1002,7 @@ const handleWithdraw = async (e) => {
                     </tr>
                   ))}
                   {(!allHistory || allHistory.length === 0) && (
-                     <tr><td colSpan="4" className="text-center py-10 text-gray-500 font-medium">No history found.</td></tr>
+                     <tr><td colSpan="4" className="text-center py-10 text-gray-500 font-medium">t("no_history")</td></tr>
                   )}
                 </tbody>
               </table>
@@ -1033,7 +1033,7 @@ const handleWithdraw = async (e) => {
             <div className="relative w-full max-w-[180px] aspect-square mb-2 rounded-2xl bg-white flex items-center justify-center overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.1)] p-2">
               {walletQRCodes[selectedDepositCoin] ? (
                 <img src={walletQRCodes[selectedDepositCoin]} alt={t("deposit_qr")} className="max-w-full max-h-full object-contain" onError={(e) => { e.currentTarget.style.display = "none"; }} />
-              ) : <div className="text-gray-400 text-xs text-center">No QR</div>}
+              ) : <div className="text-gray-400 text-xs text-center">t("no_qr")</div>}
             </div>
           </div>
 
@@ -1041,7 +1041,7 @@ const handleWithdraw = async (e) => {
 
           <div className="flex items-center gap-2 justify-center w-full">
             <div className="flex-1 font-mono bg-[#0b1020] ring-1 ring-[#2c3040] px-3 py-3 rounded-xl text-xs text-gray-300 overflow-x-auto whitespace-nowrap scrollbar-hide">
-              {walletAddresses[selectedDepositCoin] || "Address not available"}
+              {walletAddresses[selectedDepositCoin] || t("address_not_available")}
             </div>
             <button type="button" className="h-11 px-4 rounded-xl bg-[#1a2343] hover:bg-[#202b54] ring-1 ring-white/10 text-white text-sm font-bold transition flex shrink-0 items-center gap-1" onClick={() => { navigator.clipboard.writeText(walletAddresses[selectedDepositCoin] || ""); setDepositToast(t("copied")); }}>
               <Icon name="copy" className="w-4 h-4" />{t("copy")}
@@ -1077,7 +1077,7 @@ const handleWithdraw = async (e) => {
               disabled={depositBusy || !depositAmount || !depositScreenshot} 
               className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-lg ${depositBusy || !depositScreenshot ? "bg-slate-800 text-gray-400 cursor-not-allowed border border-white/5" : "bg-gradient-to-r from-emerald-600 to-teal-500 hover:scale-[1.02]"}`}
             >
-              {depositBusy ? (t("submitting") || "Submitting...") : "Submit"}
+              {depositBusy ? (t("submitting") || "Submitting...") :t("submit")}
             </button>
 
             {/* Show Web3 Option Only For Supported Coins */}
@@ -1096,7 +1096,7 @@ const handleWithdraw = async (e) => {
                   className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-[0_0_20px_rgba(56,189,248,0.2)] border border-sky-400/30 flex items-center justify-center gap-2 ${web3Busy ? "bg-slate-700 cursor-not-allowed" : "bg-gradient-to-r from-blue-800 to-sky-600 hover:scale-[1.02]"}`}
                 >
                   <Icon name="zap" className="w-5 h-5" />
-                  {web3Busy ? "Processing Wallet..." : isConnected ? "Deposit" : "Connect to Pay"}
+                  {web3Busy ? t("processing_wallet") : isConnected ? "Deposit" : t("connect_to_pay")}
                 </button>
               </>
             )}
@@ -1169,7 +1169,7 @@ const handleWithdraw = async (e) => {
         <form onSubmit={handleEarnSubmit} className="space-y-5 p-1">
           <div className="text-2xl font-black mb-4 flex items-center justify-center gap-2 text-white text-center">
             <Icon name={earnModal.type === 'save' ? 'plus' : 'check-circle'} className={`w-7 h-7 ${earnModal.type === 'save' ? 'text-teal-400' : 'text-sky-400'}`} />
-            {earnModal.type === 'save' ? t("save_to_earn", "Save to Earn") : t("redeem_from_earn", "Redeem from Earn")}
+            {earnModal.type === 'save' ? t("save_to_earn") : t("redeem_from_earn")}
           </div>
 
           <div className="relative">
@@ -1185,7 +1185,7 @@ const handleWithdraw = async (e) => {
           
           <Field
             label={t("amount_with_coin", { coin: earnModal.coin })} type="number" min={0.0001} step="any" required
-            placeholder={t("enter_amount", "Enter amount")}
+            placeholder={t("enter_amount")}
             value={earnModal.amount} onChange={e => setEarnModal(m => ({ ...m, amount: e.target.value }))}
             icon="dollar-sign"
             classInput="!bg-[#0b1020]/50 !border-[#2c3040] !text-white !font-bold"
@@ -1197,7 +1197,7 @@ const handleWithdraw = async (e) => {
 
           <div className="space-y-4 mt-2">
             <button type="submit" disabled={earnBusy || !earnModal.amount || parseFloat(earnModal.amount) <= 0} className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-lg ${earnBusy ? "bg-slate-700 cursor-not-allowed" : (earnModal.type === 'save' ? "bg-gradient-to-r from-teal-500 to-emerald-400 hover:scale-[1.02]" : "bg-[#1a2343] hover:bg-[#202b54] border border-white/10")}`}>
-              {earnBusy ? (t("submitting", "Submitting...")) : (earnModal.type === 'save' ? t("confirm_save", "Confirm Save") : t("confirm_redeem", "Confirm Redeem"))}
+              {earnBusy ? (t("submitting", "Submitting...")) : (earnModal.type === 'save' ? t("confirm_save") : t("confirm_redeem"))}
             </button>
 
             {earnToast && (
