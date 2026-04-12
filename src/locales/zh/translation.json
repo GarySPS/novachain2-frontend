@@ -101,7 +101,25 @@
   "Your identity is verified.": "您的身份已通过验证。",
   "Android Install": "安卓安装",
   "iOS Install": "iOS安装",
-  "support_hours": "您可以通过 WhatsApp 或 Telegram 联系客服，办公时间 9-5。"
+  "support_hours": "您可以通过 WhatsApp 或 Telegram 联系客服，办公时间 9-5。",
+
+  "profile_balance_history": "余额历史",
+"profile_whatsapp": "WhatsApp",
+"profile_telegram": "Telegram",
+"profile_android_install": "安卓安装",
+"profile_ios_install": "iOS安装",
+"profile_submit_review": "提交自动审核",
+"profile_reupload_review": "重新上传审核",
+"profile_kyc_submitted": "已提交。我们的自动系统正在分析您的图像。",
+"profile_identity_verified": "您的身份已通过验证。",
+"profile_kyc_pending_message": "通常很快完成。完成后会通知您。",
+"profile_kyc_rejected_message": "我们无法验证该次尝试。请重新上传清晰照片。",
+"profile_kyc_upload_message": "上传清晰的自拍和身份证件以完成认证。",
+
+"pwa_already_installed": "应用已安装。",
+"pwa_install_dismissed": "安装已取消。您也可以使用浏览器菜单 → \"添加到主屏幕\"。",
+"pwa_install_android_instruction": "安装方法：在安卓设备上用 Chrome/Brave/Opera 打开此网站，然后使用菜单 → \"添加到主屏幕\"。",
+"pwa_install_ios_instruction": "iOS安装方法：使用 Safari 浏览器，点击分享按钮，然后选择\"添加到主屏幕\"。"
 
 
 }

@@ -412,7 +412,7 @@ useEffect(() => {
         {/* ========= 2) Chart + Assets Donut ========= */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           <Card className={cardClass}>
-            <div className="mb-4 text-gray-300 font-bold uppercase tracking-wider text-sm">{t('Balance History')}</div>
+            <div className="mb-4 text-gray-300 font-bold uppercase tracking-wider text-sm">{t('profile_balance_history')}</div>
             <Chart data={balanceHistory} />
           </Card>
 
@@ -448,16 +448,20 @@ useEffect(() => {
           {/* KYC */}
           <Card className={cardClass}>
             <div className="text-center">
-              {/* Replace your KYC Card text with this */}
-<div className="flex items-center justify-center gap-2 text-white font-black text-2xl">
-  <Icon name="shield-check" className="w-7 h-7 text-sky-400" />
-  {t('Verification')}
-</div>
+              <div className="flex items-center justify-center gap-2 text-white font-black text-2xl">
+                <Icon name="shield-check" className="w-7 h-7 text-sky-400 drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]" />
+                {t('Verification')}
+              </div>
 
-<div className="mt-3 inline-flex items-center text-xs font-bold px-3 py-1.5 rounded-full bg-[#0b1020] ring-1 ring-white/10 text-gray-300">
-  <span className={`w-2 h-2 rounded-full mr-2 ${kycStatus === "approved" ? "bg-emerald-400" : "bg-amber-400"}`} />
-  {t(kycStatus === "approved" ? "Verified" : kycStatus === "pending" ? "Automated review" : "Not verified")}
-</div>
+              <div className="mt-3 inline-flex items-center text-xs font-bold px-3 py-1.5 rounded-full bg-[#0b1020] ring-1 ring-white/10 text-gray-300">
+                <span className={`w-2 h-2 rounded-full mr-2
+                  ${kycStatus === "approved" ? "bg-emerald-400 shadow-[0_0_8px_#34d399]" :
+                    kycStatus === "pending" ? "bg-amber-400 shadow-[0_0_8px_#fbbf24]" :
+                    kycStatus === "rejected" ? "bg-rose-400 shadow-[0_0_8px_#fb7185]" : "bg-gray-500"}`} />
+                {kycStatus === "approved" ? t("Verified") :
+                 kycStatus === "pending" ? t("Automated review in progress") :
+                 kycStatus === "rejected" ? t("Needs new upload") : t("Not verified")}
+              </div>
             </div>
 
             {(kycStatus === "unverified" || kycStatus === "rejected") && (
@@ -465,7 +469,12 @@ useEffect(() => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {/* Selfie */}
                   <div>
-                    <label className="mb-2 block font-semibold text-gray-300 text-sm">{t('Upload Selfie')}</label>
+                    <label className="mb-2 block font-semibold text-gray-300 text-sm">
+                      <span className="inline-flex items-center gap-2">
+                        <Icon name="user" className="w-4 h-4 text-sky-400" /> {t('Upload Selfie')}
+                        <Tooltip text={t('profile_tooltip_selfie')} />
+                      </span>
+                    </label>
                     <div className="bg-[#0b1020]/50 border-2 border-dashed border-[#2c3040] rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-sky-500/50 transition">
                       <input
                         type="file"
@@ -489,7 +498,12 @@ useEffect(() => {
                   </div>
                   {/* ID */}
                   <div>
-                    <label className="mb-2 block font-semibold text-gray-300 text-sm">{t('Upload ID')}</label>
+                    <label className="mb-2 block font-semibold text-gray-300 text-sm">
+                      <span className="inline-flex items-center gap-2">
+                        <Icon name="id-card" className="w-4 h-4 text-sky-400" /> {t('Upload ID')}
+                        <Tooltip text={t('profile_tooltip_id')} />
+                      </span>
+                    </label>
                     <div className="bg-[#0b1020]/50 border-2 border-dashed border-[#2c3040] rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-sky-500/50 transition">
                       <input
                         type="file"
@@ -519,13 +533,13 @@ useEffect(() => {
                     className="h-12 px-8 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:scale-[1.02] transition disabled:opacity-50 disabled:pointer-events-none w-full sm:w-72 border border-white/10"
                     disabled={!kycSelfie || !kycId || kycStatus === "pending" || kycStatus === "approved"}
                   >
-                    {kycStatus === "rejected" ? t("Re-upload for review") : t("Submit for automated review")}
+                    {kycStatus === "rejected" ? t("profile_reupload_review") : t("profile_submit_review")}
                   </button>
                 </div>
 
                 {(kycStatus === "pending" && kycSubmitted) && (
                   <div className="text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-4 py-3 text-center text-sm font-medium">
-                    {t("Submitted. Our automated system is analyzing your images.")}
+                    {t("profile_kyc_submitted")}
                   </div>
                 )}
                 {kycError && (
@@ -537,10 +551,10 @@ useEffect(() => {
             )}
 
             <div className="mt-6 text-xs text-gray-500 text-center font-medium uppercase tracking-wider">
-              {kycStatus === "approved" ? t("Your identity is verified.") :
-               kycStatus === "pending" ? t("Typically completes shortly. You’ll be notified when done.") :
-               kycStatus === "rejected" ? t("We couldn’t validate that attempt. Please re-upload clear photos.") :
-               t("Upload a clear selfie and your ID to get verified.")}
+              {kycStatus === "approved" ? t("profile_identity_verified") :
+ kycStatus === "pending" ? t("profile_kyc_pending_message") :
+ kycStatus === "rejected" ? t("profile_kyc_rejected_message") :
+ t("profile_kyc_upload_message")}
             </div>
           </Card>
 
@@ -595,19 +609,40 @@ useEffect(() => {
             </div>
 
             {/* Install Buttons */}
-            {/* Android & iOS Buttons */}
-<button onClick={handleAndroidInstall}>
-  <Icon name="download" className="mr-2 w-4 h-4" /> {t('Android Install')}
-</button>
+            <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                className="h-12 rounded-xl font-bold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] transition flex items-center justify-center"
+                onClick={async () => {
+  if (isInstalled) { alert(t('pwa_already_installed')); return; }
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+    setDeferredPrompt(null);
+    if (choice?.outcome !== 'accepted') {
+      alert(t('pwa_install_dismissed'));
+    }
+  } else {
+    alert(t('pwa_install_android_instruction'));
+  }
+}}
+              >
+                <Icon name="download" className="mr-2 w-4 h-4" /> {t('profile_android_install')}
+              </button>
 
-<button onClick={() => navigate('/guide')} disabled={!isIOSSafari()}>
-  <Icon name="download" className="mr-2 w-4 h-4" /> {t('iOS Install')}
+              <button
+  className="h-12 rounded-xl font-bold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
+  onClick={() => {
+    if (!isIOSSafari()) {
+      alert(t('pwa_install_ios_instruction'));
+    } else {
+      navigate('/guide');
+    }
+  }}
+  disabled={!isIOSSafari()}
+>
+  <Icon name="download" className="mr-2 w-4 h-4" /> {t('profile_ios_install')}
 </button>
-
-{/* Support Note at the bottom */}
-<div className="mt-4 text-xs text-gray-500 font-medium text-center uppercase tracking-wider">
-  {t("support_hours")}
-</div>
+            </div>
           </Card>
         </div>
 
@@ -634,20 +669,20 @@ useEffect(() => {
           <Card className={cardClass}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
-                className="h-12 rounded-xl font-bold text-white bg-gradient-to-r from-[#1EBEA5] to-[#25D366] hover:brightness-110 shadow-[0_0_15px_rgba(37,211,102,0.2)] transition flex items-center justify-center border border-white/10"
-                onClick={() => window.open('https://wa.me/16627053615', '_blank')}
-              >
-                 WhatsApp
-              </button>
+  className="h-12 rounded-xl font-bold text-white bg-gradient-to-r from-[#1EBEA5] to-[#25D366] hover:brightness-110 shadow-[0_0_15px_rgba(37,211,102,0.2)] transition flex items-center justify-center border border-white/10"
+  onClick={() => window.open('https://wa.me/16627053615', '_blank')}
+>
+   {t('profile_whatsapp')}
+</button>
               <button
-                className="h-12 rounded-xl font-bold text-white bg-gradient-to-r from-[#0088cc] to-[#229ED9] hover:brightness-110 shadow-[0_0_15px_rgba(34,158,217,0.2)] transition flex items-center justify-center border border-white/10"
-                onClick={() => window.open('https://t.me/novachainsgofficial', '_blank')}
-              >
-                 Telegram
-              </button>
+  className="h-12 rounded-xl font-bold text-white bg-gradient-to-r from-[#0088cc] to-[#229ED9] hover:brightness-110 shadow-[0_0_15px_rgba(34,158,217,0.2)] transition flex items-center justify-center border border-white/10"
+  onClick={() => window.open('https://t.me/novachainsgofficial', '_blank')}
+>
+   {t('profile_telegram')}
+</button>
             </div>
             <div className="mt-4 text-xs text-gray-500 font-medium text-center uppercase tracking-wider">
-              {t("You can contact support via WhatsApp or Telegram, 9-5 office hours.")}
+              {t('profile_support_note')}
             </div>
           </Card>
         </div>

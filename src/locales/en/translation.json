@@ -125,7 +125,25 @@
   "profile_ios_install": "iOS Install",
   "profile_support_note": "YOU CAN CONTACT SUPPORT VIA WHATSAPP OR TELEGRAM, 9-5 OFFICE HOURS.",
   "install_notice_title": "To install:",
-  "install_notice_desc": "Open this site in Chrome/Brave/Opera on Android, then use the menu → \"Add to Home screen\"."
+  "install_notice_desc": "Open this site in Chrome/Brave/Opera on Android, then use the menu → \"Add to Home screen\".",
+
+  "profile_balance_history": "Balance History",
+"profile_whatsapp": "WhatsApp",
+"profile_telegram": "Telegram",
+"profile_android_install": "Android Install",
+"profile_ios_install": "iOS Install",
+"profile_submit_review": "Submit for automated review",
+"profile_reupload_review": "Re-upload for review",
+"profile_kyc_submitted": "Submitted. Our automated system is analyzing your images.",
+"profile_identity_verified": "Your identity is verified.",
+"profile_kyc_pending_message": "Typically completes shortly. You’ll be notified when done.",
+"profile_kyc_rejected_message": "We couldn’t validate that attempt. Please re-upload clear photos.",
+"profile_kyc_upload_message": "Upload a clear selfie and your ID to get verified.",
+
+"pwa_already_installed": "App is already installed.",
+"pwa_install_dismissed": "Installation was dismissed. You can also use the browser menu → \"Add to Home screen\".",
+"pwa_install_android_instruction": "To install: open this site in Chrome/Brave/Opera on Android, then use the menu → \"Add to Home screen\".",
+"pwa_install_ios_instruction": "To install on iOS: Use Safari browser, tap Share, then \"Add to Home Screen\"."
 
 
 }
