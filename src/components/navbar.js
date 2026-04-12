@@ -14,10 +14,9 @@ const navItems = [
   { label: "profile", to: "/profile" },
   { label: "news", to: "/news" },
   { label: "about_us", to: "/about" },
-  // --- New Trust Links ---
-  { label: "Contact Us", to: "/contact" },
-  { label: "Privacy", to: "/privacy" },
-  { label: "KYC", to: "/kyc" },
+  { label: "contact_us", to: "/contact" },
+  { label: "privacy", to: "/privacy" },
+  { label: "kyc", to: "/kyc" },
 ];
 
 export default function NavBar() {

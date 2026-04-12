@@ -140,7 +140,12 @@
 "pwa_already_installed": "App is already installed.",
 "pwa_install_dismissed": "Installation was dismissed. You can also use the browser menu → \"Add to Home screen\".",
 "pwa_install_android_instruction": "To install: open this site in Chrome/Brave/Opera on Android, then use the menu → \"Add to Home screen\".",
-"pwa_install_ios_instruction": "To install on iOS: Use Safari browser, tap Share, then \"Add to Home Screen\"."
+"pwa_install_ios_instruction": "To install on iOS: Use Safari browser, tap Share, then \"Add to Home Screen\".",
+
+"forex": "Forex",
+"contact_us": "Contact Us",
+"privacy": "Privacy",
+"kyc": "KYC"
 
 
 }
