@@ -448,20 +448,16 @@ useEffect(() => {
           {/* KYC */}
           <Card className={cardClass}>
             <div className="text-center">
-              <div className="flex items-center justify-center gap-2 text-white font-black text-2xl">
-                <Icon name="shield-check" className="w-7 h-7 text-sky-400 drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]" />
-                {t('Verification')}
-              </div>
+              {/* Replace your KYC Card text with this */}
+<div className="flex items-center justify-center gap-2 text-white font-black text-2xl">
+  <Icon name="shield-check" className="w-7 h-7 text-sky-400" />
+  {t('Verification')}
+</div>
 
-              <div className="mt-3 inline-flex items-center text-xs font-bold px-3 py-1.5 rounded-full bg-[#0b1020] ring-1 ring-white/10 text-gray-300">
-                <span className={`w-2 h-2 rounded-full mr-2
-                  ${kycStatus === "approved" ? "bg-emerald-400 shadow-[0_0_8px_#34d399]" :
-                    kycStatus === "pending" ? "bg-amber-400 shadow-[0_0_8px_#fbbf24]" :
-                    kycStatus === "rejected" ? "bg-rose-400 shadow-[0_0_8px_#fb7185]" : "bg-gray-500"}`} />
-                {kycStatus === "approved" ? t("Verified") :
-                 kycStatus === "pending" ? t("Automated review in progress") :
-                 kycStatus === "rejected" ? t("Needs new upload") : t("Not verified")}
-              </div>
+<div className="mt-3 inline-flex items-center text-xs font-bold px-3 py-1.5 rounded-full bg-[#0b1020] ring-1 ring-white/10 text-gray-300">
+  <span className={`w-2 h-2 rounded-full mr-2 ${kycStatus === "approved" ? "bg-emerald-400" : "bg-amber-400"}`} />
+  {t(kycStatus === "approved" ? "Verified" : kycStatus === "pending" ? "Automated review" : "Not verified")}
+</div>
             </div>
 
             {(kycStatus === "unverified" || kycStatus === "rejected") && (
@@ -469,12 +465,7 @@ useEffect(() => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {/* Selfie */}
                   <div>
-                    <label className="mb-2 block font-semibold text-gray-300 text-sm">
-                      <span className="inline-flex items-center gap-2">
-                        <Icon name="user" className="w-4 h-4 text-sky-400" /> {t('Upload Selfie')}
-                        <Tooltip text={t('profile_tooltip_selfie')} />
-                      </span>
-                    </label>
+                    <label className="mb-2 block font-semibold text-gray-300 text-sm">{t('Upload Selfie')}</label>
                     <div className="bg-[#0b1020]/50 border-2 border-dashed border-[#2c3040] rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-sky-500/50 transition">
                       <input
                         type="file"
@@ -498,12 +489,7 @@ useEffect(() => {
                   </div>
                   {/* ID */}
                   <div>
-                    <label className="mb-2 block font-semibold text-gray-300 text-sm">
-                      <span className="inline-flex items-center gap-2">
-                        <Icon name="id-card" className="w-4 h-4 text-sky-400" /> {t('Upload ID')}
-                        <Tooltip text={t('profile_tooltip_id')} />
-                      </span>
-                    </label>
+                    <label className="mb-2 block font-semibold text-gray-300 text-sm">{t('Upload ID')}</label>
                     <div className="bg-[#0b1020]/50 border-2 border-dashed border-[#2c3040] rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-sky-500/50 transition">
                       <input
                         type="file"
@@ -609,34 +595,19 @@ useEffect(() => {
             </div>
 
             {/* Install Buttons */}
-            <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <button
-                className="h-12 rounded-xl font-bold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] transition flex items-center justify-center"
-                onClick={async () => {
-                  if (isInstalled) { alert('App is already installed.'); return; }
-                  if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const choice = await deferredPrompt.userChoice;
-                    setDeferredPrompt(null);
-                    if (choice?.outcome !== 'accepted') {
-                      alert('Installation was dismissed. You can also use the browser menu → "Add to Home screen".');
-                    }
-                  } else {
-                    alert('To install: open this site in Chrome/Brave/Opera on Android, then use the menu → "Add to Home screen".');
-                  }
-                }}
-              >
-                <Icon name="download" className="mr-2 w-4 h-4" /> Android Install
-              </button>
+            {/* Android & iOS Buttons */}
+<button onClick={handleAndroidInstall}>
+  <Icon name="download" className="mr-2 w-4 h-4" /> {t('Android Install')}
+</button>
 
-              <button
-                className="h-12 rounded-xl font-bold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center"
-                onClick={() => navigate('/guide')}
-                disabled={!isIOSSafari()}
-              >
-                <Icon name="download" className="mr-2 w-4 h-4" /> iOS Install
-              </button>
-            </div>
+<button onClick={() => navigate('/guide')} disabled={!isIOSSafari()}>
+  <Icon name="download" className="mr-2 w-4 h-4" /> {t('iOS Install')}
+</button>
+
+{/* Support Note at the bottom */}
+<div className="mt-4 text-xs text-gray-500 font-medium text-center uppercase tracking-wider">
+  {t("support_hours")}
+</div>
           </Card>
         </div>
 

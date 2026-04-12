@@ -84,7 +84,24 @@
   "team_cto_desc": "Sophia 是 NovaChain 的技术核心，设计并开发了安全的交易引擎和区块链基础架构。拥有计算机科学背景，曾在顶级科技公司领导工程团队。",
 
   "team_compliance": "首席合规官",
-  "team_compliance_desc": "Victor 负责确保 NovaChain 合规与风险管理领先业界，拥有多年金融机构合规管理经验，致力于为用户建立信任与透明。"
+  "team_compliance_desc": "Victor 负责确保 NovaChain 合规与风险管理领先业界，拥有多年金融机构合规管理经验，致力于为用户建立信任与透明。",
+
+
+  "Verification": "身份认证",
+  "Verified": "已认证",
+  "Automated review": "自动审核中",
+  "Needs new upload": "需重新上传",
+  "Not verified": "未认证",
+  "Upload Selfie": "上传自拍",
+  "Upload ID": "上传身份证",
+  "Selfie": "自拍",
+  "Re-upload for review": "重新上传以供审核",
+  "ID": "证件",
+  "Submit for automated review": "提交自动审核",
+  "Your identity is verified.": "您的身份已通过验证。",
+  "Android Install": "安卓安装",
+  "iOS Install": "iOS安装",
+  "support_hours": "您可以通过 WhatsApp 或 Telegram 联系客服，办公时间 9-5。"
 
 
 }
