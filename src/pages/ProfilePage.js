@@ -66,6 +66,22 @@ export default function ProfilePage() {
 const [deferredPrompt, setDeferredPrompt] = useState(null);
 const [isInstalled, setIsInstalled] = useState(false);
 
+// Add this after your other state declarations
+const saveLanguageToDatabase = async (lang) => {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+  
+  try {
+    await axios.post(`${MAIN_API_BASE}/profile/language`,
+      { language: lang },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    console.log('Language saved to database:', lang);
+  } catch (error) {
+    console.error('Failed to save language:', error);
+  }
+};
+
 
   /* -------- preload prices from localStorage (unchanged) -------- */
   useEffect(() => {
@@ -165,7 +181,13 @@ useEffect(() => {
         const token = localStorage.getItem("token");
         const headers = { Authorization: `Bearer ${token}` };
         const res = await axios.get(`${MAIN_API_BASE}/profile`, { headers });
-        setUser(res.data.user);
+setUser(res.data.user);
+
+// Load saved language from database and apply it
+if (res.data.user.language && res.data.user.language !== i18n.language) {
+  await i18n.changeLanguage(res.data.user.language);
+  localStorage.setItem('app_language', res.data.user.language);
+}
 
         const balRes = await axios.get(`${MAIN_API_BASE}/balance`, { headers });
         setAssets(balRes.data.assets || []);
@@ -595,10 +617,19 @@ useEffect(() => {
             {/* Language */}
             <div className="mt-5 relative">
               <select
-                className="w-full h-12 pl-4 pr-6 rounded-xl bg-[#0b1020] border border-[#2c3040] text-gray-200 font-bold focus:ring-2 focus:ring-sky-500 outline-none appearance-none"
-                value={i18n.language}
-                onChange={(e) => i18n.changeLanguage(e.target.value)}
-              >
+  className="w-full h-12 pl-4 pr-6 rounded-xl bg-[#0b1020] border border-[#2c3040] text-gray-200 font-bold focus:ring-2 focus:ring-sky-500 outline-none appearance-none"
+  value={i18n.language}
+  onChange={async (e) => {
+  const newLang = e.target.value;
+  try {
+    await i18n.changeLanguage(newLang);
+    await saveLanguageToDatabase(newLang);
+    localStorage.setItem('app_language', newLang);
+  } catch (error) {
+    console.error('Language change failed:', error);
+  }
+}}
+>
                 <option value="en">English</option>
                 <option value="zh">中文</option>
                 <option value="es">Español</option>
