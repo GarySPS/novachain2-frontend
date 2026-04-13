@@ -172,15 +172,15 @@ return (
       <h3 className="text-teal-300 text-xl md:text-2xl font-extrabold mb-3">{t("about_headquarters")}</h3>
       <div className="text-white/85 space-y-2">
         <div>
-          <span className="font-semibold">NovaChain Technologies Ltd.</span>
-          <br />
-          12 Marina Boulevard, Marina Bay Financial Centre,
-          <br />
-          Singapore 018982
-          <br />
-          +65 2936 0430
-          <br />
-          +65 1665 7939
+          <span className="font-semibold">{t("company_name")}</span>
+<br />
+{t("company_address_line1")}
+<br />
+{t("company_address_line2")}
+<br />
+{t("company_phone_1")}
+<br />
+{t("company_phone_2")}
         </div>
         <div>
           {t("about_support")}:{" "}
@@ -198,16 +198,16 @@ return (
 
     {/* Footer links */}
     <div className="mt-10 flex flex-wrap justify-center gap-4 md:gap-6 text-sm text-white/80">
-      <Link to="/terms" className="hover:text-white underline underline-offset-2">Terms</Link>
-      <Link to="/privacy" className="hover:text-white underline underline-offset-2">Privacy</Link>
-      <Link to="/kyc" className="hover:text-white underline underline-offset-2">AML/KYC</Link>
+      <Link to="/terms" className="hover:text-white underline underline-offset-2">{t("terms")}</Link>
+      <Link to="/privacy" className="hover:text-white underline underline-offset-2">{t("privacy")}</Link>
+      <Link to="/kyc" className="hover:text-white underline underline-offset-2">{t("aml_kyc")}</Link>
       <a
         href="https://wa.me/16627053615"
         target="_blank"
         rel="noreferrer"
         className="hover:text-white underline underline-offset-2"
       >
-        Support
+        {t("support")}
       </a>
     </div>
   </div>

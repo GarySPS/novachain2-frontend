@@ -243,7 +243,16 @@
   "sell_uppercase": "SELL",
   "prev": "Prev",
   "next": "Next",
-  "page_of": "Page {{current}} of {{total}}"
+  "page_of": "Page {{current}} of {{total}}",
+
+  "company_name": "NovaChain Technologies Ltd.",
+  "company_address_line1": "12 Marina Boulevard, Marina Bay Financial Centre,",
+  "company_address_line2": "Singapore 018982",
+  "company_phone_1": "+65 2936 0430",
+  "company_phone_2": "+65 1665 7939",
+  "terms": "Terms",
+  "aml_kyc": "AML/KYC",
+  "support": "Support"
 
 
 }
