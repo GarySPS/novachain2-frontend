@@ -4,6 +4,7 @@ import { useAppKit } from '@reown/appkit/react';
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { MAIN_API_BASE } from "../config";
+import { useTranslation } from "react-i18next";
 import { useAccount } from 'wagmi';
 
 export default function SignUpPage() {
@@ -20,6 +21,7 @@ export default function SignUpPage() {
   const [memberCode, setMemberCode] = useState(["", "", "", "", ""]);
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
+  const { t } = useTranslation();
 
   const { open } = useAppKit();
   const { address, isConnected } = useAccount();
@@ -162,7 +164,7 @@ export default function SignUpPage() {
 
           {/* Title */}
           <h2 className="mt-4 md:mt-6 text-center text-xl md:text-3xl font-extrabold tracking-tight text-slate-100">
-            Create Account
+            {t("create_account_title")}
           </h2>
 
           {/* Web3 Button */}
@@ -176,12 +178,12 @@ export default function SignUpPage() {
               alt="WalletConnect" 
               className="w-4 h-4 md:w-5 md:h-5 drop-shadow-md" 
             />
-            Connect Web3 Wallet
+            {t("connect_web3_wallet")}
           </button>
 
           <div className="my-6 flex items-center gap-4">
             <div className="h-[1px] w-full bg-gradient-to-r from-transparent to-white/10" />
-            <span className="text-gray-500 font-bold text-[10px] uppercase tracking-[0.2em]">or</span>
+            <span className="text-gray-500 font-bold text-[10px] uppercase tracking-[0.2em]">{t("or")}</span>
             <div className="h-[1px] w-full bg-gradient-to-l from-transparent to-white/10" />
           </div>
 
@@ -194,7 +196,7 @@ export default function SignUpPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              placeholder="Username"
+              placeholder={t("username")}
               className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
             />
 
@@ -210,7 +212,7 @@ export default function SignUpPage() {
                       : "text-gray-500 hover:text-white"
                   }`}
                 >
-                  Email
+                  {t("email")}
                 </button>
                 <button
                   type="button"
@@ -221,7 +223,7 @@ export default function SignUpPage() {
                       : "text-gray-500 hover:text-white"
                   }`}
                 >
-                  Telegram
+                  {t("telegram")}
                 </button>
               </div>
 
@@ -232,7 +234,7 @@ export default function SignUpPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email address"
+                  placeholder={t("email_address")}
                   className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
                 />
               ) : (
@@ -241,7 +243,7 @@ export default function SignUpPage() {
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  placeholder="Phone number"
+                  placeholder={t("phone_number")}
                   className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
                 />
               )}
@@ -250,7 +252,7 @@ export default function SignUpPage() {
             {signupMethod === "phone" && codeStage && (
               <div className="space-y-3">
                 <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">
-                  Enter Telegram verification code
+                  <p className="...">{t("enter_telegram_code")}</p>
                 </p>
                 <div className="flex gap-2 justify-between">
                   {[0,1,2,3,4].map((i) => (
@@ -277,7 +279,7 @@ export default function SignUpPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  placeholder="Password"
+                  placeholder={t("password")}
                   className="w-full h-12 md:h-14 rounded-xl px-4 pr-16 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
                 />
                 <button
@@ -285,7 +287,7 @@ export default function SignUpPage() {
                   onClick={() => setShowPwd((s) => !s)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-300 hover:text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all shadow-sm"
                 >
-                  {showPwd ? "Hide" : "Show"}
+                  {showPwd ? t("hide") : t("show")}
                 </button>
               </div>
 
@@ -296,7 +298,7 @@ export default function SignUpPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  placeholder="Confirm Password"
+                  placeholder={t("confirm_password")}
                   className="w-full h-12 md:h-14 rounded-xl px-4 pr-16 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
                 />
                 <button
@@ -304,7 +306,7 @@ export default function SignUpPage() {
                   onClick={() => setShowConfirmPwd((s) => !s)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-300 hover:text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all shadow-sm"
                 >
-                  {showConfirmPwd ? "Hide" : "Show"}
+                  {showConfirmPwd ? t("hide") : t("show")}
                 </button>
               </div>
             </div>
@@ -326,23 +328,23 @@ export default function SignUpPage() {
               type="submit"
               className="mt-4 w-full h-12 md:h-14 rounded-xl font-black text-sm md:text-base tracking-[0.1em] uppercase transition-all active:scale-[.99] bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
             >
-              Register
+              {t("register")}
             </button>
           </form>
 
           {/* Terms */}
           <p className="mt-6 md:mt-8 text-center text-[10px] md:text-xs text-gray-500 font-medium leading-relaxed">
-            By signing up, you agree to our{" "}
+            {t("signup_terms_agreement")}{" "}
             <Link className="text-white hover:underline transition-colors font-bold" to="/terms" target="_blank">
-              Terms of Use
+              {t("terms_of_use")}
             </Link>
             ,{" "}
             <Link className="text-white hover:underline transition-colors font-bold" to="/privacy" target="_blank">
-              Privacy Notice
+              {t("privacy_notice")}
             </Link>{" "}
             and{" "}
             <Link className="text-white hover:underline transition-colors font-bold" to="/kyc" target="_blank">
-              AML/KYC Policy
+              {t("aml_kyc_policy")}
             </Link>
             .
           </p>
@@ -353,7 +355,7 @@ export default function SignUpPage() {
               to="/login"
               className="text-sm md:text-base font-bold text-gray-400 hover:text-white transition-colors"
             >
-              Already have an account? Login
+              {t("already_have_account")}
             </Link>
           </div>
         </div>

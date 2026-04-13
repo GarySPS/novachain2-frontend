@@ -252,8 +252,22 @@
   "company_phone_2": "+65 1665 7939",
   "terms": "Terms",
   "aml_kyc": "AML/KYC",
-  "support": "Support"
+  "support": "Support",
 
+  "create_account_title": "Create Account",
+  "username": "Username",
+  "email": "Email",
+  "telegram": "Telegram",
+  "email_address": "Email address",
+  "phone_number": "Phone number",
+  "enter_telegram_code": "Enter Telegram verification code",
+  "confirm_password": "Confirm Password",
+  "register": "Register",
+  "signup_terms_agreement": "By signing up, you agree to our",
+  "terms_of_use": "Terms of Use",
+  "privacy_notice": "Privacy Notice",
+  "aml_kyc_policy": "AML/KYC Policy",
+  "already_have_account": "Already have an account? Login"
 
 }
 
