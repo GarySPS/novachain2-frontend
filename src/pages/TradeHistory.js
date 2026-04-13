@@ -253,7 +253,7 @@ export default function TradeHistory() {
               
               {/* 📱 MOBILE CARD VIEW */}
               <div className="md:hidden flex flex-col divide-y divide-white/5">
-                {currentRows.map((t, idx) => {
+                {currentRows.map((trade, idx) => {
                   const isBuy = String(t.direction).toUpperCase() === "BUY";
                   const res = String(t.result || "").toUpperCase();
                   const baseCoin = (t.symbol || "btc").split(/[/_-]/)[0].toLowerCase();
@@ -334,7 +334,7 @@ export default function TradeHistory() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
-                    {currentRows.map((t, idx) => {
+                    {currentRows.map((trade, idx) => {
                       const isBuy = String(t.direction).toUpperCase() === "BUY";
                       const res = String(t.result || "").toUpperCase();
                       const baseCoin = (t.symbol || "btc").split(/[/_-]/)[0].toLowerCase();
@@ -413,7 +413,7 @@ export default function TradeHistory() {
                   disabled={currentPage === totalPages}
                   className="h-10 px-4 rounded-xl bg-[#1a2343] text-white font-bold text-sm ring-1 ring-white/10 hover:bg-[#202b54] hover:ring-cyan-500/50 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                  Next <Icon name="arrow-right" className="w-4 h-4" />
+                  {t("next")} <Icon name="arrow-right" className="w-4 h-4" />
                 </button>
               </div>
             )}
