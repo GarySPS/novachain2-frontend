@@ -167,5 +167,16 @@
 "save_desc": "资产将从\"我的资产\"移至\"储蓄赚息\"。",
 "redeem_desc": "资产将从\"储蓄赚息\"移回\"我的资产\"。",
 "confirm_save": "确认存入",
-"confirm_redeem": "确认赎回"
+"confirm_redeem": "确认赎回",
+
+  "buy_long": "买入做多",
+  "sell_short": "卖出做空",
+  "pair": "交易对",
+  "refreshing_price": "刷新价格中...",
+  "api_error": "API错误",
+  "loading": "加载中...",
+  "trade_result_not_ready": "交易结果尚未就绪，请查看历史记录！",
+  "please_login": "请登录后进行交易。",
+  "trade_failed": "交易失败"
+
 }

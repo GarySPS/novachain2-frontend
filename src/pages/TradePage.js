@@ -472,14 +472,14 @@ export default function TradePage() {
       onClick={() => openTradeModal("BUY")}
       className="h-14 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-white text-lg font-black shadow-lg"
     >
-      Buy
+      {t("buy")}
     </button>
 
     <button
       onClick={() => openTradeModal("SELL")}
       className="h-14 rounded-xl bg-gradient-to-r from-rose-500 to-rose-400 text-white text-lg font-black shadow-lg"
     >
-      Sell
+      {t("sell")}
     </button>
   </div>
 )}

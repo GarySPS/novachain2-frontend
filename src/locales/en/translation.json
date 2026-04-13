@@ -186,7 +186,19 @@
 "save_desc": "Assets will be moved from 'My Assets' to 'Savings Earn'.",
 "redeem_desc": "Assets will be moved from 'Savings Earn' to 'My Assets'.",
 "confirm_save": "Confirm Save",
-"confirm_redeem": "Confirm Redeem"
+"confirm_redeem": "Confirm Redeem",
+
+  "buy": "Buy",
+  "sell": "Sell",
+  "buy_long": "Buy Long",
+  "sell_short": "Sell Short",
+  "pair": "Pair",
+  "refreshing_price": "Refreshing Price...",
+  "api_error": "API Error",
+  "loading": "Loading...",
+  "trade_result_not_ready": "Trade result not ready, please check history!",
+  "please_login": "Please log in to trade.",
+  "trade_failed": "Trade failed"
 
 
 }
