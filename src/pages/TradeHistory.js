@@ -254,67 +254,67 @@ export default function TradeHistory() {
               {/* 📱 MOBILE CARD VIEW */}
               <div className="md:hidden flex flex-col divide-y divide-white/5">
                 {currentRows.map((trade, idx) => {
-                  const isBuy = String(t.direction).toUpperCase() === "BUY";
-                  const res = String(t.result || "").toUpperCase();
-                  const baseCoin = (t.symbol || "btc").split(/[/_-]/)[0].toLowerCase();
-                  
-                  return (
-                    <div key={`trade-mob-${t.id || idx}`} className="p-4 hover:bg-white/[0.02] transition-colors flex flex-col gap-3">
-                      {/* Top row: Direction, Symbol, Result */}
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center shadow-inner shrink-0 relative overflow-hidden">
-                            <span className="absolute text-xs font-black text-gray-500 tracking-widest">{baseCoin.substring(0,2).toUpperCase()}</span>
-                            <img 
-                              src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${baseCoin}.svg`} 
-                              alt={t.symbol} 
-                              className="w-7 h-7 object-contain drop-shadow-md relative z-10"
-                              onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            />
-                          </div>
-                          <div className="flex flex-col">
-                            <div className="flex items-center gap-2">
-                              <span className="font-black text-white text-lg tracking-wide">{(t.symbol || "N/A").toUpperCase()}</span>
-                              <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold tracking-widest ${isBuy ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
-                                {isBuy ? 'BUY' : 'SELL'}
-                              </span>
-                            </div>
-                            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{t.id}</span>
-                          </div>
-                        </div>
-                        <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${chipClass(res)}`}>
-                          {res || "--"}
-                        </span>
-                      </div>
-                      
-                      {/* Bottom row: Details Grid */}
-                      <div className="grid grid-cols-2 gap-2 bg-[#0b1020] rounded-xl p-3 ring-1 ring-white/5">
-                        <div className="flex flex-col">
-                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t("amount")}</span>
-                          <span className="font-bold text-gray-200">{fmtUSD(Number(t.amount))}</span>
-                        </div>
-                        <div className="flex flex-col text-right">
-                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t("profit")}</span>
-                          <span className={`font-black ${Number(t.profit) > 0 ? "text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.4)]" : Number(t.profit) < 0 ? "text-rose-400 drop-shadow-[0_0_5px_rgba(244,63,94,0.4)]" : "text-gray-400"}`}>
-                            {(Number(t.profit) > 0 ? "+" : "") + fmtUSD(Number(t.profit))}
-                          </span>
-                        </div>
-                        <div className="flex flex-col mt-2 pt-2 border-t border-white/5">
-                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t("entry_result")}</span>
-                          <span className="font-semibold text-gray-300 text-xs tabular-nums">
-                            {fmtUSD(Number(t.start_price), 4)} → {fmtUSD(Number(t.result_price), 4)}
-                          </span>
-                        </div>
-                        <div className="flex flex-col mt-2 pt-2 border-t border-white/5 text-right">
-                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t("time_with_seconds", { seconds: t.duration })}</span>
-                          <span className="font-medium text-gray-400 text-xs tabular-nums">
-                            {t.timestamp ? new Date(t.timestamp).toLocaleString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}) : ""}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+  const isBuy = String(trade.direction).toUpperCase() === "BUY";
+  const res = String(trade.result || "").toUpperCase();
+  const baseCoin = (trade.symbol || "btc").split(/[/_-]/)[0].toLowerCase();
+  
+  return (
+    <div key={`trade-mob-${trade.id || idx}`} className="p-4 hover:bg-white/[0.02] transition-colors flex flex-col gap-3">
+      {/* Top row: Direction, Symbol, Result */}
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center shadow-inner shrink-0 relative overflow-hidden">
+            <span className="absolute text-xs font-black text-gray-500 tracking-widest">{baseCoin.substring(0,2).toUpperCase()}</span>
+            <img 
+              src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${baseCoin}.svg`} 
+              alt={trade.symbol} 
+              className="w-7 h-7 object-contain drop-shadow-md relative z-10"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+          </div>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <span className="font-black text-white text-lg tracking-wide">{(trade.symbol || "N/A").toUpperCase()}</span>
+              <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold tracking-widest ${isBuy ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                {isBuy ? 'BUY' : 'SELL'}
+              </span>
+            </div>
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{trade.id}</span>
+          </div>
+        </div>
+        <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${chipClass(res)}`}>
+          {res || "--"}
+        </span>
+      </div>
+      
+      {/* Bottom row: Details Grid */}
+      <div className="grid grid-cols-2 gap-2 bg-[#0b1020] rounded-xl p-3 ring-1 ring-white/5">
+        <div className="flex flex-col">
+          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t("amount")}</span>
+          <span className="font-bold text-gray-200">{fmtUSD(Number(trade.amount))}</span>
+        </div>
+        <div className="flex flex-col text-right">
+          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t("profit")}</span>
+          <span className={`font-black ${Number(trade.profit) > 0 ? "text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.4)]" : Number(trade.profit) < 0 ? "text-rose-400 drop-shadow-[0_0_5px_rgba(244,63,94,0.4)]" : "text-gray-400"}`}>
+            {(Number(trade.profit) > 0 ? "+" : "") + fmtUSD(Number(trade.profit))}
+          </span>
+        </div>
+        <div className="flex flex-col mt-2 pt-2 border-t border-white/5">
+          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t("entry_result")}</span>
+          <span className="font-semibold text-gray-300 text-xs tabular-nums">
+            {fmtUSD(Number(trade.start_price), 4)} → {fmtUSD(Number(trade.result_price), 4)}
+          </span>
+        </div>
+        <div className="flex flex-col mt-2 pt-2 border-t border-white/5 text-right">
+          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t("time_with_seconds", { seconds: trade.duration })}</span>
+          <span className="font-medium text-gray-400 text-xs tabular-nums">
+            {trade.timestamp ? new Date(trade.timestamp).toLocaleString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}) : ""}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+})}
               </div>
 
               {/* 💻 DESKTOP TABLE VIEW */}
@@ -335,59 +335,59 @@ export default function TradeHistory() {
                   </thead>
                   <tbody className="divide-y divide-white/5">
                     {currentRows.map((trade, idx) => {
-                      const isBuy = String(t.direction).toUpperCase() === "BUY";
-                      const res = String(t.result || "").toUpperCase();
-                      const baseCoin = (t.symbol || "btc").split(/[/_-]/)[0].toLowerCase();
+  const isBuy = String(trade.direction).toUpperCase() === "BUY";
+  const res = String(trade.result || "").toUpperCase();
+  const baseCoin = (trade.symbol || "btc").split(/[/_-]/)[0].toLowerCase();
 
-                      return (
-                        <tr key={`trade-${t.id || idx}`} className="group hover:bg-white/[0.02] transition-colors" style={{ height: 72 }}>
-                          <td className="py-3 pl-6 pr-3 font-mono text-gray-500 text-xs">{t.id}</td>
-                          <td className="py-3 px-3 text-center">
-                            <span className={`inline-flex items-center justify-center gap-1.5 w-20 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest ${isBuy ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border border-rose-500/20"}`}>
-                              <Icon name={isBuy ? "arrow-up" : "arrow-down"} className="w-3 h-3" />
-                              {isBuy ? t("buy_uppercase") : t("sell_uppercase")}
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 text-left font-black text-white tracking-wide">
-                            <div className="flex items-center gap-2">
-                              <div className="w-6 h-6 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center shadow-inner shrink-0 relative overflow-hidden">
-                                <span className="absolute text-[9px] font-black text-gray-500">{baseCoin.substring(0,1).toUpperCase()}</span>
-                                <img 
-                                  src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${baseCoin}.svg`} 
-                                  alt={t.symbol} 
-                                  className="w-4 h-4 object-contain relative z-10"
-                                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                                />
-                              </div>
-                              <span>{(t.symbol || "N/A").toUpperCase()}</span>
-                            </div>
-                          </td>
-                          <td className="py-3 px-3 text-right font-bold text-gray-200 tabular-nums">
-                            {fmtUSD(Number(t.amount))}
-                          </td>
-                          <td className="py-3 px-3 text-right font-medium tabular-nums text-gray-400">
-                            {t.start_price != null && !isNaN(Number(t.start_price)) ? fmtUSD(Number(t.start_price), 6) : "--"}
-                          </td>
-                          <td className="py-3 px-3 text-center">
-                            <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${chipClass(res)}`}>
-                              {res || "--"}
-                            </span>
-                          </td>
-                          <td className="py-3 px-3 text-right font-medium tabular-nums text-gray-400">
-                            {t.result_price != null && !isNaN(Number(t.result_price)) ? fmtUSD(Number(t.result_price), 6) : "--"}
-                          </td>
-                          <td className={`py-3 px-3 text-right tabular-nums font-black text-lg ${Number(t.profit) > 0 ? "text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]" : Number(t.profit) < 0 ? "text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.4)]" : "text-gray-500"}`}>
-                            {(Number(t.profit) > 0 ? "+" : "") + fmtUSD(Number(t.profit))}
-                          </td>
-                          <td className="py-3 pr-6 pl-3 text-right font-medium text-gray-500 text-xs">
-                            <div className="flex flex-col items-end">
-                                <span>{t.timestamp ? new Date(t.timestamp).toLocaleDateString() : ""}</span>
-                                <span>{t.timestamp ? new Date(t.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ""}</span>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
+  return (
+    <tr key={`trade-${trade.id || idx}`} className="group hover:bg-white/[0.02] transition-colors" style={{ height: 72 }}>
+      <td className="py-3 pl-6 pr-3 font-mono text-gray-500 text-xs">{trade.id}</td>
+      <td className="py-3 px-3 text-center">
+        <span className={`inline-flex items-center justify-center gap-1.5 w-20 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest ${isBuy ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border border-rose-500/20"}`}>
+          <Icon name={isBuy ? "arrow-up" : "arrow-down"} className="w-3 h-3" />
+          {isBuy ? t("buy_uppercase") : t("sell_uppercase")}
+        </span>
+      </td>
+      <td className="py-3 px-3 text-left font-black text-white tracking-wide">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center shadow-inner shrink-0 relative overflow-hidden">
+            <span className="absolute text-[9px] font-black text-gray-500">{baseCoin.substring(0,1).toUpperCase()}</span>
+            <img 
+              src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${baseCoin}.svg`} 
+              alt={trade.symbol} 
+              className="w-4 h-4 object-contain relative z-10"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+          </div>
+          <span>{(trade.symbol || "N/A").toUpperCase()}</span>
+        </div>
+      </td>
+      <td className="py-3 px-3 text-right font-bold text-gray-200 tabular-nums">
+        {fmtUSD(Number(trade.amount))}
+      </td>
+      <td className="py-3 px-3 text-right font-medium tabular-nums text-gray-400">
+        {trade.start_price != null && !isNaN(Number(trade.start_price)) ? fmtUSD(Number(trade.start_price), 6) : "--"}
+      </td>
+      <td className="py-3 px-3 text-center">
+        <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${chipClass(res)}`}>
+          {res || "--"}
+        </span>
+      </td>
+      <td className="py-3 px-3 text-right font-medium tabular-nums text-gray-400">
+        {trade.result_price != null && !isNaN(Number(trade.result_price)) ? fmtUSD(Number(trade.result_price), 6) : "--"}
+      </td>
+      <td className={`py-3 px-3 text-right tabular-nums font-black text-lg ${Number(trade.profit) > 0 ? "text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]" : Number(trade.profit) < 0 ? "text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.4)]" : "text-gray-500"}`}>
+        {(Number(trade.profit) > 0 ? "+" : "") + fmtUSD(Number(trade.profit))}
+      </td>
+      <td className="py-3 pr-6 pl-3 text-right font-medium text-gray-500 text-xs">
+        <div className="flex flex-col items-end">
+            <span>{trade.timestamp ? new Date(trade.timestamp).toLocaleDateString() : ""}</span>
+            <span>{trade.timestamp ? new Date(trade.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ""}</span>
+        </div>
+      </td>
+    </tr>
+  );
+})}
                   </tbody>
                 </table>
               </div>
