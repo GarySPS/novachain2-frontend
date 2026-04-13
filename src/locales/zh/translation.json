@@ -186,6 +186,12 @@
   "entry": "开仓价",
   "seconds_short": "秒",
   "profit_credited": "利润已计入钱包",
-  "loss_deducted": "亏损已从钱包扣除"
+  "loss_deducted": "亏损已从钱包扣除",
+
+  "24h_high": "24小时最高",
+  "24h_low": "24小时最低",
+  "24h_volume": "成交量",
+  "24h_vol": "24小时成交量",
+  "error": "错误"
 
 }

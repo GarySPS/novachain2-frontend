@@ -209,7 +209,14 @@
   "duration": "Duration",
   "seconds_short": "s",
   "profit_credited": "Profit credited to wallet",
-  "loss_deducted": "Loss deducted from wallet"
+  "loss_deducted": "Loss deducted from wallet",
+
+  "24h_high": "24h High",
+  "24h_low": "24h Low",
+  "24h_volume": "Volume",
+  "24h_vol": "24h Vol",
+  "error": "Error"
+
 
 }
 

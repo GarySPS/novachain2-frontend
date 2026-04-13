@@ -370,7 +370,7 @@ export default function ForexPage() {
                         <span className="text-3xl font-black text-white tabular-nums drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">
                           {typeof coinPrice === "number" && !isNaN(coinPrice)
                             ? "$" + coinPrice.toLocaleString(undefined, { maximumFractionDigits: 2 })
-                            : fetchError ? "Error" : "..."}
+                            : fetchError ? t("error") : "..."}
                         </span>
                         {coinStats && (
                           <div className="text-xs bg-white/5 px-2 py-0.5 rounded border border-white/10 shadow-inner">
@@ -389,19 +389,19 @@ export default function ForexPage() {
                   {/* Stats row - 24h High/Low/Vol */}
                   <div className="grid grid-cols-3 gap-2 mt-2 pt-3 border-t border-white/5">
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">24h High</span>
+                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">{t("24h_high")}</span>
                       <span className="text-xs font-bold text-gray-200 tabular-nums">
                         {coinStats ? "$" + coinStats.high.toLocaleString() : "..."}
                       </span>
                     </div>
                     <div className="flex flex-col text-center border-x border-white/5">
-                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">24h Low</span>
+                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">{t("24h_low")}</span>
                       <span className="text-xs font-bold text-gray-200 tabular-nums">
                         {coinStats ? "$" + coinStats.low.toLocaleString() : "..."}
                       </span>
                     </div>
                     <div className="flex flex-col text-right">
-                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">Volume</span>
+                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">{t("24h_volume")}</span>
                       <span className="text-xs font-black text-cyan-400 tabular-nums drop-shadow-[0_0_5px_rgba(34,211,238,0.3)]">
                         {coinStats ? formatVolume(coinStats.vol) : "..."}
                       </span>
@@ -461,7 +461,7 @@ export default function ForexPage() {
                   className="h-14 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-white text-lg font-black shadow-[0_0_25px_rgba(16,185,129,0.4)] border border-emerald-400/50 transition hover:brightness-110 hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2"
                 >
                   <Icon name="arrow-up" className="w-5 h-5 drop-shadow-md" />
-                  Buy
+                  {t("buy")}
                 </button>
 
                 <button
@@ -469,7 +469,7 @@ export default function ForexPage() {
                   className="h-14 rounded-xl bg-gradient-to-r from-rose-500 to-rose-400 text-white text-lg font-black shadow-[0_0_25px_rgba(244,63,94,0.4)] border border-rose-400/50 transition hover:brightness-110 hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(244,63,94,0.5)] flex items-center justify-center gap-2"
                 >
                   <Icon name="arrow-down" className="w-5 h-5 drop-shadow-md" />
-                  Sell
+                    {t("sell")}
                 </button>
               </div>
             )}
@@ -560,11 +560,11 @@ export default function ForexPage() {
                     {/* Right: Stats Stack */}
                     <div className="flex flex-col text-right text-xs space-y-1.5 pt-1">
                         <div className="flex justify-end gap-2 items-center">
-                            <span className="text-gray-500 font-semibold uppercase tracking-wider">24h High:</span>
+                            <span className="text-gray-500 font-semibold uppercase tracking-wider">{t("24h_high")}:</span>
                             <span className="font-bold text-gray-200 tabular-nums">{coinStats ? "$" + coinStats.high.toLocaleString() : "..."}</span>
                         </div>
                         <div className="flex justify-end gap-2 items-center">
-                            <span className="text-gray-500 font-semibold uppercase tracking-wider">24h Low:</span>
+                            <span className="text-gray-500 font-semibold uppercase tracking-wider">{t("24h_low")}:</span>
                             <span className="font-bold text-gray-200 tabular-nums">{coinStats ? "$" + coinStats.low.toLocaleString() : "..."}</span>
                         </div>
                         <div className="flex justify-end gap-2 items-center">
