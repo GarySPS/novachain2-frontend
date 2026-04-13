@@ -177,6 +177,15 @@
   "loading": "加载中...",
   "trade_result_not_ready": "交易结果尚未就绪，请查看历史记录！",
   "please_login": "请登录后进行交易。",
-  "trade_failed": "交易失败"
+  "trade_failed": "交易失败",
+
+  "won": "赢了",
+  "on": "在",
+  "win": "获胜",
+  "loss": "亏损",
+  "entry": "开仓价",
+  "seconds_short": "秒",
+  "profit_credited": "利润已计入钱包",
+  "loss_deducted": "亏损已从钱包扣除"
 
 }

@@ -198,8 +198,18 @@
   "loading": "Loading...",
   "trade_result_not_ready": "Trade result not ready, please check history!",
   "please_login": "Please log in to trade.",
-  "trade_failed": "Trade failed"
+  "trade_failed": "Trade failed",
 
+  "won": "won",
+  "on": "on",
+  "win": "WIN",
+  "loss": "LOSS",
+  "entry": "Entry",
+  "result": "Result",
+  "duration": "Duration",
+  "seconds_short": "s",
+  "profit_credited": "Profit credited to wallet",
+  "loss_deducted": "Loss deducted from wallet"
 
 }
 

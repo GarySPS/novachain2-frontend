@@ -1,5 +1,3 @@
-// src/components/TradeResult.js
-
 import React from "react";
 import { motion } from "framer-motion";
 import Card from "./card";
@@ -15,10 +13,10 @@ export default function TradeResult({ tradeDetail, t }) {
       key="result"
       initial={{ opacity: 0, y: 32, scale: 0.97 }}
       animate={{
-  opacity: 1,
-  y: 0,
-  scale: isWin ? [0.95, 1.05, 1] : 1
-}}
+        opacity: 1,
+        y: 0,
+        scale: isWin ? [0.95, 1.05, 1] : 1
+      }}
       exit={{ opacity: 0, y: 32, scale: 0.97 }}
       transition={{ duration: 0.36, type: "spring" }}
     >
@@ -44,7 +42,7 @@ export default function TradeResult({ tradeDetail, t }) {
               ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]" 
               : "bg-rose-500/10 text-rose-400 border-rose-500/20 drop-shadow-[0_0_8px_rgba(244,63,94,0.5)]"
           }`}>
-            {isWin ? t("win", "WIN") : t("loss", "LOSS")} 
+            {isWin ? t("win") : t("loss")} 
             <Icon name={isWin ? "check" : "close"} className="w-4 h-4" />
           </span>
         </div>
@@ -66,7 +64,7 @@ export default function TradeResult({ tradeDetail, t }) {
         {/* Inner Details Data Box (Nested Glass) */}
         <div className="w-full flex flex-col space-y-3 bg-[#0a0a0a]/60 rounded-2xl p-5 border border-white/5 shadow-inner">
           <div className="flex justify-between w-full text-[13px]">
-            <span className="text-gray-500 font-medium uppercase tracking-wider">{t("entry", "Entry")}</span>
+            <span className="text-gray-500 font-medium uppercase tracking-wider">{t("entry")}</span>
             <span className="font-bold text-gray-200 tabular-nums">
               {!isNaN(Number(tradeDetail.start_price))
                 ? `$${Number(tradeDetail.start_price).toLocaleString(undefined, { maximumFractionDigits: 6 })}`
@@ -74,7 +72,7 @@ export default function TradeResult({ tradeDetail, t }) {
             </span>
           </div>
           <div className="flex justify-between w-full text-[13px]">
-            <span className="text-gray-500 font-medium uppercase tracking-wider">{t("result", "Result")}</span>
+            <span className="text-gray-500 font-medium uppercase tracking-wider">{t("result")}</span>
             <span className={`font-bold tabular-nums ${isWin ? 'text-emerald-400' : 'text-rose-400'}`}>
               {!isNaN(Number(tradeDetail.result_price))
                 ? `$${Number(tradeDetail.result_price).toLocaleString(undefined, { maximumFractionDigits: 6 })}`
@@ -83,15 +81,15 @@ export default function TradeResult({ tradeDetail, t }) {
           </div>
           <div className="flex justify-between w-full text-[13px] pt-3 border-t border-white/5">
             <span className="text-gray-500 font-medium uppercase tracking-wider">{t("duration")}</span>
-            <span className="font-bold text-white">{tradeDetail.duration}{t("seconds_short", "s")}</span>
+            <span className="font-bold text-white">{tradeDetail.duration}{t("seconds_short")}</span>
           </div>
         </div>
 
         {/* Footer Text */}
         <div className="mt-5 text-[10px] font-bold text-gray-600 uppercase tracking-[0.15em] text-center">
           {isWin
-            ? t("profit_credited", "Profit credited to wallet")
-            : t("loss_deducted", "Loss deducted from wallet")}
+            ? t("profit_credited")
+            : t("loss_deducted")}
         </div>
       </Card>
     </motion.div>

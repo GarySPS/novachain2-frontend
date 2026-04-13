@@ -1,13 +1,13 @@
-//src>components>tradeticker.js
-
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next"; // ADD THIS
 
 // Fake data
 const usernames = ['User123', 'Satoshi21', 'CryptoQueen', 'ElonX', 'Whale9', 'GaryBTC', 'NovaVIP'];
 const coins = ['BTC', 'ETH', 'SOL', 'XRP', 'TON'];
 
 export default function TradeTicker() {
+  const { t } = useTranslation(); // ADD THIS
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -49,9 +49,9 @@ export default function TradeTicker() {
             >
               <span className="text-gray-400 mr-2">⚡</span>
               <span className="text-white font-bold">{user}</span>
-              <span className="mx-2 text-gray-500">won</span>
+              <span className="mx-2 text-gray-500">{t("won")}</span> {/* UPDATED */}
               <span className="text-emerald-400 font-black drop-shadow-[0_0_8px_rgba(52,211,153,0.3)]">${amount}</span>
-              <span className="mx-2 text-gray-500">on</span>
+              <span className="mx-2 text-gray-500">{t("on")}</span> {/* UPDATED */}
               <span className="text-cyan-400 font-bold">{coin}/USDT</span>
             </motion.span>
           ))}
