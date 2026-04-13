@@ -6,6 +6,7 @@ import { MAIN_API_BASE } from "../config";
 import Card from "../components/card";
 import Tooltip from "../components/tooltip";
 import Icon from "../components/icon";
+import { useTranslation } from "react-i18next";
 
 /* ---------- helpers (UI only) ---------- */
 const fmtUSD = (n, max = 2) =>
@@ -23,6 +24,7 @@ const chipClass = (ok) =>
 export default function TradeHistory() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   // UI controls (client-side only; does not change your logic)
   const [resultFilter, setResultFilter] = useState("ALL"); // ALL | WIN | LOSE
@@ -158,9 +160,9 @@ export default function TradeHistory() {
             
             <div className="flex flex-col lg:flex-row lg:items-end gap-5 lg:gap-6 relative z-10">
               <div className="flex-1">
-                <div className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-1">Trade Ledger</div>
+                <div className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-1">{t("trade_ledger")}</div>
                 <div className="text-3xl md:text-4xl font-black text-white tracking-tight drop-shadow-md">
-                  {rows.length.toLocaleString()} <span className="text-xl text-gray-500 font-bold">record{rows.length !== 1 ? "s" : ""}</span>
+                  {rows.length.toLocaleString()} <span className="text-xl text-gray-500 font-bold">{rows.length !== 1 ? t("records") : t("record")}</span>
                 </div>
               </div>
 
@@ -180,7 +182,7 @@ export default function TradeHistory() {
                             : "text-gray-500 hover:text-gray-300"
                         }`}
                     >
-                      {k}
+                          {k === "ALL" ? t("all") : k === "WIN" ? t("win") : t("lose")}
                     </button>
                   ))}
                 </div>
@@ -196,12 +198,12 @@ export default function TradeHistory() {
                       setSortDir(dir);
                     }}
                   >
-                    <option value="time:desc">Newest First</option>
-                    <option value="time:asc">Oldest First</option>
-                    <option value="profit:desc">Profit: High → Low</option>
-                    <option value="profit:asc">Profit: Low → High</option>
-                    <option value="amount:desc">Amount: High → Low</option>
-                    <option value="amount:asc">Amount: Low → High</option>
+                    <option value="time:desc">{t("newest_first")}</option>
+<option value="time:asc">{t("oldest_first")}</option>
+<option value="profit:desc">{t("profit_high_to_low")}</option>
+<option value="profit:asc">{t("profit_low_to_high")}</option>
+<option value="amount:desc">{t("amount_high_to_low")}</option>
+<option value="amount:asc">{t("amount_low_to_high")}</option>
                   </select>
                   <Icon name="arrow-down" className="absolute right-4 top-4 w-4 h-4 text-gray-500 pointer-events-none"/>
                 </div>
@@ -210,7 +212,7 @@ export default function TradeHistory() {
                 <div className="relative">
                   <input
                     className="w-full h-12 rounded-xl border border-[#2c3040] bg-[#0b1020] text-white font-bold px-4 pr-10 outline-none focus:ring-2 focus:ring-cyan-500 shadow-inner placeholder:text-gray-600 text-sm"
-                    placeholder="Search pair / ID..."
+                    placeholder={t("search_pair_id")}
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                   />
@@ -242,8 +244,8 @@ export default function TradeHistory() {
         ) : rows.length === 0 ? (
           <Card className={`${cardClass} py-16 text-center flex flex-col items-center justify-center`}>
             <Icon name="clock" className="w-12 h-12 text-gray-600 mb-3" />
-            <div className="text-white text-xl font-black mb-1">No Trade History</div>
-            <div className="text-gray-500 text-sm font-medium">Completed trades will be recorded here.</div>
+            <div className="text-white text-xl font-black mb-1">{t("no_trade_history")}</div>
+<div className="text-gray-500 text-sm font-medium">{t("completed_trades_recorded")}</div>
           </Card>
         ) : (
           <Card className={`${cardClass} p-0 flex flex-col`}>
@@ -288,23 +290,23 @@ export default function TradeHistory() {
                       {/* Bottom row: Details Grid */}
                       <div className="grid grid-cols-2 gap-2 bg-[#0b1020] rounded-xl p-3 ring-1 ring-white/5">
                         <div className="flex flex-col">
-                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Amount</span>
+                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t("amount")}</span>
                           <span className="font-bold text-gray-200">{fmtUSD(Number(t.amount))}</span>
                         </div>
                         <div className="flex flex-col text-right">
-                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Profit</span>
+                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t("profit")}</span>
                           <span className={`font-black ${Number(t.profit) > 0 ? "text-emerald-400 drop-shadow-[0_0_5px_rgba(52,211,153,0.4)]" : Number(t.profit) < 0 ? "text-rose-400 drop-shadow-[0_0_5px_rgba(244,63,94,0.4)]" : "text-gray-400"}`}>
                             {(Number(t.profit) > 0 ? "+" : "") + fmtUSD(Number(t.profit))}
                           </span>
                         </div>
                         <div className="flex flex-col mt-2 pt-2 border-t border-white/5">
-                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Entry → Result</span>
+                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t("entry_result")}</span>
                           <span className="font-semibold text-gray-300 text-xs tabular-nums">
                             {fmtUSD(Number(t.start_price), 4)} → {fmtUSD(Number(t.result_price), 4)}
                           </span>
                         </div>
                         <div className="flex flex-col mt-2 pt-2 border-t border-white/5 text-right">
-                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">Time ({t.duration}s)</span>
+                          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">{t("time_with_seconds", { seconds: t.duration })}</span>
                           <span className="font-medium text-gray-400 text-xs tabular-nums">
                             {t.timestamp ? new Date(t.timestamp).toLocaleString(undefined, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}) : ""}
                           </span>
@@ -320,15 +322,15 @@ export default function TradeHistory() {
                 <table className="w-full text-sm md:text-base">
                   <thead className="bg-[#0b1020] sticky top-0 z-10">
                     <tr className="text-left text-gray-400 border-b border-white/10 text-xs uppercase tracking-widest font-bold">
-                      <th className="py-4 pl-6 pr-3"># ID</th>
-                      <th className="py-4 px-3 text-center">Direction</th>
-                      <th className="py-4 px-3 text-left">Symbol</th>
-                      <th className="py-4 px-3 text-right">Amount</th>
-                      <th className="py-4 px-3 text-right">Entry</th>
-                      <th className="py-4 px-3 text-center">Result</th>
-                      <th className="py-4 px-3 text-right">Result Price</th>
-                      <th className="py-4 px-3 text-right">Profit</th>
-                      <th className="py-4 pr-6 pl-3 text-right">Time</th>
+                      <th className="py-4 pl-6 pr-3">{t("id_hash")}</th>
+<th className="py-4 px-3 text-center">{t("direction")}</th>
+<th className="py-4 px-3 text-left">{t("symbol")}</th>
+<th className="py-4 px-3 text-right">{t("amount")}</th>
+<th className="py-4 px-3 text-right">{t("entry")}</th>
+<th className="py-4 px-3 text-center">{t("result")}</th>
+<th className="py-4 px-3 text-right">{t("result_price")}</th>
+<th className="py-4 px-3 text-right">{t("profit")}</th>
+<th className="py-4 pr-6 pl-3 text-right">{t("time")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -343,7 +345,7 @@ export default function TradeHistory() {
                           <td className="py-3 px-3 text-center">
                             <span className={`inline-flex items-center justify-center gap-1.5 w-20 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest ${isBuy ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-rose-500/10 text-rose-400 border border-rose-500/20"}`}>
                               <Icon name={isBuy ? "arrow-up" : "arrow-down"} className="w-3 h-3" />
-                              {isBuy ? "BUY" : "SELL"}
+                              {isBuy ? t("buy_uppercase") : t("sell_uppercase")}
                             </span>
                           </td>
                           <td className="py-3 px-3 text-left font-black text-white tracking-wide">
@@ -399,11 +401,11 @@ export default function TradeHistory() {
                   disabled={currentPage === 1}
                   className="h-10 px-4 rounded-xl bg-[#1a2343] text-white font-bold text-sm ring-1 ring-white/10 hover:bg-[#202b54] hover:ring-cyan-500/50 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                   <Icon name="arrow-left" className="w-4 h-4" /> Prev
+                   <Icon name="arrow-left" className="w-4 h-4" /> {t("prev")}
                 </button>
                 
                 <div className="text-gray-400 text-sm font-medium">
-                  Page <span className="text-white font-black">{currentPage}</span> of {totalPages}
+                  {t("page_of", { current: currentPage, total: totalPages })}
                 </div>
 
                 <button

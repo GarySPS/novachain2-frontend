@@ -215,7 +215,35 @@
   "24h_low": "24h Low",
   "24h_volume": "Volume",
   "24h_vol": "24h Vol",
-  "error": "Error"
+  "error": "Error",
+
+  "trade_ledger": "Trade Ledger",
+  "record": "record",
+  "records": "records",
+  "all": "ALL",
+  "lose": "LOSE",
+  "newest_first": "Newest First",
+  "oldest_first": "Oldest First",
+  "profit_high_to_low": "Profit: High → Low",
+  "profit_low_to_high": "Profit: Low → High",
+  "amount_high_to_low": "Amount: High → Low",
+  "amount_low_to_high": "Amount: Low → High",
+  "search_pair_id": "Search pair / ID...",
+  "no_trade_history": "No Trade History",
+  "completed_trades_recorded": "Completed trades will be recorded here.",
+  "entry_result": "Entry → Result",
+  "time_with_seconds": "Time ({{seconds}}s)",
+  "id_hash": "# ID",
+  "direction": "Direction",
+  "symbol": "Symbol",
+  "result_price": "Result Price",
+  "profit": "Profit",
+  "time": "Time",
+  "buy_uppercase": "BUY",
+  "sell_uppercase": "SELL",
+  "prev": "Prev",
+  "next": "Next",
+  "page_of": "Page {{current}} of {{total}}"
 
 
 }
