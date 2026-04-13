@@ -106,8 +106,8 @@ export default function LoginPage() {
       {/* Dark overlay to make the glass card pop against the background */}
       <div className="absolute inset-0 bg-black/60 pointer-events-none" />
 
-      {/* Language Selector Button - Top Right Corner */}
-      <div className="absolute top-4 right-4 md:top-6 md:right-6 z-20">
+      {/* Language Selector Button - Bottom Right Corner */}
+      <div className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-20">
         <div className="relative">
           <button
             onClick={() => setShowLangMenu(!showLangMenu)}
@@ -127,14 +127,14 @@ export default function LoginPage() {
             </svg>
           </button>
 
-          {/* Dropdown Menu */}
+          {/* Dropdown Menu - Popping Upward */}
           {showLangMenu && (
             <>
               <div 
                 className="fixed inset-0 z-30" 
                 onClick={() => setShowLangMenu(false)}
               />
-              <div className="absolute right-0 mt-2 w-40 md:w-48 rounded-xl bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden z-40 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute right-0 bottom-full mb-2 w-40 md:w-48 rounded-xl bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden z-40 animate-in fade-in duration-200">
                 {languages.map((lang) => (
                   <button
                     key={lang.code}
@@ -209,7 +209,7 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="username"
-              placeholder={t('username_email_telegram') || "Username, Email, or Telegram"}
+              placeholder={t('username_email') || "Username, Email"}
               className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
             />
 
