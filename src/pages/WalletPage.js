@@ -608,7 +608,7 @@ const handleWithdraw = async (e) => {
                   {/* Premium Shine Effect */}
                   <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 pointer-events-none"></div>
                   <Icon name="credit-card" className="w-5 h-5 text-blue-100" /> 
-                  <span>t("buy_crypto") <span className="text-[10px] uppercase font-bold text-blue-200 ml-1 bg-blue-900/40 px-1.5 py-0.5 rounded border border-blue-400/20">t("fast_badge")</span></span>
+                  <span>{t("buy_crypto")} <span className="text-[10px] uppercase font-bold text-blue-200 ml-1 bg-blue-900/40 px-1.5 py-0.5 rounded border border-blue-400/20">{t("fast_badge")}</span></span>
                 </button>
               </div>
             </div>
