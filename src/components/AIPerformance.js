@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import Icon from './icon';
 
 export default function AIPerformance({ totalEarnUsd, currentEarnRate }) {
+  const { t } = useTranslation();
+  
   // Performance state with realistic starting values
   const [performance, setPerformance] = useState({
     totalTrades: 1247,
@@ -71,7 +74,7 @@ export default function AIPerformance({ totalEarnUsd, currentEarnRate }) {
           newResponseTime = 0.1 + Math.random() * 1.9;
           
           // Update daily change
-          const dailyChangePercent = ((newProfit - prev.totalProfit) / prev.totalProfit) * 100;
+          const dailyChangePercent = prev.totalProfit > 0 ? ((newProfit - prev.totalProfit) / prev.totalProfit) * 100 : 0;
           
           return {
             totalTrades: newTrades,
@@ -149,7 +152,7 @@ export default function AIPerformance({ totalEarnUsd, currentEarnRate }) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {/* Total Trades */}
       <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 group">
         <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -157,7 +160,7 @@ export default function AIPerformance({ totalEarnUsd, currentEarnRate }) {
         </div>
         <div className="flex-1">
           <div className="text-xs text-gray-500">{t("total_trades")}</div>
-          <div className="font-bold text-white text-lg font-mono">
+          <div className="font-bold text-white text-base font-mono">
             {formatNumber(Math.floor(performance.totalTrades))}
           </div>
         </div>
@@ -175,7 +178,7 @@ export default function AIPerformance({ totalEarnUsd, currentEarnRate }) {
         </div>
         <div className="flex-1">
           <div className="text-xs text-gray-500">{t("total_profit")}</div>
-          <div className="font-bold text-blue-400 text-lg font-mono">
+          <div className="font-bold text-blue-400 text-base font-mono">
             {formatCurrency(performance.totalProfit)}
           </div>
         </div>
@@ -188,7 +191,7 @@ export default function AIPerformance({ totalEarnUsd, currentEarnRate }) {
         </div>
         <div className="flex-1">
           <div className="text-xs text-gray-500">{t("win_rate_24h")}</div>
-          <div className="font-bold text-purple-400 text-lg font-mono">
+          <div className="font-bold text-purple-400 text-base font-mono">
             {performance.winRate}%
           </div>
         </div>
@@ -207,7 +210,7 @@ export default function AIPerformance({ totalEarnUsd, currentEarnRate }) {
         </div>
         <div className="flex-1">
           <div className="text-xs text-gray-500">{t("avg_response")}</div>
-          <div className="font-bold text-cyan-400 text-lg font-mono">
+          <div className="font-bold text-cyan-400 text-base font-mono">
             {performance.avgResponseTime}ms
           </div>
         </div>
