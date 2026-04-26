@@ -334,7 +334,34 @@
   "instant_withdraw_to_main_wallet": "Instant withdraw to main wallet",
   "min_deposit_3000_error": "Minimum deposit is $3,000 USD. Need {{amount}} more.",
   "save_success": "Successfully deposited {{amount}} {{coin}} ({{usd}}) to savings",
-  "withdraw_success": "Successfully withdrew {{amount}} {{coin}} from savings"
+  "withdraw_success": "Successfully withdrew {{amount}} {{coin}} from savings",
+
+  "compounds_daily_pays_weekly": "Compounds daily • Pays weekly",
+  "projected_annual": "Projected annual",
+  "min_requirement": "Minimum $3,000 USD equivalent required to start earning",
+  "view_interest_history": "View interest history",
+  "earn_up_to": "Earn up to 20% APY with flexible savings - No lock-in period!",
+  "compared_to_bank": "Traditional banks offer 0.05% APY - You earn up to 400x more!",
+
+  "trading_active": "Trading Active",
+  "ai_strategy": "Strategy: High-Frequency Arbitrage",
+  "bot_status": "Bot Status",
+  "ai_active_scanning": "Scanning Markets...",
+  "ai_standby": "Standby - Deploy funds to activate",
+  "estimated_weekly": "Est. Weekly Yield",
+  "ai_performance": "AI Performance",
+  "win_rate_24h": "Win Rate (24h)",
+  "yield_tiers": "Yield Tiers",
+  "higher_balance_higher_yield": "Higher balance = Higher yield",
+  "current_tier": "Current Tier",
+  "deposit_to_activate": "Deposit {amount} more to activate AI trading",
+  "next_tier_push": "Add {amount} to unlock {rate} APY tier",
+  "total_trades": "Total Trades Executed",
+  "total_profit": "Total Profit Generated",
+  "avg_response": "Avg Response Time",
+  "view_history": "View history",
+  "deploy_funds_to_start": "Deploy funds to start earning",
+  "earn_up_to_promo": "Earn up to 20% APY - AI trades for you 24/7"
 
 }
 

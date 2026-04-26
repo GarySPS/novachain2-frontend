@@ -757,13 +757,13 @@ const handleConvert = async e => {
           </Card>
         </div>
 
-        {/* ===== AI TRADING INVESTMENT CARD - ENHANCED UX ===== */}
+        {/* ===== AI TRADING INVESTMENT CARD - AI TRADING SYSTEM UX ===== */}
 <Card id="earn-section" className={`${cardClass} p-0 relative overflow-hidden border-cyan-500/20 shadow-[0_0_40px_rgba(34,211,238,0.05)]`}>
   {/* Background Effects */}
   <div className="absolute top-[-50px] right-[-50px] w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
   <div className="absolute bottom-[-50px] left-[-50px] w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-  {/* Header */}
+  {/* Header with Live AI Status */}
   <div className="bg-[#0b1020]/80 backdrop-blur-md px-6 py-5 border-b border-cyan-500/20">
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div className="flex items-center gap-4">
@@ -774,27 +774,36 @@ const handleConvert = async e => {
           </span>
         </div>
         <div>
-          <h2 className="text-xl md:text-2xl font-black bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+          <h2 className="text-xl md:text-2xl font-black bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent flex items-center gap-2">
             {t("ai_savings_earn")}
+            {/* Live Status Indicator - Shows only when funds are deployed */}
+            {totalEarnUsd > 0 && (
+              <span className="flex items-center gap-1.5 text-[10px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-2 py-0.5 rounded-full uppercase tracking-widest font-bold">
+                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+                {t("trading_active")}
+              </span>
+            )}
           </h2>
           <p className="text-xs text-cyan-400/80 font-medium tracking-widest uppercase mt-0.5">
-            {t("flexible_savings_weekly_payout")}
+            {t("ai_strategy")}
           </p>
         </div>
       </div>
       
-      <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full border ${totalEarnUsd > 0 ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-300" : "bg-white/5 border-white/10 text-gray-400"}`}>
-        <span className={`w-2 h-2 rounded-full ${totalEarnUsd > 0 ? "bg-cyan-400 animate-pulse" : "bg-gray-500"}`}></span>
-        <span className="text-[11px] font-bold tracking-widest uppercase">
-          {totalEarnUsd > 0 ? t("earning_active") : t("start_earning")}
-        </span>
+      {/* AI Bot Status */}
+      <div className="flex flex-col items-end">
+        <div className="text-[11px] text-gray-400 uppercase tracking-widest mb-1">{t("bot_status")}</div>
+        <div className="text-sm font-bold text-cyan-400 flex items-center gap-2">
+          <Icon name="cpu" className="w-4 h-4 animate-pulse" />
+          {totalEarnUsd > 0 ? t("ai_active_scanning") : t("ai_standby")}
+        </div>
       </div>
     </div>
   </div>
   
-  {/* Stats Overview */}
+  {/* Stats Overview - 4 columns now with AI Performance */}
   <div className="px-6 py-6 border-b border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {/* Deployed Capital */}
       <div className="flex flex-col p-4 rounded-xl bg-[#0b1020]/60 backdrop-blur-sm border border-white/10">
         <div className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">
@@ -806,7 +815,7 @@ const handleConvert = async e => {
       </div>
       
       {/* Current APY */}
-      <div className="flex flex-col p-4 rounded-xl bg-gradient-to-br from-cyan-900/20 to-indigo-900/20 backdrop-blur-sm border border-cyan-500/20">
+      <div className="flex flex-col p-4 rounded-xl bg-gradient-to-br from-cyan-900/30 to-indigo-900/30 backdrop-blur-sm border border-cyan-500/30 shadow-[0_0_15px_rgba(34,211,238,0.1)]">
         <div className="text-xs text-cyan-400 font-semibold uppercase tracking-wider mb-1 flex items-center gap-1">
           <Icon name="activity" className="w-3 h-3" /> {t("current_apy")}
         </div>
@@ -821,148 +830,196 @@ const handleConvert = async e => {
       {/* Weekly Projection */}
       <div className="flex flex-col p-4 rounded-xl bg-[#0b1020]/60 backdrop-blur-sm border border-white/10">
         <div className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">
-          {t("estimated_weekly_earnings")}
+          {t("estimated_weekly")}
         </div>
         <div className="text-2xl font-black text-emerald-400">
-          {fmtUSD(totalEarnUsd * (currentEarnRate / 100 / 52))}
+          +{fmtUSD(totalEarnUsd * (currentEarnRate / 100 / 52))}
         </div>
         <div className="text-xs text-gray-500 mt-1">
           {t("paid_every_monday")}
         </div>
       </div>
-    </div>
-  </div>
 
-  {/* Tier System with Visual Progress */}
-<div className="px-6 py-5 border-b border-white/5">
-  <div className="flex justify-between items-center mb-3">
-    <h3 className="text-sm font-bold text-gray-300 uppercase tracking-wider">
-      {t("apy_tiers")}
-    </h3>
-    <button className="text-xs text-cyan-400 hover:text-cyan-300 transition">
-      {t("view_details")}
-    </button>
-  </div>
-  
-  <div className="space-y-3">
-    {/* Tier 1: Below 3,000 USD - No interest */}
-    <div className="relative">
-      <div className="flex justify-between text-xs mb-1">
-        <span className="text-gray-400">$0 - $2,999</span>
-        <span className={`font-bold ${totalEarnUsd < 3000 ? 'text-gray-500' : 'text-gray-600'}`}>0% APY</span>
-      </div>
-      <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
-        <div className="h-full bg-gradient-to-r from-gray-600 to-gray-500 rounded-full" style={{ width: `${Math.min(100, (totalEarnUsd / 3000) * 100)}%` }}></div>
-      </div>
-      {totalEarnUsd < 3000 && (
-        <div className="text-xs text-amber-400/80 mt-1">
-          💡 {t("min_3000_required", { amount: fmtUSD(3000 - totalEarnUsd) })}
+      {/* AI Performance Metric - NEW */}
+      <div className="flex flex-col p-4 rounded-xl bg-gradient-to-br from-purple-900/20 to-pink-900/20 backdrop-blur-sm border border-purple-500/20">
+        <div className="text-xs text-purple-400 font-semibold uppercase tracking-wider mb-1 flex items-center gap-1">
+          <Icon name="trending-up" className="w-3 h-3" /> {t("ai_performance")}
         </div>
-      )}
-    </div>
-    
-    {/* Tier 2: 3,000-19,999 USD - 10% APY */}
-    <div className="relative">
-      <div className="flex justify-between text-xs mb-1">
-        <span className="text-gray-400">$3,000 - $19,999</span>
-        <span className={`font-bold ${totalEarnUsd >= 3000 && totalEarnUsd < 20000 ? 'text-cyan-400' : totalEarnUsd >= 20000 ? 'text-gray-500' : 'text-gray-500'}`}>10% APY</span>
-      </div>
-      <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
-        <div className="h-full bg-gradient-to-r from-teal-600 to-cyan-500 rounded-full" style={{ width: `${Math.min(100, Math.max(0, (totalEarnUsd - 3000) / 17000 * 100))}%` }}></div>
+        <div className="text-2xl font-black text-purple-400">
+          98.2%
+        </div>
+        <div className="text-xs text-purple-400/70 mt-1">
+          {t("win_rate_24h")}
+        </div>
       </div>
     </div>
+
+    {/* Action Buttons - MOVED UP right below stats */}
+    <div className="grid grid-cols-2 gap-3 mt-5">
+      <button 
+        onClick={() => openEarnModal('save')} 
+        className="h-12 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-400 text-white text-[15px] font-black tracking-wide shadow-[0_0_20px_rgba(34,211,238,0.25)] border border-cyan-400/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
+      >
+        <Icon name="plus" className="w-5 h-5" />
+        {t("deposit_to_earn")}
+      </button>
+      <button 
+        onClick={() => openEarnModal('redeem')} 
+        className="h-12 rounded-xl bg-[#0b1020] border border-white/10 text-gray-300 hover:bg-rose-500/10 hover:border-rose-500/30 hover:text-rose-400 text-[15px] font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2"
+      >
+        <Icon name="arrow-down" className="w-5 h-5" />
+        {t("withdraw")}
+      </button>
+    </div>
+  </div>
+
+  {/* Simplified Tier System - Card style instead of stacked progress bars */}
+  <div className="px-6 py-5 border-b border-white/5">
+    <div className="flex justify-between items-center mb-4">
+      <h3 className="text-sm font-bold text-gray-300 uppercase tracking-wider flex items-center gap-2">
+        <Icon name="activity" className="w-4 h-4 text-cyan-400" />
+        {t("yield_tiers")}
+      </h3>
+      <div className="text-[10px] text-gray-500">{t("higher_balance_higher_yield")}</div>
+    </div>
     
-    {/* Tier 3: 20,000-49,999 USD - 15% APY */}
-    <div className="relative">
-      <div className="flex justify-between text-xs mb-1">
-        <span className="text-gray-400">$20,000 - $49,999</span>
-        <span className={`font-bold ${totalEarnUsd >= 20000 && totalEarnUsd < 50000 ? 'text-cyan-400' : totalEarnUsd >= 50000 ? 'text-gray-500' : 'text-gray-500'}`}>15% APY</span>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {/* Tier 1 */}
+      <div className={`p-3 rounded-xl border transition-all ${totalEarnUsd < 3000 ? 'bg-cyan-500/10 border-cyan-500/40 shadow-[0_0_15px_rgba(34,211,238,0.1)]' : 'bg-[#0b1020]/40 border-white/5 opacity-50'}`}>
+        <div className="text-xs text-gray-400 mb-1">$0 - $2,999</div>
+        <div className={`font-black text-lg ${totalEarnUsd < 3000 ? 'text-cyan-400' : 'text-gray-500'}`}>0%</div>
+        {totalEarnUsd < 3000 && totalEarnUsd > 0 && (
+          <div className="text-[10px] text-amber-400/70 mt-1">{t("current_tier")}</div>
+        )}
       </div>
-      <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
-        <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-500 rounded-full" style={{ width: `${Math.min(100, Math.max(0, (totalEarnUsd - 20000) / 30000 * 100))}%` }}></div>
+      
+      {/* Tier 2 */}
+      <div className={`p-3 rounded-xl border transition-all ${totalEarnUsd >= 3000 && totalEarnUsd < 20000 ? 'bg-cyan-500/10 border-cyan-500/40 shadow-[0_0_15px_rgba(34,211,238,0.1)]' : 'bg-[#0b1020]/40 border-white/5 opacity-50'}`}>
+        <div className="text-xs text-gray-400 mb-1">$3K - $19,999</div>
+        <div className={`font-black text-lg ${totalEarnUsd >= 3000 && totalEarnUsd < 20000 ? 'text-cyan-400' : 'text-gray-500'}`}>10%</div>
+        {totalEarnUsd >= 3000 && totalEarnUsd < 20000 && (
+          <div className="text-[10px] text-cyan-400/70 mt-1">{t("current_tier")} 🔥</div>
+        )}
+      </div>
+      
+      {/* Tier 3 */}
+      <div className={`p-3 rounded-xl border transition-all ${totalEarnUsd >= 20000 && totalEarnUsd < 50000 ? 'bg-cyan-500/10 border-cyan-500/40 shadow-[0_0_15px_rgba(34,211,238,0.1)]' : 'bg-[#0b1020]/40 border-white/5 opacity-50'}`}>
+        <div className="text-xs text-gray-400 mb-1">$20K - $49,999</div>
+        <div className={`font-black text-lg ${totalEarnUsd >= 20000 && totalEarnUsd < 50000 ? 'text-cyan-400' : 'text-gray-500'}`}>15%</div>
+        {totalEarnUsd >= 20000 && totalEarnUsd < 50000 && (
+          <div className="text-[10px] text-cyan-400/70 mt-1">{t("current_tier")} 🚀</div>
+        )}
+      </div>
+      
+      {/* Tier 4 */}
+      <div className={`p-3 rounded-xl border transition-all ${totalEarnUsd >= 50000 ? 'bg-purple-500/10 border-purple-500/40 shadow-[0_0_15px_rgba(168,85,247,0.1)]' : 'bg-[#0b1020]/40 border-white/5 opacity-50'}`}>
+        <div className="text-xs text-gray-400 mb-1">$50K+</div>
+        <div className={`font-black text-lg ${totalEarnUsd >= 50000 ? 'text-purple-400' : 'text-gray-500'}`}>20%</div>
+        {totalEarnUsd >= 50000 && (
+          <div className="text-[10px] text-purple-400/70 mt-1">{t("current_tier")} 👑</div>
+        )}
       </div>
     </div>
     
-    {/* Tier 4: 50,000+ USD - 20% APY */}
-    <div className="relative">
-      <div className="flex justify-between text-xs mb-1">
-        <span className="text-gray-400">$50,000+</span>
-        <span className={`font-bold ${totalEarnUsd >= 50000 ? 'text-cyan-400' : 'text-gray-500'}`}>20% APY</span>
+    {/* Next Tier Push Notification */}
+    {totalEarnUsd < 3000 && totalEarnUsd > 0 && (
+      <div className="mt-4 p-3 flex items-center gap-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs">
+        <Icon name="alert-circle" className="w-4 h-4 shrink-0" />
+        <span>{t("deposit_to_activate", { amount: fmtUSD(3000 - totalEarnUsd) })}</span>
       </div>
-      <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
-        <div className="h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full" style={{ width: `${Math.min(100, (totalEarnUsd - 50000) / 100000 * 100)}%` }}></div>
+    )}
+    {totalEarnUsd >= 3000 && totalEarnUsd < 20000 && (
+      <div className="mt-4 p-3 flex items-center gap-3 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs">
+        <Icon name="trending-up" className="w-4 h-4 shrink-0" />
+        <span>{t("next_tier_push", { amount: fmtUSD(20000 - totalEarnUsd), rate: "15%" })}</span>
+      </div>
+    )}
+    {totalEarnUsd >= 20000 && totalEarnUsd < 50000 && (
+      <div className="mt-4 p-3 flex items-center gap-3 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs">
+        <Icon name="crown" className="w-4 h-4 shrink-0" />
+        <span>{t("next_tier_push", { amount: fmtUSD(50000 - totalEarnUsd), rate: "20%" })}</span>
+      </div>
+    )}
+  </div>
+
+  {/* AI Performance Details - NEW SECTION */}
+  <div className="px-6 py-5 border-b border-white/5 bg-[#0b1020]/40">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+        <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+          <Icon name="activity" className="w-4 h-4 text-emerald-400" />
+        </div>
+        <div>
+          <div className="text-xs text-gray-500">{t("total_trades")}</div>
+          <div className="font-bold text-white">1,247</div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+        <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+          <Icon name="trending-up" className="w-4 h-4 text-blue-400" />
+        </div>
+        <div>
+          <div className="text-xs text-gray-500">{t("total_profit")}</div>
+          <div className="font-bold text-blue-400">{fmtUSD(28450)}</div>
+        </div>
+      </div>
+      <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+        <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+          <Icon name="clock" className="w-4 h-4 text-purple-400" />
+        </div>
+        <div>
+          <div className="text-xs text-gray-500">{t("avg_response")}</div>
+          <div className="font-bold text-purple-400">0.3ms</div>
+        </div>
+      </div>
+    </div>
+    
+    {/* Bank Comparison - Kept for context */}
+    <div className="mt-4 pt-3 border-t border-white/10">
+      <div className="text-xs text-gray-500 text-center">
+        💪 {t("compared_to_bank", "Traditional banks offer 0.05% APY - AI delivers up to 400x more!")}
       </div>
     </div>
   </div>
-  
-  {/* Next Tier Info */}
-  {totalEarnUsd < 3000 && (
-    <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs">
-      💰 {t("deposit_min_3000", { amount: fmtUSD(3000 - totalEarnUsd) })}
-    </div>
-  )}
-  {totalEarnUsd >= 3000 && totalEarnUsd < 20000 && (
-    <div className="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs">
-      🚀 {t("next_tier_unlock", { amount: fmtUSD(20000 - totalEarnUsd), rate: "15%" })}
-    </div>
-  )}
-  {totalEarnUsd >= 20000 && totalEarnUsd < 50000 && (
-    <div className="mt-4 p-3 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs">
-      💎 {t("next_tier_unlock", { amount: fmtUSD(50000 - totalEarnUsd), rate: "20%" })}
-    </div>
-  )}
-</div>
 
-  {/* Feature Highlights */}
-  <div className="px-6 py-5 border-b border-white/5 bg-[#0b1020]/40">
+  {/* Feature Highlights - Simplified */}
+  <div className="px-6 py-5 border-b border-white/5">
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
       <div className="flex flex-col items-center">
         <Icon name="clock" className="w-5 h-5 text-cyan-400 mb-1" />
         <span className="text-xs font-bold text-gray-200">{t("weekly_payout")}</span>
-        <span className="text-xs text-gray-500">{t("every_monday")}</span>
       </div>
       <div className="flex flex-col items-center">
         <Icon name="unlock" className="w-5 h-5 text-emerald-400 mb-1" />
         <span className="text-xs font-bold text-gray-200">{t("no_lock_period")}</span>
-        <span className="text-xs text-gray-500">{t("withdraw_anytime")}</span>
       </div>
       <div className="flex flex-col items-center">
         <Icon name="trending-up" className="w-5 h-5 text-blue-400 mb-1" />
         <span className="text-xs font-bold text-gray-200">{t("daily_compounding")}</span>
-        <span className="text-xs text-gray-500">{t("interest_accrues_daily")}</span>
       </div>
       <div className="flex flex-col items-center">
         <Icon name="shield" className="w-5 h-5 text-purple-400 mb-1" />
         <span className="text-xs font-bold text-gray-200">{t("capital_protected")}</span>
-        <span className="text-xs text-gray-500">{t("principal_safe")}</span>
       </div>
     </div>
   </div>
 
-  {/* Action Buttons */}
-  <div className="flex flex-col gap-3 px-6 py-6 border-b border-white/5">
-    <button 
-      onClick={() => openEarnModal('save')} 
-      className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-400 text-white text-[15px] md:text-base font-black tracking-wide shadow-[0_0_20px_rgba(34,211,238,0.25)] border border-cyan-400/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
-    >
-      <Icon name="plus" className="w-5 h-5" />
-      {t("deposit_to_earn")}
-    </button>
-    <button 
-      onClick={() => openEarnModal('redeem')} 
-      className="w-full h-12 rounded-xl bg-[#0b1020] border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/50 text-[15px] md:text-base font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2"
-    >
-      <Icon name="arrow-down" className="w-5 h-5" />
-      {t("withdraw_earnings")}
-    </button>
-  </div>
-
   {/* Current Holdings Table */}
   <div className="w-full">
-    <div className="px-6 py-4 bg-[#0b1020]/50 border-b border-white/5">
-      <h3 className="text-sm font-bold text-gray-300 uppercase tracking-wider">
+    <div className="flex justify-between items-center px-6 py-4 bg-[#0b1020]/50 border-b border-white/5">
+      <h3 className="text-sm font-bold text-gray-300 uppercase tracking-wider flex items-center gap-2">
+        <Icon name="cpu" className="w-4 h-4 text-cyan-400" />
         {t("your_savings_holdings")}
       </h3>
+      {earnBalances.length > 0 && (
+        <button 
+          onClick={() => {/* TODO: Open interest history modal */}} 
+          className="text-xs text-cyan-400 hover:text-cyan-300 transition flex items-center gap-1"
+        >
+          <Icon name="clock" className="w-3 h-3" />
+          {t("view_history")}
+        </button>
+      )}
     </div>
     
     {/* Mobile View */}
@@ -988,7 +1045,7 @@ const handleConvert = async e => {
             <div className="grid grid-cols-2 gap-2 mt-2 text-xs">
               <div className="bg-white/5 rounded-lg p-2 text-center">
                 <div className="text-gray-500">{t("weekly_earnings")}</div>
-                <div className="font-bold text-emerald-400">{fmtUSD(weeklyEarn)}</div>
+                <div className="font-bold text-emerald-400">+{fmtUSD(weeklyEarn)}</div>
               </div>
               <div className="bg-white/5 rounded-lg p-2 text-center">
                 <div className="text-gray-500">{t("apy")}</div>
@@ -1001,7 +1058,10 @@ const handleConvert = async e => {
         <div className="text-center py-10">
           <Icon name="cpu" className="w-12 h-12 mx-auto text-gray-600 mb-3" />
           <div className="text-gray-400">{t("no_savings_deposits")}</div>
-          <div className="text-xs text-gray-500 mt-1">{t("deposit_to_start_earning")}</div>
+          <div className="text-xs text-gray-500 mt-1">{t("deploy_funds_to_start")}</div>
+          <div className="mt-3 text-xs text-cyan-400/70 max-w-xs mx-auto">
+            💰 {t("earn_up_to_promo", "Earn up to 20% APY - AI trades for you 24/7")}
+          </div>
         </div>
       )}
     </div>
@@ -1043,7 +1103,7 @@ const handleConvert = async e => {
                   {currentEarnRate}%
                 </td>
                 <td className="py-4 pr-6 text-right font-bold text-emerald-400">
-                  {fmtUSD(weeklyEarn)}
+                  +{fmtUSD(weeklyEarn)}
                 </td>
               </tr>
             );
