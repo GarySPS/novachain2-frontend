@@ -328,6 +328,24 @@
   "no_fees_or_penalties": "无手续费或罚金",
   "processing": "处理中...",
   "confirm_withdraw": "确认提取",
-  "per_week": "/周"
+  "per_week": "/周",
+
+  "min_3000_usd": "最低 $3,000 美元",
+  "min_3000_required": "再存入 ${{amount}} 即可开始赚取收益",
+  "deposit_min_3000": "再存入 ${{amount}} 即可解锁 10% 年化收益率",
+  "next_tier_unlock": "再存入 ${{amount}} 即可解锁 {{rate}} 年化收益率",
+  "min_deposit_3000": "最低存款金额为 $3,000 美元等值",
+
+  "min_3000_usd_equivalent": "最低 $3,000 美元等值",
+  "minimum_requirement_not_met": "未达到最低要求",
+  "need_additional": "还需存入 {{amount}} 才能开始赚取收益",
+  "projected_earnings_at_rate": "预计收益（{{rate}}% 年化收益率）",
+  "min_deposit_3000_info": "最低存款：$3,000 美元等值",
+  "tiered_rates_up_to_20": "阶梯利率：10% → 15% → 20% 年化收益率",
+  "paid_weekly_every_monday": "每周一发放收益",
+  "instant_withdraw_to_main_wallet": "即时提现到主钱包",
+  "min_deposit_3000_error": "最低存款为 $3,000 美元。还需 {{amount}}。",
+  "save_success": "成功存入 {{amount}} {{coin}}（{{usd}}）到储蓄账户",
+  "withdraw_success": "成功从储蓄账户提取 {{amount}} {{coin}}"
 
 }

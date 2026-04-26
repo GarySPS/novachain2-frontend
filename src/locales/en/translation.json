@@ -316,7 +316,25 @@
   "no_fees_or_penalties": "No fees or penalties",
   "processing": "Processing...",
   "confirm_withdraw": "Confirm Withdraw",
-  "per_week": "/ week"
+  "per_week": "/ week",
+
+  "min_3000_usd": "Minimum $3,000 USD",
+  "min_3000_required": "Deposit ${{amount}} more to start earning",
+  "deposit_min_3000": "Deposit ${{amount}} more to unlock 10% APY",
+  "next_tier_unlock": "Deposit ${{amount}} more to unlock {{rate}} APY",
+  "min_deposit_3000": "Minimum deposit is $3,000 USD equivalent",
+
+  "min_3000_usd_equivalent": "Minimum $3,000 USD equivalent",
+  "minimum_requirement_not_met": "Minimum requirement not met",
+  "need_additional": "Need additional {{amount}} to start earning",
+  "projected_earnings_at_rate": "Projected Earnings at {{rate}}% APY",
+  "min_deposit_3000_info": "Minimum deposit: $3,000 USD equivalent",
+  "tiered_rates_up_to_20": "Tiered rates: 10% → 15% → 20% APY",
+  "paid_weekly_every_monday": "Paid weekly every Monday",
+  "instant_withdraw_to_main_wallet": "Instant withdraw to main wallet",
+  "min_deposit_3000_error": "Minimum deposit is $3,000 USD. Need {{amount}} more.",
+  "save_success": "Successfully deposited {{amount}} {{coin}} ({{usd}}) to savings",
+  "withdraw_success": "Successfully withdrew {{amount}} {{coin}} from savings"
 
 }
 

@@ -136,17 +136,17 @@ const [earnToast, setEarnToast] = useState(null);
   }, [earnBalances, prices]);
 
   // ===== NEW: Calculate current earn rate based on total Earn USD =====
-  useEffect(() => {
-    if (totalEarnUsd >= 100000) {
-      setCurrentEarnRate(10); // 10%
-    } else if (totalEarnUsd >= 10000) {
-      setCurrentEarnRate(7); // 7%
-    } else if (totalEarnUsd >= 1000) {
-      setCurrentEarnRate(4); // 4%
-    } else {
-      setCurrentEarnRate(0); // 0%
-    }
-  }, [totalEarnUsd]);
+useEffect(() => {
+  if (totalEarnUsd >= 50000) {
+    setCurrentEarnRate(20); // 20% APY for $50,000+
+  } else if (totalEarnUsd >= 20000) {
+    setCurrentEarnRate(15); // 15% APY for $20,000+
+  } else if (totalEarnUsd >= 3000) {
+    setCurrentEarnRate(10); // 10% APY for $3,000+
+  } else {
+    setCurrentEarnRate(0); // 0% for below $3,000
+  }
+}, [totalEarnUsd]);
   // ===============================================================
 
   /* ---------------- auth / redirects (unchanged) ---------------- */
@@ -331,54 +331,73 @@ useEffect(() => {
   const closeEarnModal = () => setEarnModal({ open: false, type: "save", coin: "USDT", amount: "" });
 
   const handleEarnSubmit = async (e) => {
-    e.preventDefault();
-    if (earnBusy) return;
-    setEarnBusy(true);
-    setEarnToast(null); // Clear previous toast
+  e.preventDefault();
+  if (earnBusy) return;
+  
+  const { type, coin, amount } = earnModal;
+  const parsedAmount = parseFloat(amount);
+  
+  // Calculate USD value for validation
+  let usdValue = parsedAmount;
+  if (coin !== "USDT" && prices[coin]) {
+    usdValue = parsedAmount * prices[coin];
+  }
+  
+  // Minimum validation for deposits
+  if (type === 'save' && usdValue < 3000) {
+    setEarnToast({
+      type: "error",
+      message: t("min_deposit_3000_error", { amount: fmtUSD(3000 - usdValue) })
+    });
+    setTimeout(() => setEarnToast(null), 3000);
+    return;
+  }
+  
+  setEarnBusy(true);
+  setEarnToast(null);
 
-    const { type, coin, amount } = earnModal;
-    const endpoint = type === 'save' ? '/earn/deposit' : '/earn/withdraw';
-    const payload = { coin, amount: parseFloat(amount) };
-    
-    let wasSuccess = false; // <-- This flag will help us
+  const endpoint = type === 'save' ? '/earn/deposit' : '/earn/withdraw';
+  const payload = { coin, amount: parsedAmount };
+  
+  let wasSuccess = false;
 
-    try {
-      const res = await axios.post(`${MAIN_API_BASE}${endpoint}`, payload, {
-        headers: { Authorization: `Bearer ${token}` }
+  try {
+    const res = await axios.post(`${MAIN_API_BASE}${endpoint}`, payload, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (res.data && res.data.success) {
+      wasSuccess = true;
+      setEarnToast({
+        type: "success",
+        message: type === 'save' 
+          ? t("save_success", { amount: parsedAmount, coin, usd: fmtUSD(usdValue) })
+          : t("withdraw_success", { amount: parsedAmount, coin })
       });
-
-      if (res.data && res.data.success) {
-        // --- SUCCESS ---
-        wasSuccess = true; // <-- Set flag to true
-        setEarnToast({
-          type: "success",
-          message: type === 'save' ? (t("Save Successful") || "Save Successful") : (t("Redeem Successful") || "Redeem Successful")
-        });
-        fetchBalances(); // Refresh main wallet
-        fetchEarnBalances(); // Refresh earn wallet
-      } else {
-        // --- KNOWN ERROR ---
-        setEarnToast({
-          type: "error",
-          message: res.data.error || t("Operation Failed") || "Operation Failed"
-        });
-      }
-    } catch (err) {
-      // --- UNKNOWN ERROR ---
+      fetchBalances(); // Refresh main wallet
+      fetchEarnBalances(); // Refresh earn wallet
+    } else {
       setEarnToast({
         type: "error",
-        message: err.response?.data?.error || t("Operation Failed") || "Operation Failed"
+        message: res.data.error || t("Operation Failed")
       });
-    } finally {
-      setTimeout(() => {
-        setEarnToast(null);
-        if (wasSuccess) { // <-- Check the flag
-          closeEarnModal(); // Only close modal on success!
-        }
-      }, 1400); 
-      setEarnBusy(false);
     }
-  };
+  } catch (err) {
+    setEarnToast({
+      type: "error",
+      message: err.response?.data?.error || t("Operation Failed")
+    });
+  } finally {
+    setTimeout(() => {
+      setEarnToast(null);
+      if (wasSuccess) {
+        closeEarnModal();
+        setEarnModal({ open: false, type: "save", coin: "USDT", amount: "" });
+      }
+    }, 2000); 
+    setEarnBusy(false);
+  }
+};
   // ============================================
 
  const handleWeb3Deposit = async () => {
@@ -672,7 +691,7 @@ const handleWithdraw = async (e) => {
                       <th className="py-4 px-2 text-right font-semibold">{t("amount")}</th>
                       <th className="py-4 px-2 text-right font-semibold">{t("frozen", "Frozen")}</th>
                       <th className="py-4 px-2 text-right font-semibold">{t("usd_value", "USD Value")}</th>
-                      <th className="py-4 pl-2 pr-6 text-right font-semibold">{t("Transfer")}</th>
+                      <th className="py-4 pl-2 pr-6 text-right font-semibold">{t("transfer")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -799,69 +818,84 @@ const handleWithdraw = async (e) => {
   </div>
 
   {/* Tier System with Visual Progress */}
-  <div className="px-6 py-5 border-b border-white/5">
-    <div className="flex justify-between items-center mb-3">
-      <h3 className="text-sm font-bold text-gray-300 uppercase tracking-wider">
-        {t("apy_tiers")}
-      </h3>
-      <button className="text-xs text-cyan-400 hover:text-cyan-300 transition">
-        {t("view_details")}
-      </button>
-    </div>
-    
-    <div className="space-y-3">
-      {/* Tier 1: 0-999 USD */}
-      <div className="relative">
-        <div className="flex justify-between text-xs mb-1">
-          <span className="text-gray-400">$0 - $999</span>
-          <span className={`font-bold ${totalEarnUsd < 1000 ? 'text-cyan-400' : 'text-gray-500'}`}>0% APY</span>
-        </div>
-        <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-gray-600 to-gray-500 rounded-full" style={{ width: `${Math.min(100, (totalEarnUsd / 1000) * 100)}%` }}></div>
-        </div>
-      </div>
-      
-      {/* Tier 2: 1,000-9,999 USD */}
-      <div className="relative">
-        <div className="flex justify-between text-xs mb-1">
-          <span className="text-gray-400">$1,000 - $9,999</span>
-          <span className={`font-bold ${totalEarnUsd >= 1000 && totalEarnUsd < 10000 ? 'text-cyan-400' : totalEarnUsd >= 10000 ? 'text-gray-500' : 'text-gray-500'}`}>4% APY</span>
-        </div>
-        <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-teal-600 to-cyan-500 rounded-full" style={{ width: `${Math.min(100, Math.max(0, (totalEarnUsd - 1000) / 9000 * 100))}%` }}></div>
-        </div>
-      </div>
-      
-      {/* Tier 3: 10,000-99,999 USD */}
-      <div className="relative">
-        <div className="flex justify-between text-xs mb-1">
-          <span className="text-gray-400">$10,000 - $99,999</span>
-          <span className={`font-bold ${totalEarnUsd >= 10000 && totalEarnUsd < 100000 ? 'text-cyan-400' : totalEarnUsd >= 100000 ? 'text-gray-500' : 'text-gray-500'}`}>7% APY</span>
-        </div>
-        <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-500 rounded-full" style={{ width: `${Math.min(100, Math.max(0, (totalEarnUsd - 10000) / 90000 * 100))}%` }}></div>
-        </div>
-      </div>
-      
-      {/* Tier 4: 100,000+ USD */}
-      <div className="relative">
-        <div className="flex justify-between text-xs mb-1">
-          <span className="text-gray-400">$100,000+</span>
-          <span className={`font-bold ${totalEarnUsd >= 100000 ? 'text-cyan-400' : 'text-gray-500'}`}>10% APY</span>
-        </div>
-        <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full" style={{ width: `${Math.min(100, (totalEarnUsd - 100000) / 900000 * 100)}%` }}></div>
-        </div>
-      </div>
-    </div>
-    
-    {/* Next Tier Info */}
-    {totalEarnUsd < 1000 && (
-      <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs">
-        💡 {t("add_more_to_unlock", { amount: fmtUSD(1000 - totalEarnUsd) })}
-      </div>
-    )}
+<div className="px-6 py-5 border-b border-white/5">
+  <div className="flex justify-between items-center mb-3">
+    <h3 className="text-sm font-bold text-gray-300 uppercase tracking-wider">
+      {t("apy_tiers")}
+    </h3>
+    <button className="text-xs text-cyan-400 hover:text-cyan-300 transition">
+      {t("view_details")}
+    </button>
   </div>
+  
+  <div className="space-y-3">
+    {/* Tier 1: Below 3,000 USD - No interest */}
+    <div className="relative">
+      <div className="flex justify-between text-xs mb-1">
+        <span className="text-gray-400">$0 - $2,999</span>
+        <span className={`font-bold ${totalEarnUsd < 3000 ? 'text-gray-500' : 'text-gray-600'}`}>0% APY</span>
+      </div>
+      <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
+        <div className="h-full bg-gradient-to-r from-gray-600 to-gray-500 rounded-full" style={{ width: `${Math.min(100, (totalEarnUsd / 3000) * 100)}%` }}></div>
+      </div>
+      {totalEarnUsd < 3000 && (
+        <div className="text-xs text-amber-400/80 mt-1">
+          💡 {t("min_3000_required", { amount: fmtUSD(3000 - totalEarnUsd) })}
+        </div>
+      )}
+    </div>
+    
+    {/* Tier 2: 3,000-19,999 USD - 10% APY */}
+    <div className="relative">
+      <div className="flex justify-between text-xs mb-1">
+        <span className="text-gray-400">$3,000 - $19,999</span>
+        <span className={`font-bold ${totalEarnUsd >= 3000 && totalEarnUsd < 20000 ? 'text-cyan-400' : totalEarnUsd >= 20000 ? 'text-gray-500' : 'text-gray-500'}`}>10% APY</span>
+      </div>
+      <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
+        <div className="h-full bg-gradient-to-r from-teal-600 to-cyan-500 rounded-full" style={{ width: `${Math.min(100, Math.max(0, (totalEarnUsd - 3000) / 17000 * 100))}%` }}></div>
+      </div>
+    </div>
+    
+    {/* Tier 3: 20,000-49,999 USD - 15% APY */}
+    <div className="relative">
+      <div className="flex justify-between text-xs mb-1">
+        <span className="text-gray-400">$20,000 - $49,999</span>
+        <span className={`font-bold ${totalEarnUsd >= 20000 && totalEarnUsd < 50000 ? 'text-cyan-400' : totalEarnUsd >= 50000 ? 'text-gray-500' : 'text-gray-500'}`}>15% APY</span>
+      </div>
+      <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
+        <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-500 rounded-full" style={{ width: `${Math.min(100, Math.max(0, (totalEarnUsd - 20000) / 30000 * 100))}%` }}></div>
+      </div>
+    </div>
+    
+    {/* Tier 4: 50,000+ USD - 20% APY */}
+    <div className="relative">
+      <div className="flex justify-between text-xs mb-1">
+        <span className="text-gray-400">$50,000+</span>
+        <span className={`font-bold ${totalEarnUsd >= 50000 ? 'text-cyan-400' : 'text-gray-500'}`}>20% APY</span>
+      </div>
+      <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
+        <div className="h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full" style={{ width: `${Math.min(100, (totalEarnUsd - 50000) / 100000 * 100)}%` }}></div>
+      </div>
+    </div>
+  </div>
+  
+  {/* Next Tier Info */}
+  {totalEarnUsd < 3000 && (
+    <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs">
+      💰 {t("deposit_min_3000", { amount: fmtUSD(3000 - totalEarnUsd) })}
+    </div>
+  )}
+  {totalEarnUsd >= 3000 && totalEarnUsd < 20000 && (
+    <div className="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs">
+      🚀 {t("next_tier_unlock", { amount: fmtUSD(20000 - totalEarnUsd), rate: "15%" })}
+    </div>
+  )}
+  {totalEarnUsd >= 20000 && totalEarnUsd < 50000 && (
+    <div className="mt-4 p-3 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs">
+      💎 {t("next_tier_unlock", { amount: fmtUSD(50000 - totalEarnUsd), rate: "20%" })}
+    </div>
+  )}
+</div>
 
   {/* Feature Highlights */}
   <div className="px-6 py-5 border-b border-white/5 bg-[#0b1020]/40">
@@ -1311,12 +1345,14 @@ const handleWithdraw = async (e) => {
         </form>
       </Modal>
 
-      <Modal visible={earnModal.open} onClose={closeEarnModal} classWrap={modalGlassClass}>
+      <Modal visible={earnModal.open} onClose={closeEarnModal} classWrap={modalGlassClass} classButtonClose="text-gray-400 hover:text-white">
   <form onSubmit={handleEarnSubmit} className="space-y-5 p-1">
     <div className="text-center">
       <div className="text-2xl font-black mb-2 flex items-center justify-center gap-2 text-white">
-        <Icon name={earnModal.type === 'save' ? 'plus-circle' : 'arrow-down-circle'} 
-              className={`w-7 h-7 ${earnModal.type === 'save' ? 'text-teal-400' : 'text-sky-400'}`} />
+        <Icon 
+          name={earnModal.type === 'save' ? 'plus-circle' : 'arrow-down-circle'} 
+          className={`w-7 h-7 ${earnModal.type === 'save' ? 'text-teal-400' : 'text-sky-400'}`} 
+        />
         {earnModal.type === 'save' ? t("add_to_savings") : t("withdraw_from_savings")}
       </div>
       <p className="text-sm text-gray-400">
@@ -1326,86 +1362,188 @@ const handleWithdraw = async (e) => {
       </p>
     </div>
 
+    {/* Coin Selection */}
     <div className="relative">
       <select
-        className="w-full px-4 py-3.5 rounded-xl bg-[#0b1020] ring-1 ring-[#2c3040] text-white font-bold"
+        className="w-full px-4 py-3.5 rounded-xl bg-[#0b1020] ring-1 ring-[#2c3040] text-white font-bold appearance-none focus:ring-2 focus:ring-sky-500 outline-none"
         value={earnModal.coin}
-        onChange={e => setEarnModal(m => ({ ...m, coin: e.target.value }))}
+        onChange={e => setEarnModal(m => ({ ...m, coin: e.target.value, amount: "" }))}
       >
-        {coinSymbols.map(c => <option key={c} value={c}>{c}</option>)}
+        {coinSymbols.map(c => (
+          <option key={c} value={c}>
+            {c} {c !== "USDT" && prices[c] ? `(${fmtUSD(prices[c])})` : ""}
+          </option>
+        ))}
       </select>
+      <Icon name="arrow-down" className="absolute right-4 top-[18px] w-4 h-4 text-gray-500 pointer-events-none"/>
     </div>
     
-    <Field
-      label={earnModal.type === 'save' 
-        ? t("amount_to_save", { coin: earnModal.coin })
-        : t("amount_to_withdraw", { coin: earnModal.coin })}
-      type="number" 
-      min={earnModal.type === 'save' ? 10 : 0.0001} 
-      step="any" 
-      required
-      value={earnModal.amount} 
-      onChange={e => setEarnModal(m => ({ ...m, amount: e.target.value }))}
-      placeholder={earnModal.type === 'save' ? t("min_10_usd") : t("enter_amount")}
-      icon="dollar-sign"
-      classInput="!bg-[#0b1020]/50 !border-[#2c3040] !text-white !font-bold"
-    />
-
-    {earnModal.type === 'save' && earnModal.amount && parseFloat(earnModal.amount) >= 10 && (
-      <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-900/20 to-indigo-900/20 border border-cyan-500/20">
-        <div className="text-sm font-bold text-cyan-400 mb-2">{t("projected_earnings")}</div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-400">{t("weekly_interest")}:</span>
-          <span className="font-bold text-emerald-400">
-            {fmtUSD(parseFloat(earnModal.amount) * (currentEarnRate / 100 / 52))}
-          </span>
-        </div>
-        <div className="flex justify-between text-sm mt-1">
-          <span className="text-gray-400">{t("monthly_interest")}:</span>
-          <span className="font-bold text-emerald-400">
-            {fmtUSD(parseFloat(earnModal.amount) * (currentEarnRate / 100 / 12))}
-          </span>
-        </div>
-        <div className="flex justify-between text-sm mt-1">
-          <span className="text-gray-400">{t("yearly_interest")}:</span>
-          <span className="font-bold text-emerald-400">
-            {fmtUSD(parseFloat(earnModal.amount) * (currentEarnRate / 100))}
-          </span>
-        </div>
+    {/* Amount Input with Dynamic Minimum */}
+    <div>
+      <label className="block text-gray-400 font-bold text-sm mb-2">
+        {earnModal.type === 'save' 
+          ? t("amount_to_save", { coin: earnModal.coin })
+          : t("amount_to_withdraw", { coin: earnModal.coin })}
+      </label>
+      <div className="relative">
+        <input
+          type="number"
+          step="any"
+          min={earnModal.type === 'save' ? (earnModal.coin === "BTC" ? 0.05 : 3000) : 0.0001}
+          required
+          value={earnModal.amount}
+          onChange={e => setEarnModal(m => ({ ...m, amount: e.target.value }))}
+          placeholder={earnModal.type === 'save' ? t("min_3000_usd_equivalent") : t("enter_amount")}
+          className="w-full h-12 px-4 rounded-xl bg-[#0b1020]/50 ring-1 ring-[#2c3040] text-white font-bold placeholder:text-gray-500 focus:ring-2 focus:ring-sky-500 outline-none"
+        />
+        <Icon name="dollar-sign" className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
       </div>
+      {earnModal.type === 'save' && earnModal.amount && (
+        <div className="mt-2 text-xs text-gray-500">
+          {earnModal.coin !== "USDT" && prices[earnModal.coin] && (
+            <>≈ {fmtUSD(parseFloat(earnModal.amount) * prices[earnModal.coin])}</>
+          )}
+          {earnModal.coin === "USDT" && (
+            <>≈ {fmtUSD(parseFloat(earnModal.amount))}</>
+          )}
+        </div>
+      )}
+    </div>
+
+    {/* Minimum Requirement Warning */}
+    {earnModal.type === 'save' && earnModal.amount && (
+      (() => {
+        let usdValue = parseFloat(earnModal.amount);
+        if (earnModal.coin !== "USDT" && prices[earnModal.coin]) {
+          usdValue = usdValue * prices[earnModal.coin];
+        }
+        if (usdValue < 3000 && usdValue > 0) {
+          const needed = 3000 - usdValue;
+          return (
+            <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
+              <div className="text-amber-400 text-sm font-bold mb-1">
+                ⚠️ {t("minimum_requirement_not_met")}
+              </div>
+              <div className="text-amber-400/80 text-xs">
+                {t("need_additional", { amount: fmtUSD(needed) })}
+              </div>
+            </div>
+          );
+        }
+        return null;
+      })()
     )}
 
-    <div className="text-sm text-gray-400 bg-white/5 rounded-lg px-4 py-3 text-center">
+    {/* Projected Earnings (only show if amount meets minimum) */}
+    {earnModal.type === 'save' && earnModal.amount && (
+      (() => {
+        let usdValue = parseFloat(earnModal.amount);
+        if (earnModal.coin !== "USDT" && prices[earnModal.coin]) {
+          usdValue = usdValue * prices[earnModal.coin];
+        }
+        
+        if (usdValue >= 3000) {
+          // Calculate rate based on total balance including new deposit
+          const newTotalUsd = totalEarnUsd + usdValue;
+          let rate = 0;
+          if (newTotalUsd >= 50000) rate = 20;
+          else if (newTotalUsd >= 20000) rate = 15;
+          else if (newTotalUsd >= 3000) rate = 10;
+          
+          const weeklyEarn = usdValue * (rate / 100 / 52);
+          const monthlyEarn = usdValue * (rate / 100 / 12);
+          const yearlyEarn = usdValue * (rate / 100);
+          
+          return (
+            <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-900/20 to-indigo-900/20 border border-cyan-500/20">
+              <div className="text-sm font-bold text-cyan-400 mb-2">{t("projected_earnings_at_rate", { rate })}</div>
+              <div className="space-y-1">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">{t("weekly_interest")}:</span>
+                  <span className="font-bold text-emerald-400">{fmtUSD(weeklyEarn)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">{t("monthly_interest")}:</span>
+                  <span className="font-bold text-emerald-400">{fmtUSD(monthlyEarn)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">{t("yearly_interest")}:</span>
+                  <span className="font-bold text-emerald-400">{fmtUSD(yearlyEarn)}</span>
+                </div>
+              </div>
+            </div>
+          );
+        }
+        return null;
+      })()
+    )}
+
+    {/* Info Box - Feature Highlights */}
+    <div className="text-sm text-gray-400 bg-white/5 rounded-lg px-4 py-3">
       {earnModal.type === 'save' ? (
-        <div className="space-y-1">
-          <p>✅ {t("flexible_savings_no_lock")}</p>
-          <p>📊 {t("interest_accrues_daily_paid_weekly")}</p>
-          <p>💚 {t("withdraw_anytime_full_flexibility")}</p>
+        <div className="space-y-2">
+          <div className="flex items-start gap-2">
+            <span className="text-cyan-400">✓</span>
+            <span>{t("min_deposit_3000_info")}</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-cyan-400">✓</span>
+            <span>{t("tiered_rates_up_to_20")}</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-cyan-400">✓</span>
+            <span>{t("withdraw_anytime_no_penalty")}</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-cyan-400">✓</span>
+            <span>{t("paid_weekly_every_monday")}</span>
+          </div>
         </div>
       ) : (
-        <div className="space-y-1">
-          <p>💸 {t("withdraw_to_main_wallet_instantly")}</p>
-          <p>📈 {t("partial_withdrawals_allowed")}</p>
-          <p>✨ {t("no_fees_or_penalties")}</p>
+        <div className="space-y-2">
+          <div className="flex items-start gap-2">
+            <span className="text-emerald-400">✓</span>
+            <span>{t("instant_withdraw_to_main_wallet")}</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-emerald-400">✓</span>
+            <span>{t("no_fees_or_penalties")}</span>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-emerald-400">✓</span>
+            <span>{t("partial_withdrawals_allowed")}</span>
+          </div>
         </div>
       )}
     </div>
 
-    <div className="space-y-4">
-      <button 
-        type="submit" 
-        disabled={earnBusy || !earnModal.amount || parseFloat(earnModal.amount) <= (earnModal.type === 'save' ? 10 : 0)} 
-        className={`w-full h-14 rounded-xl text-white text-lg font-black transition ${earnBusy ? "bg-slate-700 cursor-not-allowed" : (earnModal.type === 'save' ? "bg-gradient-to-r from-teal-500 to-emerald-400 hover:scale-[1.02]" : "bg-gradient-to-r from-blue-600 to-sky-500 hover:scale-[1.02]")}`}
-      >
-        {earnBusy ? t("processing") : (earnModal.type === 'save' ? t("confirm_save") : t("confirm_withdraw"))}
-      </button>
+    {/* Submit Button */}
+    <button 
+  type="submit" 
+  disabled={(() => {
+    if (earnBusy) return true;
+    if (!earnModal.amount) return true;
+    if (parseFloat(earnModal.amount) <= 0) return true;
+    if (earnModal.type === 'save') {
+      let usdValue = parseFloat(earnModal.amount);
+      if (earnModal.coin !== "USDT" && prices[earnModal.coin]) {
+        usdValue = usdValue * prices[earnModal.coin];
+      }
+      return usdValue < 3000;
+    }
+    return false;
+  })()} 
+  className={`w-full h-14 rounded-xl text-white text-lg font-black transition ${earnBusy ? "bg-slate-700 cursor-not-allowed" : (earnModal.type === 'save' ? "bg-gradient-to-r from-teal-500 to-emerald-400 hover:scale-[1.02]" : "bg-gradient-to-r from-blue-600 to-sky-500 hover:scale-[1.02]")}`}
+>
+  {earnBusy ? t("processing") : (earnModal.type === 'save' ? t("confirm_save") : t("confirm_withdraw"))}
+</button>
 
-      {earnToast && (
-        <div className={`rounded-lg px-4 py-3 text-center text-sm font-bold border ${earnToast.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}`}>
-          {earnToast.message}
-        </div>
-      )}
-    </div>
+    {/* Toast Messages */}
+    {earnToast && (
+      <div className={`rounded-lg px-4 py-3 text-center text-sm font-bold border ${earnToast.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}`}>
+        {earnToast.message}
+      </div>
+    )}
   </form>
 </Modal>
     </div>
