@@ -117,33 +117,64 @@ export default function TradePage() {
 
   /* ---------------- Price polling (unchanged) ---------------- */
   useEffect(() => {
-    let interval;
-    const fetchPrice = async () => {
-      try {
-        const res = await axios.get(`${MAIN_API_BASE}/prices/${selectedCoin.api}`);
-        
-        // Set price
-        setCoinPrice(Number(res.data?.price));
-        
-        // Set new stats
-        setCoinStats({
-          high: res.data?.high_24h || 0,
-          low: res.data?.low_24h || 0,
-          vol: res.data?.volume_24h || 0,
-          change: res.data?.percent_change_24h || 0,
-        });
+  let interval;
 
-        setFetchError(false);
-      } catch {
-        setCoinPrice(null);
-        setCoinStats(null); // Clear stats on error
-        setFetchError(true);
-      }
+  const loadSavedPrice = () => {
+  const saved = localStorage.getItem(`price_${selectedCoin.api}`);
+  if (saved) {
+    setCoinPrice(Number(saved));
+  } else {
+    // 🔥 ADD THIS: Set reasonable default prices for first-time visitors
+    const defaultPrices = {
+      bitcoin: 50000,
+      ethereum: 3000,
+      solana: 150,
+      ripple: 0.50,
+      toncoin: 5.00
     };
-    fetchPrice();
-    interval = setInterval(fetchPrice, 3000); // 3 seconds
-    return () => clearInterval(interval);
-  }, [selectedCoin]);
+    setCoinPrice(defaultPrices[selectedCoin.api] || 100);
+  }
+};
+
+  const fetchPrice = async () => {
+    try {
+      const res = await axios.get(`${MAIN_API_BASE}/prices/${selectedCoin.api}`);
+
+      const price = Number(res.data?.price);
+      if (!price || isNaN(price)) return;
+
+      // ✅ UPDATE UI
+      setCoinPrice(price);
+
+      // ✅ SAVE (IMPORTANT FIX)
+      localStorage.setItem(`price_${selectedCoin.api}`, price);
+
+      // stats
+      setCoinStats({
+        high: res.data?.high_24h || 0,
+        low: res.data?.low_24h || 0,
+        vol: res.data?.volume_24h || 0,
+        change: res.data?.percent_change_24h || 0,
+      });
+
+      setFetchError(false);
+    } catch {
+      setCoinStats(null);
+      setFetchError(true);
+      // ❗ DO NOT RESET PRICE (THIS WAS YOUR BUG)
+    }
+  };
+
+  // ✅ LOAD INSTANT PRICE FIRST
+  loadSavedPrice();
+
+  // then fetch fresh
+  fetchPrice();
+
+  interval = setInterval(fetchPrice, 2000);
+
+  return () => clearInterval(interval);
+}, [selectedCoin]);
 
   /* ---------------- TradingView loader (Fixed Cleanly) ---------------- */
   useEffect(() => {
@@ -250,13 +281,17 @@ export default function TradePage() {
 
   /* ---------------- Execute trade (unchanged) ---------------- */
   const executeTrade = async () => {
-  // 🔥 FORCE latest price before sending trade
+  let latestPrice = coinPrice; // Start with current price
+  
+  // Force latest price before sending trade
   try {
     const res = await axios.get(`${MAIN_API_BASE}/prices/${selectedCoin.api}`);
-    setCoinPrice(Number(res.data?.price));
+    latestPrice = Number(res.data?.price);
+    setCoinPrice(latestPrice);
   } catch {}
 
-  if (!coinPrice || timerActive) return;
+  if (!latestPrice || timerActive) return;  
+  
     setTimerActive(true);
     setTradeResult(null);
     setTradeDetail(null);
@@ -387,9 +422,11 @@ export default function TradePage() {
                       </span>
                       <div className="flex items-baseline gap-2">
                         <span className="text-3xl font-black text-white tabular-nums drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]">
-                          {typeof coinPrice === "number" && !isNaN(coinPrice)
-                            ? "$" + coinPrice.toLocaleString(undefined, { maximumFractionDigits: 2 })
-                            : fetchError ? "Error" : "..."}
+                          {typeof coinPrice === "number" && !isNaN(coinPrice) && coinPrice > 0
+  ? "$" + coinPrice.toLocaleString(undefined, { maximumFractionDigits: 2 })
+  : fetchError 
+    ? "Price unavailable" 
+    : "Loading price..."}
                         </span>
                         {coinStats && (
                           <div className="text-xs bg-white/5 px-2 py-0.5 rounded border border-white/10 shadow-inner">

@@ -77,6 +77,7 @@ export default function WalletPage() {
   const [authChecked, setAuthChecked] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
   const [totalUsd, setTotalUsd] = useState(0);
+  const [convertBusy, setConvertBusy] = useState(false);
   // lock + inline toasts
 const [depositBusy, setDepositBusy] = useState(false);
 const [withdrawBusy, setWithdrawBusy] = useState(false);
@@ -315,12 +316,19 @@ useEffect(() => {
 
   // ===== NEW: Function to fetch Earn Wallet balances =====
   function fetchEarnBalances() {
-    if (!token || !userId) return;
-    // NOTE: This assumes a *new* endpoint `/earn/balance` for the savings wallet
-    axios.get(`${MAIN_API_BASE}/earn/balance`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => setEarnBalances(res.data.assets || []))
-      .catch(() => setEarnBalances([])); // Set to empty on error
-  }
+  if (!token || !userId) return;
+  console.log("Fetching earn balances from:", `${MAIN_API_BASE}/earn/balance`);
+  
+  axios.get(`${MAIN_API_BASE}/earn/balance`, { headers: { Authorization: `Bearer ${token}` } })
+    .then(res => {
+      console.log("Earn balances response:", res.data);
+      setEarnBalances(res.data.assets || []);
+    })
+    .catch(err => {
+      console.error("Error fetching earn balances:", err.response?.data || err.message);
+      setEarnBalances([]);
+    });
+}
   // =====================================================
 
   const openModal = (type, coin) => setModal({ open: true, type, coin });
@@ -554,29 +562,37 @@ const handleWithdraw = async (e) => {
 
   const swap = () => { setFromCoin(toCoin); setToCoin(fromCoin); setAmount(""); setResult(""); };
 
-  const handleConvert = async e => {
-    e.preventDefault();
-    if (!amount || isNaN(amount) || parseFloat(amount) <= 0 || fromCoin === toCoin) return;
-    try {
-      const res = await axios.post(`${MAIN_API_BASE}/convert`, {
-        from_coin: fromCoin, to_coin: toCoin, amount: parseFloat(amount)
-      }, { headers: { Authorization: `Bearer ${token}` } });
-      if (res.data && res.data.success) {
-        setSuccessMsg(t("Convert Successful", {
-          amount: amount, fromCoin,
-          received: Number(res.data.received).toLocaleString(undefined, { maximumFractionDigits: 6 }),
-          toCoin,
-        }));
-        fetchBalances();
-      } else {
-        setSuccessMsg(t("Convert Failed"));
-      }
-    } catch (err) {
-      setSuccessMsg(err.response?.data?.error || t("convert_failed"));
+const handleConvert = async e => {
+  e.preventDefault();
+  if (!amount || isNaN(amount) || parseFloat(amount) <= 0 || fromCoin === toCoin || convertBusy) return;
+  
+  setConvertBusy(true);
+  try {
+    const res = await axios.post(`${MAIN_API_BASE}/convert`, {
+      from_coin: fromCoin, to_coin: toCoin, amount: parseFloat(amount)
+    }, { headers: { Authorization: `Bearer ${token}` } });
+    
+    if (res.data && res.data.success) {
+      setSuccessMsg(t("Convert Successful", {
+        amount: amount, fromCoin,
+        received: Number(res.data.received).toLocaleString(undefined, { maximumFractionDigits: 6 }),
+        toCoin,
+      }));
+      fetchBalances();
+      setAmount("");
+      setResult("");
+    } else {
+      setSuccessMsg(t("Convert Failed"));
     }
-    setTimeout(() => setSuccessMsg(""), 1800);
-    setAmount(""); setResult("");
-  };
+  } catch (err) {
+    setSuccessMsg(err.response?.data?.error || t("convert_failed"));
+  } finally {
+    setTimeout(() => {
+      setSuccessMsg("");
+      setConvertBusy(false);
+    }, 1800);
+  }
+};
 
   // --- MAIN RENDER ---
   if (!authChecked) return null;
@@ -1100,12 +1116,12 @@ const handleWithdraw = async (e) => {
               </div>
 
               <button
-                type="submit"
-                className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 text-white text-lg font-black hover:scale-[1.02] transition shadow-[0_0_20px_rgba(56,189,248,0.3)] disabled:opacity-50 disabled:pointer-events-none"
-                disabled={!amount || isNaN(amount) || fromCoin === toCoin || parseFloat(amount) <= 0}
-              >
-                {t("convert")}
-              </button>
+  type="submit"
+  disabled={convertBusy || !amount || isNaN(amount) || fromCoin === toCoin || parseFloat(amount) <= 0}
+  className="w-full h-14 rounded-xl bg-gradient-to-r from-blue-600 to-sky-500 text-white text-lg font-black hover:scale-[1.02] transition shadow-[0_0_20px_rgba(56,189,248,0.3)] disabled:opacity-50 disabled:pointer-events-none"
+>
+  {convertBusy ? "Converting..." : t("convert")}
+</button>
 
               {successMsg && (
                 <div className={`mt-2 rounded-xl px-4 py-3 text-center text-sm font-bold border ${successMsg.includes("Fail") || successMsg.includes("error") ? "bg-rose-500/10 text-rose-400 border-rose-500/20" : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"}`}>
