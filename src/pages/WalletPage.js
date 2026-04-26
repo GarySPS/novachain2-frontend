@@ -8,6 +8,7 @@ import Card from "../components/card";
 import Field from "../components/field";
 import Modal from "../components/modal";
 import Icon from "../components/icon";
+import AIPerformance from '../components/AIPerformance';
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { createClient } from '@supabase/supabase-js';
@@ -942,45 +943,30 @@ const handleConvert = async e => {
     )}
   </div>
 
-  {/* AI Performance Details - NEW SECTION */}
-  <div className="px-6 py-5 border-b border-white/5 bg-[#0b1020]/40">
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5">
-        <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-          <Icon name="activity" className="w-4 h-4 text-emerald-400" />
-        </div>
-        <div>
-          <div className="text-xs text-gray-500">{t("total_trades")}</div>
-          <div className="font-bold text-white">1,247</div>
-        </div>
-      </div>
-      <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5">
-        <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-          <Icon name="trending-up" className="w-4 h-4 text-blue-400" />
-        </div>
-        <div>
-          <div className="text-xs text-gray-500">{t("total_profit")}</div>
-          <div className="font-bold text-blue-400">{fmtUSD(28450)}</div>
-        </div>
-      </div>
-      <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5">
-        <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-          <Icon name="clock" className="w-4 h-4 text-purple-400" />
-        </div>
-        <div>
-          <div className="text-xs text-gray-500">{t("avg_response")}</div>
-          <div className="font-bold text-purple-400">0.3ms</div>
-        </div>
-      </div>
+  {/* AI Performance Details - LIVE UPDATING */}
+<div className="px-6 py-5 border-b border-white/5 bg-[#0b1020]/40">
+  <div className="flex justify-between items-center mb-3">
+    <div className="flex items-center gap-2">
+      <Icon name="cpu" className="w-4 h-4 text-cyan-400 animate-pulse" />
+      <span className="text-xs font-bold text-gray-300 uppercase tracking-wider">
+        {t("live_performance")}
+      </span>
     </div>
-    
-    {/* Bank Comparison - Kept for context */}
-    <div className="mt-4 pt-3 border-t border-white/10">
-      <div className="text-xs text-gray-500 text-center">
-        💪 {t("compared_to_bank", "Traditional banks offer 0.05% APY - AI delivers up to 400x more!")}
-      </div>
+    <div className="text-[10px] text-gray-500 flex items-center gap-1">
+      <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
+      {totalEarnUsd > 0 ? t("updating_live") : t("waiting_for_funds")}
     </div>
   </div>
+  
+  <AIPerformance totalEarnUsd={totalEarnUsd} currentEarnRate={currentEarnRate} />
+  
+  {/* Bank Comparison - Kept for context */}
+  <div className="mt-4 pt-3 border-t border-white/10">
+    <div className="text-xs text-gray-500 text-center">
+      💪 {t("compared_to_bank", "Traditional banks offer 0.05% APY - AI delivers up to 400x more!")}
+    </div>
+  </div>
+</div>
 
   {/* Feature Highlights - Simplified */}
   <div className="px-6 py-5 border-b border-white/5">
