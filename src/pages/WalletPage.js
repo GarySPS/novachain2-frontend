@@ -722,147 +722,293 @@ const handleWithdraw = async (e) => {
           </Card>
         </div>
 
-        {/* ===== AI Trading Investment Card ===== */}
-        <Card id="earn-section" className={`${cardClass} p-0 relative overflow-hidden border-cyan-500/20 shadow-[0_0_40px_rgba(34,211,238,0.05)]`}>
-          {/* Premium Tech Background Effects */}
-          <div className="absolute top-[-50px] right-[-50px] w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-          <div className="absolute bottom-[-50px] left-[-50px] w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+        {/* ===== AI TRADING INVESTMENT CARD - ENHANCED UX ===== */}
+<Card id="earn-section" className={`${cardClass} p-0 relative overflow-hidden border-cyan-500/20 shadow-[0_0_40px_rgba(34,211,238,0.05)]`}>
+  {/* Background Effects */}
+  <div className="absolute top-[-50px] right-[-50px] w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+  <div className="absolute bottom-[-50px] left-[-50px] w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-          {/* Header */}
-          <div className="bg-[#0b1020]/80 backdrop-blur-md px-6 py-5 border-b border-cyan-500/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
-            <div className="flex items-center gap-4">
-              
-              {/* Premium Fail-Proof AI Logo Lockup */}
-              <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0d1425] to-[#161f38] border border-cyan-500/40 shadow-[0_0_20px_rgba(34,211,238,0.25)]">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-xl bg-cyan-400 opacity-20"></span>
-                <span className="relative z-10 font-black text-xl italic bg-gradient-to-br from-white via-cyan-300 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] tracking-tighter pr-0.5">
-                  AI
-                </span>
+  {/* Header */}
+  <div className="bg-[#0b1020]/80 backdrop-blur-md px-6 py-5 border-b border-cyan-500/20">
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="flex items-center gap-4">
+        <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0d1425] to-[#161f38] border border-cyan-500/40 shadow-[0_0_20px_rgba(34,211,238,0.25)]">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-xl bg-cyan-400 opacity-20"></span>
+          <span className="relative z-10 font-black text-xl italic bg-gradient-to-br from-white via-cyan-300 to-indigo-400 bg-clip-text text-transparent">
+            AI
+          </span>
+        </div>
+        <div>
+          <h2 className="text-xl md:text-2xl font-black bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+            {t("ai_savings_earn")}
+          </h2>
+          <p className="text-xs text-cyan-400/80 font-medium tracking-widest uppercase mt-0.5">
+            {t("flexible_savings_weekly_payout")}
+          </p>
+        </div>
+      </div>
+      
+      <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full border ${totalEarnUsd > 0 ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-300" : "bg-white/5 border-white/10 text-gray-400"}`}>
+        <span className={`w-2 h-2 rounded-full ${totalEarnUsd > 0 ? "bg-cyan-400 animate-pulse" : "bg-gray-500"}`}></span>
+        <span className="text-[11px] font-bold tracking-widest uppercase">
+          {totalEarnUsd > 0 ? t("earning_active") : t("start_earning")}
+        </span>
+      </div>
+    </div>
+  </div>
+  
+  {/* Stats Overview */}
+  <div className="px-6 py-6 border-b border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      {/* Deployed Capital */}
+      <div className="flex flex-col p-4 rounded-xl bg-[#0b1020]/60 backdrop-blur-sm border border-white/10">
+        <div className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">
+          {t("deployed_capital")}
+        </div>
+        <div className="text-2xl font-black text-white">
+          {fmtUSD(totalEarnUsd)}
+        </div>
+      </div>
+      
+      {/* Current APY */}
+      <div className="flex flex-col p-4 rounded-xl bg-gradient-to-br from-cyan-900/20 to-indigo-900/20 backdrop-blur-sm border border-cyan-500/20">
+        <div className="text-xs text-cyan-400 font-semibold uppercase tracking-wider mb-1 flex items-center gap-1">
+          <Icon name="activity" className="w-3 h-3" /> {t("current_apy")}
+        </div>
+        <div className="text-2xl font-black text-cyan-300">
+          {currentEarnRate}% <span className="text-sm text-cyan-500/80">{t("per_year")}</span>
+        </div>
+        <div className="text-xs text-cyan-400/70 mt-1">
+          ~{(currentEarnRate / 52).toFixed(2)}% {t("weekly")}
+        </div>
+      </div>
+      
+      {/* Weekly Projection */}
+      <div className="flex flex-col p-4 rounded-xl bg-[#0b1020]/60 backdrop-blur-sm border border-white/10">
+        <div className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">
+          {t("estimated_weekly_earnings")}
+        </div>
+        <div className="text-2xl font-black text-emerald-400">
+          {fmtUSD(totalEarnUsd * (currentEarnRate / 100 / 52))}
+        </div>
+        <div className="text-xs text-gray-500 mt-1">
+          {t("paid_every_monday")}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* Tier System with Visual Progress */}
+  <div className="px-6 py-5 border-b border-white/5">
+    <div className="flex justify-between items-center mb-3">
+      <h3 className="text-sm font-bold text-gray-300 uppercase tracking-wider">
+        {t("apy_tiers")}
+      </h3>
+      <button className="text-xs text-cyan-400 hover:text-cyan-300 transition">
+        {t("view_details")}
+      </button>
+    </div>
+    
+    <div className="space-y-3">
+      {/* Tier 1: 0-999 USD */}
+      <div className="relative">
+        <div className="flex justify-between text-xs mb-1">
+          <span className="text-gray-400">$0 - $999</span>
+          <span className={`font-bold ${totalEarnUsd < 1000 ? 'text-cyan-400' : 'text-gray-500'}`}>0% APY</span>
+        </div>
+        <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-gray-600 to-gray-500 rounded-full" style={{ width: `${Math.min(100, (totalEarnUsd / 1000) * 100)}%` }}></div>
+        </div>
+      </div>
+      
+      {/* Tier 2: 1,000-9,999 USD */}
+      <div className="relative">
+        <div className="flex justify-between text-xs mb-1">
+          <span className="text-gray-400">$1,000 - $9,999</span>
+          <span className={`font-bold ${totalEarnUsd >= 1000 && totalEarnUsd < 10000 ? 'text-cyan-400' : totalEarnUsd >= 10000 ? 'text-gray-500' : 'text-gray-500'}`}>4% APY</span>
+        </div>
+        <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-teal-600 to-cyan-500 rounded-full" style={{ width: `${Math.min(100, Math.max(0, (totalEarnUsd - 1000) / 9000 * 100))}%` }}></div>
+        </div>
+      </div>
+      
+      {/* Tier 3: 10,000-99,999 USD */}
+      <div className="relative">
+        <div className="flex justify-between text-xs mb-1">
+          <span className="text-gray-400">$10,000 - $99,999</span>
+          <span className={`font-bold ${totalEarnUsd >= 10000 && totalEarnUsd < 100000 ? 'text-cyan-400' : totalEarnUsd >= 100000 ? 'text-gray-500' : 'text-gray-500'}`}>7% APY</span>
+        </div>
+        <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-500 rounded-full" style={{ width: `${Math.min(100, Math.max(0, (totalEarnUsd - 10000) / 90000 * 100))}%` }}></div>
+        </div>
+      </div>
+      
+      {/* Tier 4: 100,000+ USD */}
+      <div className="relative">
+        <div className="flex justify-between text-xs mb-1">
+          <span className="text-gray-400">$100,000+</span>
+          <span className={`font-bold ${totalEarnUsd >= 100000 ? 'text-cyan-400' : 'text-gray-500'}`}>10% APY</span>
+        </div>
+        <div className="h-2 bg-[#1a2343] rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-purple-600 to-pink-500 rounded-full" style={{ width: `${Math.min(100, (totalEarnUsd - 100000) / 900000 * 100)}%` }}></div>
+        </div>
+      </div>
+    </div>
+    
+    {/* Next Tier Info */}
+    {totalEarnUsd < 1000 && (
+      <div className="mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs">
+        💡 {t("add_more_to_unlock", { amount: fmtUSD(1000 - totalEarnUsd) })}
+      </div>
+    )}
+  </div>
+
+  {/* Feature Highlights */}
+  <div className="px-6 py-5 border-b border-white/5 bg-[#0b1020]/40">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+      <div className="flex flex-col items-center">
+        <Icon name="clock" className="w-5 h-5 text-cyan-400 mb-1" />
+        <span className="text-xs font-bold text-gray-200">{t("weekly_payout")}</span>
+        <span className="text-xs text-gray-500">{t("every_monday")}</span>
+      </div>
+      <div className="flex flex-col items-center">
+        <Icon name="unlock" className="w-5 h-5 text-emerald-400 mb-1" />
+        <span className="text-xs font-bold text-gray-200">{t("no_lock_period")}</span>
+        <span className="text-xs text-gray-500">{t("withdraw_anytime")}</span>
+      </div>
+      <div className="flex flex-col items-center">
+        <Icon name="trending-up" className="w-5 h-5 text-blue-400 mb-1" />
+        <span className="text-xs font-bold text-gray-200">{t("daily_compounding")}</span>
+        <span className="text-xs text-gray-500">{t("interest_accrues_daily")}</span>
+      </div>
+      <div className="flex flex-col items-center">
+        <Icon name="shield" className="w-5 h-5 text-purple-400 mb-1" />
+        <span className="text-xs font-bold text-gray-200">{t("capital_protected")}</span>
+        <span className="text-xs text-gray-500">{t("principal_safe")}</span>
+      </div>
+    </div>
+  </div>
+
+  {/* Action Buttons */}
+  <div className="flex flex-col gap-3 px-6 py-6 border-b border-white/5">
+    <button 
+      onClick={() => openEarnModal('save')} 
+      className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-400 text-white text-[15px] md:text-base font-black tracking-wide shadow-[0_0_20px_rgba(34,211,238,0.25)] border border-cyan-400/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
+    >
+      <Icon name="plus" className="w-5 h-5" />
+      {t("deposit_to_earn")}
+    </button>
+    <button 
+      onClick={() => openEarnModal('redeem')} 
+      className="w-full h-12 rounded-xl bg-[#0b1020] border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/50 text-[15px] md:text-base font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2"
+    >
+      <Icon name="arrow-down" className="w-5 h-5" />
+      {t("withdraw_earnings")}
+    </button>
+  </div>
+
+  {/* Current Holdings Table */}
+  <div className="w-full">
+    <div className="px-6 py-4 bg-[#0b1020]/50 border-b border-white/5">
+      <h3 className="text-sm font-bold text-gray-300 uppercase tracking-wider">
+        {t("your_savings_holdings")}
+      </h3>
+    </div>
+    
+    {/* Mobile View */}
+    <div className="md:hidden">
+      {earnBalances.length > 0 ? earnBalances.map(({ symbol, balance }) => {
+        const usdValue = (prices[symbol] || (symbol === "USDT" ? 1 : 0)) * Number(balance);
+        const weeklyEarn = usdValue * (currentEarnRate / 100 / 52);
+        
+        return (
+          <div key={`earn-${symbol}`} className="p-4 border-b border-white/5">
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center">
+                  <Icon name={symbol?.toLowerCase() || "coin"} className="w-5 h-5" />
+                </div>
+                <span className="font-bold text-gray-100">{symbol}</span>
               </div>
-
-              <div>
-                <h2 className="text-xl md:text-2xl font-black bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                  {t("ai_trading_investment")}
-                </h2>
-                <p className="text-xs text-cyan-400/80 font-medium tracking-widest uppercase mt-0.5">{t("automated_yield")}</p>
+              <div className="text-right">
+                <div className="font-bold text-white">{Number(balance).toFixed(4)}</div>
+                <div className="text-xs text-gray-500">{fmtUSD(usdValue)}</div>
               </div>
             </div>
+            <div className="grid grid-cols-2 gap-2 mt-2 text-xs">
+              <div className="bg-white/5 rounded-lg p-2 text-center">
+                <div className="text-gray-500">{t("weekly_earnings")}</div>
+                <div className="font-bold text-emerald-400">{fmtUSD(weeklyEarn)}</div>
+              </div>
+              <div className="bg-white/5 rounded-lg p-2 text-center">
+                <div className="text-gray-500">{t("apy")}</div>
+                <div className="font-bold text-cyan-400">{currentEarnRate}%</div>
+              </div>
+            </div>
+          </div>
+        );
+      }) : (
+        <div className="text-center py-10">
+          <Icon name="cpu" className="w-12 h-12 mx-auto text-gray-600 mb-3" />
+          <div className="text-gray-400">{t("no_savings_deposits")}</div>
+          <div className="text-xs text-gray-500 mt-1">{t("deposit_to_start_earning")}</div>
+        </div>
+      )}
+    </div>
+    
+    {/* Desktop Table */}
+    <div className="hidden md:block overflow-x-auto">
+      <table className="w-full">
+        <thead className="bg-[#0b1020]/50">
+          <tr className="text-left text-gray-400 text-sm">
+            <th className="py-4 pl-6">{t("asset")}</th>
+            <th className="py-4 text-right">{t("amount")}</th>
+            <th className="py-4 text-right">{t("usd_value")}</th>
+            <th className="py-4 text-right">{t("apy")}</th>
+            <th className="py-4 pr-6 text-right">{t("weekly_earnings")}</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-white/5">
+          {earnBalances.length > 0 ? earnBalances.map(({ symbol, balance }) => {
+            const usdValue = (prices[symbol] || (symbol === "USDT" ? 1 : 0)) * Number(balance);
+            const weeklyEarn = usdValue * (currentEarnRate / 100 / 52);
             
-            {/* AI Active Badge */}
-            <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full border ${totalEarnUsd > 0 ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.2)]" : "bg-white/5 border-white/10 text-gray-400"}`}>
-              <span className={`w-2 h-2 rounded-full ${totalEarnUsd > 0 ? "bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]" : "bg-gray-500"}`}></span>
-              <span className="text-[11px] font-bold tracking-widest uppercase">{totalEarnUsd > 0 ? t("system_active") : t("standby_mode")}</span>
-            </div>
-          </div>
-          
-          {/* Data Readouts */}
-          <div className="px-6 py-6 md:py-8 border-b border-white/5 relative z-10 bg-gradient-to-b from-white/[0.02] to-transparent">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-              {/* Capital Box */}
-              <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#0b1020]/80 backdrop-blur-sm border border-white/10 shadow-[inset_0_4px_20px_rgba(255,255,255,0.02)] relative overflow-hidden group hover:border-indigo-500/30 transition-colors duration-500">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent"></div>
-                <div className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">{t("deployed_capital", t("deployed_capital"))}</div>
-                <div className="text-4xl font-black text-white tabular-nums drop-shadow-lg tracking-tight">{fmtUSD(totalEarnUsd)}</div>
-              </div>
-              
-              {/* ROI Box */}
-              <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-cyan-900/10 backdrop-blur-sm border border-cyan-500/20 shadow-[inset_0_4px_30px_rgba(34,211,238,0.05)] relative overflow-hidden group hover:border-cyan-500/40 transition-colors duration-500">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-cyan-400/80 to-transparent"></div>
-                <div className="text-sm font-bold text-cyan-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <Icon name="activity" className="w-4 h-4 animate-pulse" /> {t("projected_roi", t("ai_projected_roi"))}
-                </div>
-                <div className="text-4xl font-black text-cyan-300 tabular-nums drop-shadow-[0_0_15px_rgba(34,211,238,0.4)] tracking-tight">
-                  ~{currentEarnRate}% <span className="text-xl text-cyan-500/80 font-bold">{t("per_month")}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col gap-3 px-6 py-6 border-b border-white/5 relative z-10 bg-gradient-to-b from-transparent to-[#0a0e17]/50">
-            <button onClick={() => openEarnModal('save')} className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-400 text-white text-[15px] md:text-base font-black tracking-wide shadow-[0_0_20px_rgba(34,211,238,0.25)] border border-cyan-400/30 hover:shadow-[0_0_30px_rgba(34,211,238,0.4)] transition-all duration-300 hover:scale-[1.02] flex items-center justify-center">
-              {t("deploy_funds", t("deploy_capital_ai"))}
-            </button>
-            <button onClick={() => openEarnModal('redeem')} className="w-full h-12 rounded-xl bg-[#0b1020] border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/50 text-[15px] md:text-base font-bold tracking-wide transition-all duration-300 flex items-center justify-center">
-              {t("withdraw_capital")}
-            </button>
-          </div>
-
-          <div className="w-full relative z-10 bg-[#0b1020]/30">
-            {/* MOBILE AI LIST */}
-            <div className="md:hidden flex flex-col divide-y divide-white/5">
-              {earnBalances.length > 0 ? earnBalances.map(({ symbol, balance }) => (
-                <div key={`earn-${symbol}`} className="flex items-center justify-between p-5 hover:bg-white/[0.02]">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center p-2 shadow-inner">
-                      <Icon name={symbol?.toLowerCase() || "coin"} className="w-full h-full object-contain drop-shadow-md" />
+            return (
+              <tr key={symbol} className="hover:bg-white/5 transition">
+                <td className="py-4 pl-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center">
+                      <Icon name={symbol?.toLowerCase() || "coin"} className="w-5 h-5" />
                     </div>
-                    <span className="font-bold text-gray-100 text-lg">{symbol}</span>
+                    <span className="font-bold text-white">{symbol}</span>
                   </div>
-                  <div className="flex flex-col items-end">
-                    <span className="font-bold text-cyan-400 text-lg">
-                      {(() => {
-                        const p = prices[symbol] ?? (symbol === "USDT" ? 1 : undefined);
-                        return p !== undefined ? fmtUSD(Number(balance) * p) : "--";
-                      })()}
-                    </span>
-                    <span className="text-xs text-gray-500 font-medium">{Number(balance).toLocaleString(undefined, { maximumFractionDigits: 6 })}</span>
-                  </div>
-                </div>
-              )) : (
-                <div className="text-center py-10 text-indigo-400/50 text-sm font-medium flex flex-col items-center gap-2">
-                  <Icon name="cpu" className="w-8 h-8 opacity-50" />
-                  {t("no_ai_capital")}
-                </div>
-              )}
-            </div>
-            
-            {/* DESKTOP AI TABLE */}
-            <div className="hidden md:block w-full overflow-x-auto">
-              <table className="w-full min-w-[600px] text-base">
-                <thead className="bg-[#0b1020]/80 sticky top-0 backdrop-blur-sm">
-                  <tr className="text-left text-gray-400 border-y border-indigo-500/10 text-sm uppercase tracking-wider">
-                    <th className="py-4 pl-8 pr-2 font-semibold">{t("asset")}</th>
-                    <th className="py-4 px-2 text-right font-semibold">{t("deployed_amount")}</th>
-                    <th className="py-4 px-8 text-right font-semibold">{t("usd_value", "USD Value")}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {earnBalances.length > 0 ? earnBalances.map(({ symbol, balance }) => (
-                    <tr key={`earn-${symbol}`} className="group hover:bg-white/[0.03] transition-colors" style={{ height: 68 }}>
-                      <td className="py-3 pl-8 pr-2">
-                        <div className="flex items-center gap-4">
-                          <div className="w-8 h-8 rounded-full bg-[#1a2035] border border-white/5 flex items-center justify-center p-1.5 shadow-inner">
-                            <Icon name={symbol?.toLowerCase() || "coin"} className="w-full h-full object-contain" />
-                          </div>
-                          <span className="font-bold text-gray-100">{symbol}</span>
-                        </div>
-                      </td>
-                      <td className="py-3 px-2 text-right tabular-nums font-semibold text-gray-300">
-                        {Number(balance).toLocaleString(undefined, { maximumFractionDigits: 6 })}
-                      </td>
-                      <td className="py-3 px-8 text-right tabular-nums font-black text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.2)]">
-                        {(() => {
-                          const p = prices[symbol] ?? (symbol === "USDT" ? 1 : undefined);
-                          return p !== undefined ? fmtUSD(Number(balance) * p) : "--";
-                        })()}
-                      </td>
-                    </tr>
-                  )) : (
-                    <tr>
-                      <td colSpan="3" className="text-center py-12 text-indigo-400/50 font-medium">
-                        <div className="flex flex-col items-center justify-center gap-3">
-                          <Icon name="cpu" className="w-10 h-10 opacity-50" />
-                          {t("no_ai_capital", "No capital deployed to AI currently.")}
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </Card>
+                </td>
+                <td className="py-4 text-right text-gray-300">
+                  {Number(balance).toFixed(6)}
+                </td>
+                <td className="py-4 text-right font-bold text-white">
+                  {fmtUSD(usdValue)}
+                </td>
+                <td className="py-4 text-right font-bold text-cyan-400">
+                  {currentEarnRate}%
+                </td>
+                <td className="py-4 pr-6 text-right font-bold text-emerald-400">
+                  {fmtUSD(weeklyEarn)}
+                </td>
+              </tr>
+            );
+          }) : (
+            <tr>
+              <td colSpan="5" className="text-center py-12 text-gray-500">
+                {t("no_active_savings")}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</Card>
 
         {/* ===== Convert section ===== */}
         <Card id="convert-section" className={`${cardClass} p-0`}>
@@ -1165,49 +1311,103 @@ const handleWithdraw = async (e) => {
         </form>
       </Modal>
 
-      <Modal visible={earnModal.open} onClose={closeEarnModal} classWrap={modalGlassClass} classButtonClose="text-gray-400 hover:text-white">
-        <form onSubmit={handleEarnSubmit} className="space-y-5 p-1">
-          <div className="text-2xl font-black mb-4 flex items-center justify-center gap-2 text-white text-center">
-            <Icon name={earnModal.type === 'save' ? 'plus' : 'check-circle'} className={`w-7 h-7 ${earnModal.type === 'save' ? 'text-teal-400' : 'text-sky-400'}`} />
-            {earnModal.type === 'save' ? t("save_to_earn") : t("redeem_from_earn")}
-          </div>
+      <Modal visible={earnModal.open} onClose={closeEarnModal} classWrap={modalGlassClass}>
+  <form onSubmit={handleEarnSubmit} className="space-y-5 p-1">
+    <div className="text-center">
+      <div className="text-2xl font-black mb-2 flex items-center justify-center gap-2 text-white">
+        <Icon name={earnModal.type === 'save' ? 'plus-circle' : 'arrow-down-circle'} 
+              className={`w-7 h-7 ${earnModal.type === 'save' ? 'text-teal-400' : 'text-sky-400'}`} />
+        {earnModal.type === 'save' ? t("add_to_savings") : t("withdraw_from_savings")}
+      </div>
+      <p className="text-sm text-gray-400">
+        {earnModal.type === 'save' 
+          ? t("start_earning_weekly_interest") 
+          : t("withdraw_anytime_no_penalty")}
+      </p>
+    </div>
 
-          <div className="relative">
-            <select
-              className="w-full px-4 py-3.5 rounded-xl bg-[#0b1020] ring-1 ring-[#2c3040] text-white font-bold appearance-none focus:ring-2 focus:ring-sky-500 outline-none"
-              value={earnModal.coin}
-              onChange={e => setEarnModal(m => ({ ...m, coin: e.target.value }))}
-            >
-              {coinSymbols.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
-            <Icon name="arrow-down" className="absolute right-4 top-[18px] w-4 h-4 text-gray-500 pointer-events-none"/>
-          </div>
-          
-          <Field
-            label={t("amount_with_coin", { coin: earnModal.coin })} type="number" min={0.0001} step="any" required
-            placeholder={t("enter_amount")}
-            value={earnModal.amount} onChange={e => setEarnModal(m => ({ ...m, amount: e.target.value }))}
-            icon="dollar-sign"
-            classInput="!bg-[#0b1020]/50 !border-[#2c3040] !text-white !font-bold"
-          />
+    <div className="relative">
+      <select
+        className="w-full px-4 py-3.5 rounded-xl bg-[#0b1020] ring-1 ring-[#2c3040] text-white font-bold"
+        value={earnModal.coin}
+        onChange={e => setEarnModal(m => ({ ...m, coin: e.target.value }))}
+      >
+        {coinSymbols.map(c => <option key={c} value={c}>{c}</option>)}
+      </select>
+    </div>
+    
+    <Field
+      label={earnModal.type === 'save' 
+        ? t("amount_to_save", { coin: earnModal.coin })
+        : t("amount_to_withdraw", { coin: earnModal.coin })}
+      type="number" 
+      min={earnModal.type === 'save' ? 10 : 0.0001} 
+      step="any" 
+      required
+      value={earnModal.amount} 
+      onChange={e => setEarnModal(m => ({ ...m, amount: e.target.value }))}
+      placeholder={earnModal.type === 'save' ? t("min_10_usd") : t("enter_amount")}
+      icon="dollar-sign"
+      classInput="!bg-[#0b1020]/50 !border-[#2c3040] !text-white !font-bold"
+    />
 
-          <div className="text-sm text-gray-400 bg-white/5 ring-1 ring-white/10 rounded-lg px-4 py-3 text-center font-medium">
-            {earnModal.type === 'save' ? t("save_desc", "Assets will be moved from 'My Assets' to 'Savings Earn'.") : t("redeem_desc", "Assets will be moved from 'Savings Earn' to 'My Assets'.")}
-          </div>
+    {earnModal.type === 'save' && earnModal.amount && parseFloat(earnModal.amount) >= 10 && (
+      <div className="p-4 rounded-xl bg-gradient-to-r from-cyan-900/20 to-indigo-900/20 border border-cyan-500/20">
+        <div className="text-sm font-bold text-cyan-400 mb-2">{t("projected_earnings")}</div>
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-400">{t("weekly_interest")}:</span>
+          <span className="font-bold text-emerald-400">
+            {fmtUSD(parseFloat(earnModal.amount) * (currentEarnRate / 100 / 52))}
+          </span>
+        </div>
+        <div className="flex justify-between text-sm mt-1">
+          <span className="text-gray-400">{t("monthly_interest")}:</span>
+          <span className="font-bold text-emerald-400">
+            {fmtUSD(parseFloat(earnModal.amount) * (currentEarnRate / 100 / 12))}
+          </span>
+        </div>
+        <div className="flex justify-between text-sm mt-1">
+          <span className="text-gray-400">{t("yearly_interest")}:</span>
+          <span className="font-bold text-emerald-400">
+            {fmtUSD(parseFloat(earnModal.amount) * (currentEarnRate / 100))}
+          </span>
+        </div>
+      </div>
+    )}
 
-          <div className="space-y-4 mt-2">
-            <button type="submit" disabled={earnBusy || !earnModal.amount || parseFloat(earnModal.amount) <= 0} className={`w-full h-14 rounded-xl text-white text-lg font-black transition shadow-lg ${earnBusy ? "bg-slate-700 cursor-not-allowed" : (earnModal.type === 'save' ? "bg-gradient-to-r from-teal-500 to-emerald-400 hover:scale-[1.02]" : "bg-[#1a2343] hover:bg-[#202b54] border border-white/10")}`}>
-              {earnBusy ? (t("submitting", "Submitting...")) : (earnModal.type === 'save' ? t("confirm_save") : t("confirm_redeem"))}
-            </button>
+    <div className="text-sm text-gray-400 bg-white/5 rounded-lg px-4 py-3 text-center">
+      {earnModal.type === 'save' ? (
+        <div className="space-y-1">
+          <p>✅ {t("flexible_savings_no_lock")}</p>
+          <p>📊 {t("interest_accrues_daily_paid_weekly")}</p>
+          <p>💚 {t("withdraw_anytime_full_flexibility")}</p>
+        </div>
+      ) : (
+        <div className="space-y-1">
+          <p>💸 {t("withdraw_to_main_wallet_instantly")}</p>
+          <p>📈 {t("partial_withdrawals_allowed")}</p>
+          <p>✨ {t("no_fees_or_penalties")}</p>
+        </div>
+      )}
+    </div>
 
-            {earnToast && (
-              <div className={`rounded-lg px-4 py-3 text-center text-sm font-bold border ${earnToast.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}`}>
-                {earnToast.message}
-              </div>
-            )}
-          </div>
-        </form>
-      </Modal>
+    <div className="space-y-4">
+      <button 
+        type="submit" 
+        disabled={earnBusy || !earnModal.amount || parseFloat(earnModal.amount) <= (earnModal.type === 'save' ? 10 : 0)} 
+        className={`w-full h-14 rounded-xl text-white text-lg font-black transition ${earnBusy ? "bg-slate-700 cursor-not-allowed" : (earnModal.type === 'save' ? "bg-gradient-to-r from-teal-500 to-emerald-400 hover:scale-[1.02]" : "bg-gradient-to-r from-blue-600 to-sky-500 hover:scale-[1.02]")}`}
+      >
+        {earnBusy ? t("processing") : (earnModal.type === 'save' ? t("confirm_save") : t("confirm_withdraw"))}
+      </button>
+
+      {earnToast && (
+        <div className={`rounded-lg px-4 py-3 text-center text-sm font-bold border ${earnToast.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}`}>
+          {earnToast.message}
+        </div>
+      )}
+    </div>
+  </form>
+</Modal>
     </div>
   );
 }
