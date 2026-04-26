@@ -141,7 +141,7 @@ export default function TradePage() {
       }
     };
     fetchPrice();
-    interval = setInterval(fetchPrice, 30000);
+    interval = setInterval(fetchPrice, 3000); // 3 seconds
     return () => clearInterval(interval);
   }, [selectedCoin]);
 
@@ -250,7 +250,13 @@ export default function TradePage() {
 
   /* ---------------- Execute trade (unchanged) ---------------- */
   const executeTrade = async () => {
-    if (!coinPrice || timerActive) return;
+  // 🔥 FORCE latest price before sending trade
+  try {
+    const res = await axios.get(`${MAIN_API_BASE}/prices/${selectedCoin.api}`);
+    setCoinPrice(Number(res.data?.price));
+  } catch {}
+
+  if (!coinPrice || timerActive) return;
     setTimerActive(true);
     setTradeResult(null);
     setTradeDetail(null);

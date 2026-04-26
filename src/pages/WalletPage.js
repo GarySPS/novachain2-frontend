@@ -744,7 +744,7 @@ const handleWithdraw = async (e) => {
                 <h2 className="text-xl md:text-2xl font-black bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
                   {t("ai_trading_investment")}
                 </h2>
-                <p className="text-xs text-cyan-400/80 font-medium tracking-widest uppercase mt-0.5">t("automated_yield")</p>
+                <p className="text-xs text-cyan-400/80 font-medium tracking-widest uppercase mt-0.5">{t("automated_yield")}</p>
               </div>
             </div>
             
@@ -772,7 +772,7 @@ const handleWithdraw = async (e) => {
                   <Icon name="activity" className="w-4 h-4 animate-pulse" /> {t("projected_roi", t("ai_projected_roi"))}
                 </div>
                 <div className="text-4xl font-black text-cyan-300 tabular-nums drop-shadow-[0_0_15px_rgba(34,211,238,0.4)] tracking-tight">
-                  ~{currentEarnRate}% <span className="text-xl text-cyan-500/80 font-bold">t("per_month")</span>
+                  ~{currentEarnRate}% <span className="text-xl text-cyan-500/80 font-bold">{t("per_month")}</span>
                 </div>
               </div>
             </div>
@@ -964,7 +964,7 @@ const handleWithdraw = async (e) => {
                  </div>
               ))}
               {(!allHistory || allHistory.length === 0) && (
-                 <div className="text-center py-8 text-gray-500 text-sm font-medium">t("no_history")</div>
+                 <div className="text-center py-8 text-gray-500 text-sm font-medium">{t("no_history")}</div>
               )}
             </div>
 
@@ -1002,7 +1002,7 @@ const handleWithdraw = async (e) => {
                     </tr>
                   ))}
                   {(!allHistory || allHistory.length === 0) && (
-                     <tr><td colSpan="4" className="text-center py-10 text-gray-500 font-medium">t("no_history")</td></tr>
+                     <tr><td colSpan="4" className="text-center py-10 text-gray-500 font-medium">{t("no_history")}</td></tr>
                   )}
                 </tbody>
               </table>
@@ -1033,7 +1033,7 @@ const handleWithdraw = async (e) => {
             <div className="relative w-full max-w-[180px] aspect-square mb-2 rounded-2xl bg-white flex items-center justify-center overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.1)] p-2">
               {walletQRCodes[selectedDepositCoin] ? (
                 <img src={walletQRCodes[selectedDepositCoin]} alt={t("deposit_qr")} className="max-w-full max-h-full object-contain" onError={(e) => { e.currentTarget.style.display = "none"; }} />
-              ) : <div className="text-gray-400 text-xs text-center">t("no_qr")</div>}
+              ) : <div className="text-gray-400 text-xs text-center">{t("no_qr")}</div>}
             </div>
           </div>
 
