@@ -68,12 +68,11 @@ export default function LoginPage() {
   useEffect(() => {
   // Check for impersonation login from admin
   const urlParams = new URLSearchParams(window.location.search);
-  const urlParams = new URLSearchParams(window.location.search);
-const impersonateToken = urlParams.get('token');
+  const impersonateToken = urlParams.get('token');  // Get token from URL
   
   if (urlParams.get('impersonate') === 'true' && impersonateToken) {
-    // Clear the stored token immediately to prevent re-run
-    localStorage.removeItem('impersonateToken');
+    // Clean the URL by removing the token (so it doesn't stay in browser history)
+    window.history.replaceState({}, document.title, window.location.pathname);
     
     fetch(`${MAIN_API_BASE}/auth/impersonate`, {
       method: 'POST',
