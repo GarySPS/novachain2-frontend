@@ -68,7 +68,8 @@ export default function LoginPage() {
   useEffect(() => {
   // Check for impersonation login from admin
   const urlParams = new URLSearchParams(window.location.search);
-  const impersonateToken = localStorage.getItem('impersonateToken');
+  const urlParams = new URLSearchParams(window.location.search);
+const impersonateToken = urlParams.get('token');
   
   if (urlParams.get('impersonate') === 'true' && impersonateToken) {
     // Clear the stored token immediately to prevent re-run
