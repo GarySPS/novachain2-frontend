@@ -65,6 +65,34 @@ export default function LoginPage() {
     handleWeb3Login();
   }, [isConnected, address, navigate]);
 
+  useEffect(() => {
+  // Check for impersonation login from admin
+  const urlParams = new URLSearchParams(window.location.search);
+  const impersonateToken = localStorage.getItem('impersonateToken');
+  
+  if (urlParams.get('impersonate') === 'true' && impersonateToken) {
+    // Clear the stored token immediately to prevent re-run
+    localStorage.removeItem('impersonateToken');
+    
+    fetch(`${MAIN_API_BASE}/auth/impersonate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userToken: impersonateToken })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        navigate('/wallet');
+      } else {
+        setError(data.error || 'Impersonation failed');
+      }
+    })
+    .catch(() => setError('Impersonation error. Please try again.'));
+  }
+}, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
