@@ -116,12 +116,15 @@ exit={{ y: "100%" }}
               </div>
 
               <div className="relative">
-                <input
+              <input
                   id="modal-amount"
                   type="number"
                   min={1}
                   value={amount}
-                  onChange={(e) => setAmount(Number(e.target.value))}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setAmount(val === "" ? "" : Number(val));
+                  }}
                   required
                   className="w-full h-14 px-4 py-2 rounded-xl bg-black/50 border border-white/10 text-white text-xl font-black focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-400/50 focus:bg-white/5 outline-none transition-all shadow-inner"
                 />
