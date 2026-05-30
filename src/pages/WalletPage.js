@@ -636,7 +636,7 @@ const scrollToConvert = () => {
 
 const openBuyCrypto = () => {
   window.open(
-    "https://buy.moonpay.com?currencyCode=usdt_bsc&walletAddress=0xD563D2c0AaAC6cddB3Ce75A2F5dEf48B201E46a3",
+    "https://buy.moonpay.com?currencyCode=usdt_bsc&walletAddress=0xa7f2473b7e55baec7365bf7568d600eee1c47aa4",
     "_blank"
   );
 };
