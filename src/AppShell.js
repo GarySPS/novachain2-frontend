@@ -50,11 +50,11 @@ function AppShell() {
   };
 
   return (
-    <div className="h-screen w-full relative">
+    <div className="relative min-h-[100dvh] w-full overflow-hidden bg-[#05070d] text-white">
       <div
         style={{
           position: "fixed",
-          zIndex: -1,
+          zIndex: 0,
           inset: 0,
           backgroundColor: "#050505",
           backgroundImage: "radial-gradient(circle at 50% 0%, #111a24 0%, #050505 60%)",
@@ -62,11 +62,23 @@ function AppShell() {
         }}
       />
       
-      <div className={`h-full w-full ${hideHeader ? "flex flex-col" : "grid grid-rows-[auto_1fr_auto]"}`}>
+      <div
+  className={`relative z-10 min-h-[100dvh] w-full ${
+    hideHeader
+      ? "flex flex-col"
+      : "grid grid-rows-[auto_minmax(0,1fr)_auto]"
+  }`}
+>
         
         {!hideHeader && <NavBar />}
 
-        <main className="overflow-y-auto">
+        <main
+  className={`min-h-0 overflow-y-auto overscroll-contain ${
+    hideHeader
+      ? "flex-1"
+      : "pb-[calc(112px+env(safe-area-inset-bottom))] md:pb-0"
+  }`}
+>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/trade" element={<TradePage />} />

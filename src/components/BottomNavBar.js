@@ -24,7 +24,9 @@ export default function BottomNavBar() {
   const { pathname } = useLocation();
   const { t } = useTranslation();
 
-  const activeIndex = Math.max(0, NAV_ITEMS.findIndex((item) => item.match(pathname)));
+  const activeIndex = NAV_ITEMS.findIndex((item) => item.match(pathname));
+const hasActiveItem = activeIndex >= 0;
+const visualIndex = hasActiveItem ? activeIndex : 0;
 
   const navRef = useRef(null);
   const [width, setWidth] = useState(360);
@@ -37,17 +39,17 @@ export default function BottomNavBar() {
   }, []);
 
   const notchCenterX = useMemo(() => {
-    const segmentWidth = width / NAV_ITEMS.length;
-    return segmentWidth * activeIndex + segmentWidth / 2;
-  }, [width, activeIndex]);
+  const segmentWidth = width / NAV_ITEMS.length;
+  return segmentWidth * visualIndex + segmentWidth / 2;
+}, [width, visualIndex]);
 
-  const activeItem = NAV_ITEMS[activeIndex];
+const activeItem = hasActiveItem ? NAV_ITEMS[activeIndex] : null;
 
   return (
     <nav
       ref={navRef}
       className="md:hidden fixed left-1/2 z-40 -translate-x-1/2 w-[94%] max-w-md"
-      style={{ bottom: `env(safe-area-inset-bottom, 0px)` }}
+      style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 10px)" }}
     >
       <div className="relative select-none">
         {/* SVG for the morphing bar shape */}
@@ -61,7 +63,12 @@ export default function BottomNavBar() {
             <mask id="notch-mask">
               <rect x="0" y={NOTCH_RADIUS} width={width} height={BAR_HEIGHT} rx={BAR_CORNER_RADIUS} ry={BAR_CORNER_RADIUS} fill="white" />
               <g style={{ transition: "transform 280ms ease-in-out" }} transform={`translate(${notchCenterX}, 0)`}>
-                <circle cx="0" cy={NOTCH_RADIUS + 6} r={NOTCH_RADIUS} fill="black" />
+                <circle
+  cx="0"
+  cy={NOTCH_RADIUS + 6}
+  r={hasActiveItem ? NOTCH_RADIUS : 0}
+  fill="black"
+/>
               </g>
             </mask>
             {/* Premium Dark Gradient */}
@@ -85,22 +92,25 @@ export default function BottomNavBar() {
         </svg>
 
         {/* Active Item Chip is a functional <Link> */}
-        <Link
-          to={activeItem?.to || '/'}
-          aria-label={t(activeItem?.label || '')}
-          className="absolute will-change-transform"
-          style={{
-            left: notchCenterX - CHIP_DIAMETER / 2,
-            top: NOTCH_RADIUS + 6 - CHIP_DIAMETER / 2,
-            width: CHIP_DIAMETER,
-            height: CHIP_DIAMETER,
-            transition: "left 280ms ease-in-out",
-          }}
-        >
-          <div className="w-full h-full rounded-full flex items-center justify-center bg-gradient-to-tr from-blue-600 to-sky-400 shadow-[0_0_20px_rgba(56,189,248,0.4)] border border-white/20">
-            <ActiveIconComponent index={activeIndex} />
-          </div>
-        </Link>
+{activeItem && (
+  <Link
+    to={activeItem.to}
+    aria-label={t(activeItem.label)}
+    aria-current="page"
+    className="absolute will-change-transform"
+    style={{
+      left: notchCenterX - CHIP_DIAMETER / 2,
+      top: NOTCH_RADIUS + 6 - CHIP_DIAMETER / 2,
+      width: CHIP_DIAMETER,
+      height: CHIP_DIAMETER,
+      transition: "left 280ms ease-in-out",
+    }}
+  >
+    <div className="w-full h-full rounded-full flex items-center justify-center bg-gradient-to-tr from-blue-600 to-sky-400 shadow-[0_0_24px_rgba(56,189,248,0.48)] border border-white/20">
+      <ActiveIconComponent index={activeIndex} />
+    </div>
+  </Link>
+)}
 
         {/* Row of Inactive Icons */}
         <div className="absolute inset-x-0" style={{ top: NOTCH_RADIUS, height: BAR_HEIGHT }}>
@@ -108,12 +118,13 @@ export default function BottomNavBar() {
             {NAV_ITEMS.map(({ to, label }, i) => {
               const isActive = i === activeIndex;
               return (
-                <Link
-                  key={to}
-                  to={to}
-                  aria-label={t(label)}
-                  className="relative flex-1 flex items-center justify-center h-full"
-                >
+<Link
+  key={to}
+  to={to}
+  aria-label={t(label)}
+  aria-current={isActive ? "page" : undefined}
+  className="relative flex-1 flex items-center justify-center h-full active:scale-95 transition-transform"
+>
                   <Icon
                     name={NAV_ITEMS[i].icon}
                     className={`h-6 w-6 transition-all duration-300 ${
