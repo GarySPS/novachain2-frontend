@@ -29,7 +29,7 @@ export default function WalletConvertCard({
     parseFloat(amount) <= 0;
 
   return (
-    <Card id="convert-section" className={`${cardClass} p-0`}>
+    <Card className={`${cardClass} p-0`}>
       <div className="border-b border-white/5 bg-[#0f1424] px-4 py-4 sm:px-5 md:px-6">
         <div className="flex items-start justify-between gap-4">
           <div>

@@ -40,9 +40,6 @@ export default function WalletDepositModal({
     >
       <form onSubmit={handleDepositSubmit} className="space-y-4 p-1">
         <div className="text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-sky-400/25 bg-sky-400/10 shadow-[0_0_24px_rgba(56,189,248,0.16)]">
-            <Icon name="download" className="h-6 w-6 text-sky-400" />
-          </div>
 
           <h2 className="text-xl font-black text-white">{t("deposit")}</h2>
 

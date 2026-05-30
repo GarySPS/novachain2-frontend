@@ -29,9 +29,6 @@ export default function WalletWithdrawModal({
     >
       <form onSubmit={handleWithdraw} className="space-y-4 p-1">
         <div className="text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-rose-400/25 bg-rose-400/10 shadow-[0_0_24px_rgba(244,63,94,0.14)]">
-            <Icon name="upload" className="h-6 w-6 text-rose-400" />
-          </div>
 
           <h2 className="text-xl font-black text-white">
             {t("withdraw")}

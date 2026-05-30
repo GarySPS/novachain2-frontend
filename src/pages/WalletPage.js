@@ -686,26 +686,28 @@ return (
           onWithdrawEarn={() => openEarnModal("redeem")}
         />
 
-        <WalletConvertCard
-          cardClass={cardClass}
-          coinSymbols={coinSymbols}
-          fromCoin={fromCoin}
-          toCoin={toCoin}
-          amount={amount}
-          result={result}
-          successMsg={successMsg}
-          convertBusy={convertBusy}
-          t={t}
-          onSubmit={handleConvert}
-          onSwap={swap}
-          onFromCoinChange={(value) => {
-            setFromCoin(value);
-            if (value === "USDT") setToCoin("BTC");
-            else setToCoin("USDT");
-          }}
-          onToCoinChange={setToCoin}
-          onAmountChange={setAmount}
-        />
+<div id="convert-section" className="scroll-mt-24">
+  <WalletConvertCard
+    cardClass={cardClass}
+    coinSymbols={coinSymbols}
+    fromCoin={fromCoin}
+    toCoin={toCoin}
+    amount={amount}
+    result={result}
+    successMsg={successMsg}
+    convertBusy={convertBusy}
+    t={t}
+    onSubmit={handleConvert}
+    onSwap={swap}
+    onFromCoinChange={(value) => {
+      setFromCoin(value);
+      if (value === "USDT") setToCoin("BTC");
+      else setToCoin("USDT");
+    }}
+    onToCoinChange={setToCoin}
+    onAmountChange={setAmount}
+  />
+</div>
 
         <WalletRecentActivityCard
           cardClass={cardClass}
