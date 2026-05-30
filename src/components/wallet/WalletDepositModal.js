@@ -199,7 +199,7 @@ export default function WalletDepositModal({
             {depositBusy ? t("submitting") || "Submitting..." : t("submit")}
           </button>
 
-          {["USDT", "USDC", "ETH", "BNB"].includes(selectedDepositCoin) && (
+          {["USDC", "ETH", "BNB"].includes(selectedDepositCoin) && (
             <>
               <div className="flex items-center gap-3">
                 <div className="h-px w-full bg-white/10" />
