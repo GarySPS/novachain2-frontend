@@ -28,7 +28,13 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 /* ---------------- helpers (UI only) ---------------- */
 const coinSymbols = ["USDT", "USDC", "BTC", "ETH", "BNB"];
 const visibleWalletSymbols = ["USDT", "USDC", "BTC", "ETH", "BNB"];
-const depositNetworks = { USDT: "ERC20 / BEP20", USDC: "ERC20 / BEP20", BTC: "BTC", ETH: "ERC20", BNB: "BEP20" };
+const depositNetworks = {
+  USDT: "TRC20",
+  USDC: "BEP20",
+  BTC: "BTC",
+  ETH: "ERC20",
+  BNB: "BEP20",
+};
 const fmtUSD = (n) => "$" + Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 /* ---------------- uploads ---------------- */
