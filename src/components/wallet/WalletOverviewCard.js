@@ -41,10 +41,7 @@ export default function WalletOverviewCard({
             {fmtUSD(totalUsd)}
           </div>
 
-          <div className="mt-3 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold text-slate-400">
-            Available for trading, deposit, withdraw and convert
-          </div>
-        </div>
+       </div>
 
         <div className="mt-6 grid grid-cols-2 gap-2">
           <button

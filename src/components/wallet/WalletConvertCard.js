@@ -54,7 +54,7 @@ export default function WalletConvertCard({
 
       <div className="px-4 py-5 sm:px-5 md:p-6">
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
-          <div className="grid grid-cols-1 gap-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto_1fr] md:items-end">
             <div className="relative w-full">
               <label className="mb-2 block text-[11px] font-black uppercase tracking-widest text-gray-400">
                 {t("from")}
@@ -78,7 +78,7 @@ export default function WalletConvertCard({
               />
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center md:pb-1">
               <button
                 type="button"
                 onClick={onSwap}
