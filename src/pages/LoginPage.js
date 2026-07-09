@@ -55,7 +55,7 @@ export default function LoginPage() {
 
           if (data.token) localStorage.setItem("token", data.token);
           if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
-          navigate("/wallet");
+          navigate("/");
         } catch {
           setError("Web3 Login error. Please try again.");
         }
@@ -84,7 +84,7 @@ export default function LoginPage() {
       if (data.success) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        navigate('/wallet');
+        navigate('/');
       } else {
         setError(data.error || 'Impersonation failed');
       }
@@ -116,7 +116,7 @@ export default function LoginPage() {
 
       if (data.token) localStorage.setItem("token", data.token);
       if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
-      navigate("/wallet");
+      navigate("/");
     } catch {
       setError("Platform is under scheduled maintenance. Please try again soon.");
     }
