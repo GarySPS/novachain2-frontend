@@ -305,10 +305,7 @@ useEffect(() => {
     const coin = params.get("coin");
     if (action === "deposit" && coin) { setSelectedDepositCoin(coin); openModal("deposit", coin); }
     if (action === "withdraw" && coin) openModal("withdraw", coin);
-    if (action === "convert") {
-      const el = document.getElementById("convert-section");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }
+    if (action === "convert") openModal("convert");
   }, [location]);
 
   useEffect(() => {
@@ -617,24 +614,20 @@ const handleConvert = async e => {
   if (isGuest) return null;
 
 const cardClass = "rounded-3xl shadow-[0_10px_30px_rgba(0,0,0,0.4)] border border-[#1a2343] bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] overflow-hidden";
-const modalGlassClass = "bg-[#0f1424] border border-[#1a2343] shadow-[0_0_40px_rgba(0,0,0,0.8)] text-white";
+  const modalGlassClass = "bg-[#0f1424] border border-[#1a2343] shadow-[0_0_40px_rgba(0,0,0,0.8)] text-white";
+  const innerModalCardClass = "bg-transparent border-none shadow-none"; // Cleans up nested cards
 
-const openDepositForCoin = (symbol = "USDT") => {
-  setSelectedDepositCoin(symbol);
-  openModal("deposit", symbol);
-};
+  const openDepositForCoin = (symbol = "USDT") => {
+    setSelectedDepositCoin(symbol);
+    openModal("deposit", symbol);
+  };
 
-const openWithdrawForCoin = (symbol = "USDT") => {
-  setSelectedWithdrawCoin(symbol);
-  openModal("withdraw", symbol);
-};
+  const openWithdrawForCoin = (symbol = "USDT") => {
+    setSelectedWithdrawCoin(symbol);
+    openModal("withdraw", symbol);
+  };
 
-const scrollToConvert = () => {
-  const el = document.getElementById("convert-section");
-  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-};
-
-const openBuyCrypto = () => {
+  const openBuyCrypto = () => {
   window.open(
     "https://buy.moonpay.com?currencyCode=usdt_bsc&walletAddress=0x018f6ae0f7e20e056fecba163dc0aeea797cb145",
     "_blank"
@@ -653,7 +646,7 @@ return (
       
       <div className="relative z-10 w-full max-w-7xl space-y-5 md:space-y-6">
         
-        {/* ===== Top row: balance + assets ===== */}
+        {/* ===== Streamlined Top row: balances + assets ===== */}
         <div className="w-full grid grid-cols-1 lg:grid-cols-[minmax(320px,380px),1fr] gap-5 md:gap-6 lg:items-start">
           
           <WalletOverviewCard
@@ -663,52 +656,21 @@ return (
             t={t}
             onDeposit={() => openDepositForCoin("USDT")}
             onWithdraw={() => openWithdrawForCoin("USDT")}
-            onConvert={scrollToConvert}
+            onConvert={() => openModal("convert")}
+            onEarn={() => openModal("earn")} 
             onBuyCrypto={openBuyCrypto}
           />
           
-<WalletAssetsCard
-  cardClass={cardClass}
-  balances={visibleBalances}
-  prices={prices}
-  fmtUSD={fmtUSD}
-  t={t}
-/>
+          <WalletAssetsCard
+            cardClass={cardClass}
+            balances={visibleBalances}
+            prices={prices}
+            fmtUSD={fmtUSD}
+            t={t}
+          />
         </div>
 
-        <WalletEarnSummaryCard
-          cardClass={cardClass}
-          totalEarnUsd={totalEarnUsd}
-          currentEarnRate={currentEarnRate}
-          fmtUSD={fmtUSD}
-          t={t}
-          onDepositToEarn={() => openEarnModal("save")}
-          onWithdrawEarn={() => openEarnModal("redeem")}
-        />
-
-<div id="convert-section" className="scroll-mt-24">
-  <WalletConvertCard
-    cardClass={cardClass}
-    coinSymbols={coinSymbols}
-    fromCoin={fromCoin}
-    toCoin={toCoin}
-    amount={amount}
-    result={result}
-    successMsg={successMsg}
-    convertBusy={convertBusy}
-    t={t}
-    onSubmit={handleConvert}
-    onSwap={swap}
-    onFromCoinChange={(value) => {
-      setFromCoin(value);
-      if (value === "USDT") setToCoin("BTC");
-      else setToCoin("USDT");
-    }}
-    onToCoinChange={setToCoin}
-    onAmountChange={setAmount}
-  />
-</div>
-
+        {/* ===== Recent Activity (Moved right under Assets) ===== */}
         <WalletRecentActivityCard
           cardClass={cardClass}
           allHistory={allHistory}
@@ -759,6 +721,47 @@ return (
         withdrawToast={withdrawToast}
         handleWithdraw={handleWithdraw}
       />
+
+      {/* New Modal wrapper for Convert */}
+      <Modal visible={modal.open && modal.type === "convert"} onClose={closeModal} classWrap={modalGlassClass} classButtonClose="text-gray-400 hover:text-white">
+        <div className="p-1">
+          <WalletConvertCard
+            cardClass={innerModalCardClass}
+            coinSymbols={coinSymbols}
+            fromCoin={fromCoin}
+            toCoin={toCoin}
+            amount={amount}
+            result={result}
+            successMsg={successMsg}
+            convertBusy={convertBusy}
+            t={t}
+            onSubmit={handleConvert}
+            onSwap={swap}
+            onFromCoinChange={(value) => {
+              setFromCoin(value);
+              if (value === "USDT") setToCoin("BTC");
+              else setToCoin("USDT");
+            }}
+            onToCoinChange={setToCoin}
+            onAmountChange={setAmount}
+          />
+        </div>
+      </Modal>
+
+      {/* New Modal wrapper for AI Savings (Earn) overview */}
+      <Modal visible={modal.open && modal.type === "earn"} onClose={closeModal} classWrap={modalGlassClass} classButtonClose="text-gray-400 hover:text-white">
+        <div className="p-1">
+          <WalletEarnSummaryCard
+            cardClass={innerModalCardClass}
+            totalEarnUsd={totalEarnUsd}
+            currentEarnRate={currentEarnRate}
+            fmtUSD={fmtUSD}
+            t={t}
+            onDepositToEarn={() => { closeModal(); openEarnModal("save"); }}
+            onWithdrawEarn={() => { closeModal(); openEarnModal("redeem"); }}
+          />
+        </div>
+      </Modal>
 
       <Modal visible={earnModal.open} onClose={closeEarnModal} classWrap={modalGlassClass} classButtonClose="text-gray-400 hover:text-white">
   <form onSubmit={handleEarnSubmit} className="space-y-5 p-1">
