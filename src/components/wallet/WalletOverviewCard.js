@@ -12,6 +12,7 @@ export default function WalletOverviewCard({
   onDeposit,
   onWithdraw,
   onConvert,
+  onEarn,
   onBuyCrypto,
 }) {
   return (
@@ -78,6 +79,16 @@ export default function WalletOverviewCard({
           >
             <Icon name="credit-card" className="h-4 w-4" />
             {t("buy_crypto")}
+          </button>
+
+          {/* New AI Savings Button */}
+          <button
+            type="button"
+            onClick={onEarn}
+            className="col-span-2 flex h-10 items-center justify-center gap-2 rounded-xl border border-teal-500/20 bg-teal-500/10 text-sm font-bold text-teal-300 transition active:scale-[0.98]"
+          >
+            <Icon name="activity" className="h-4 w-4" />
+            AI Savings
           </button>
         </div>
       </div>

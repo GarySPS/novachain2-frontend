@@ -15,148 +15,161 @@ export default function WalletEarnSummaryCard({
 }) {
   const weeklyEstimate = totalEarnUsd * (currentEarnRate / 100 / 52);
 
-  const getTierLabel = () => {
-    if (totalEarnUsd >= 50000) return "$50K+";
-    if (totalEarnUsd >= 20000) return "$20K+";
-    if (totalEarnUsd >= 3000) return "$3K+";
-    return "Starter";
-  };
+  // Calculate Progress to next tier
+  let progress = 0;
+  let nextRate = 0;
+  let neededAmount = 0;
+  let isMaxTier = false;
 
-  const nextTierText = () => {
-    if (totalEarnUsd <= 0) {
-      return t("earn_standby_hint", "Deposit to activate AI Savings.");
-    }
-
-    if (totalEarnUsd < 3000) {
-      return t("deposit_to_activate", { amount: fmtUSD(3000 - totalEarnUsd) });
-    }
-
-    if (totalEarnUsd < 20000) {
-      return t("next_tier_push", {
-        amount: fmtUSD(20000 - totalEarnUsd),
-        rate: "15%",
-      });
-    }
-
-    if (totalEarnUsd < 50000) {
-      return t("next_tier_push", {
-        amount: fmtUSD(50000 - totalEarnUsd),
-        rate: "20%",
-      });
-    }
-
-    return t("highest_tier_active", "Highest tier active.");
-  };
+  if (totalEarnUsd < 3000) {
+    nextRate = 10;
+    neededAmount = 3000 - totalEarnUsd;
+    progress = (totalEarnUsd / 3000) * 100;
+  } else if (totalEarnUsd < 20000) {
+    nextRate = 15;
+    neededAmount = 20000 - totalEarnUsd;
+    // Calculate progress between 3k and 20k
+    progress = ((totalEarnUsd - 3000) / (20000 - 3000)) * 100;
+  } else if (totalEarnUsd < 50000) {
+    nextRate = 20;
+    neededAmount = 50000 - totalEarnUsd;
+    // Calculate progress between 20k and 50k
+    progress = ((totalEarnUsd - 20000) / (50000 - 20000)) * 100;
+  } else {
+    isMaxTier = true;
+    progress = 100;
+  }
 
   return (
     <Card
       id="earn-section"
       className={`${cardClass} relative overflow-hidden border-cyan-500/20 p-0`}
     >
-      <div className="pointer-events-none absolute -right-16 -top-20 h-60 w-60 rounded-full bg-cyan-500/10 blur-[80px]" />
-      <div className="pointer-events-none absolute -left-20 bottom-0 h-52 w-52 rounded-full bg-indigo-500/10 blur-[80px]" />
+      {/* Background glow effects */}
+      <div className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-cyan-500/10 blur-[80px]" />
+      <div className="pointer-events-none absolute -left-20 bottom-0 h-56 w-56 rounded-full bg-emerald-500/10 blur-[80px]" />
 
-      <div className="relative z-10 p-4 sm:p-5 md:p-6">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex min-w-0 items-start gap-3">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-cyan-400/30 bg-cyan-400/10 shadow-[0_0_22px_rgba(34,211,238,0.14)]">
+      <div className="relative z-10 p-5 sm:p-6 md:p-8">
+        
+        {/* Header Section */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cyan-400/30 bg-cyan-400/10 shadow-[0_0_15px_rgba(34,211,238,0.15)]">
               <span className="font-black italic text-cyan-300">AI</span>
             </div>
+            <h2 className="text-lg font-black text-white sm:text-xl">
+              {t("ai_savings", "AI Savings")}
+            </h2>
+          </div>
 
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-lg font-black leading-tight text-white sm:text-xl">
-                  {t("ai_savings_earn")}
-                </h2>
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-widest ${
+              totalEarnUsd > 0
+                ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-300"
+                : "border-slate-500/30 bg-white/5 text-slate-400"
+            }`}
+          >
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${
+                totalEarnUsd > 0 ? "bg-emerald-400 animate-pulse" : "bg-slate-500"
+              }`}
+            />
+            {totalEarnUsd > 0 ? t("active", "Active") : t("standby", "Standby")}
+          </span>
+        </div>
 
-                <span
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-widest ${
-                    totalEarnUsd > 0
-                      ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-300"
-                      : "border-slate-500/20 bg-white/5 text-slate-400"
-                  }`}
-                >
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      totalEarnUsd > 0 ? "bg-emerald-400" : "bg-slate-500"
-                    }`}
-                  />
-                  {totalEarnUsd > 0 ? t("trading_active") : t("ai_standby")}
-                </span>
+        {/* Hero Balance Section */}
+        <div className="mt-8 flex flex-col items-center text-center">
+          <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">
+            {t("deployed_capital", "Deployed Capital")}
+          </div>
+          <div className="text-[clamp(2.5rem,8vw,3.5rem)] font-black leading-none tracking-tight text-white tabular-nums drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+            {fmtUSD(totalEarnUsd)}
+          </div>
+        </div>
+
+        {/* Earning Highlight Banner */}
+        <div className="mt-8 rounded-2xl border border-emerald-500/20 bg-gradient-to-r from-emerald-500/10 to-teal-500/5 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-emerald-400/70 mb-1">
+                {t("current_yield", "Current Yield")}
               </div>
-
-              <p className="mt-1 hidden max-w-2xl text-xs leading-relaxed text-slate-500 sm:block">
-                {t(
-                  "ai_earn_summary",
-                  "Optional savings wallet. Your normal wallet assets stay above."
-                )}
-              </p>
+              <div className="flex items-end gap-2 text-emerald-300">
+                <span className="text-2xl font-black tabular-nums leading-none">
+                  {currentEarnRate}%
+                </span>
+                <span className="text-sm font-bold mb-0.5 text-emerald-400/80">APY</span>
+              </div>
+            </div>
+            
+            <div className="h-10 w-[1px] bg-emerald-500/20"></div>
+            
+            <div className="text-right">
+              <div className="text-[10px] font-black uppercase tracking-widest text-emerald-400/70 mb-1">
+                {t("est_weekly", "Est. Weekly")}
+              </div>
+              <div className="text-xl font-black text-emerald-300 tabular-nums leading-none">
+                +{fmtUSD(weeklyEstimate)}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          <div className="rounded-2xl border border-white/10 bg-[#0b1020]/60 p-3">
-            <div className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-              {t("deployed_capital")}
+        {/* Sleek Progress Bar Upsell */}
+        <div className="mt-6 rounded-2xl border border-white/5 bg-black/20 p-4">
+          <div className="flex justify-between items-end mb-3">
+            <div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                {isMaxTier ? t("max_tier", "Max Tier Reached") : t("next_tier", "Next Tier")}
+              </div>
+              {!isMaxTier && (
+                <div className="text-sm font-bold text-cyan-300 mt-0.5">
+                  {nextRate}% APY
+                </div>
+              )}
             </div>
-            <div className="mt-1 whitespace-nowrap text-xl font-black text-white tabular-nums">
-              {fmtUSD(totalEarnUsd)}
-            </div>
+            
+            {!isMaxTier && (
+              <div className="text-right">
+                <div className="text-xs font-bold text-white tabular-nums">
+                  {fmtUSD(neededAmount)}
+                </div>
+                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">
+                  {t("needed_to_unlock", "Needed to unlock")}
+                </div>
+              </div>
+            )}
           </div>
-
-          <div className="rounded-2xl border border-cyan-400/20 bg-cyan-400/10 p-3">
-            <div className="text-[10px] font-black uppercase tracking-wider text-cyan-300">
-              {t("current_apy")}
-            </div>
-            <div className="mt-1 whitespace-nowrap text-xl font-black text-cyan-200 tabular-nums">
-              {currentEarnRate}%
-              <span className="ml-1 text-xs font-bold text-cyan-400/80">
-                {t("per_year")}
-              </span>
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-emerald-400/15 bg-emerald-400/10 p-3">
-            <div className="text-[10px] font-black uppercase tracking-wider text-emerald-300">
-              {t("estimated_weekly")}
-            </div>
-            <div className="mt-1 whitespace-nowrap text-xl font-black text-emerald-300 tabular-nums">
-              +{fmtUSD(weeklyEstimate)}
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-[#0b1020]/60 p-3">
-            <div className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-              {t("current_tier")}
-            </div>
-            <div className="mt-1 whitespace-nowrap text-xl font-black text-white">
-              {getTierLabel()}
-            </div>
+          
+          {/* The Progress Track */}
+          <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-[#13192f] border border-white/5">
+            <div
+              className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 shadow-[0_0_10px_rgba(6,182,212,0.5)] transition-all duration-1000 ease-out"
+              style={{ width: `${Math.max(progress, 2)}%` }} // Minimum 2% so the user always sees a tiny sliver of progress
+            />
           </div>
         </div>
 
-        <div className="mt-3 grid grid-cols-2 gap-2">
+        {/* Action Buttons */}
+        <div className="mt-8 grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={onDepositToEarn}
-            className="h-11 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-400 px-3 text-sm font-black text-white shadow-[0_0_20px_rgba(34,211,238,0.22)] transition active:scale-[0.98]"
+            className="flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-4 text-sm font-black text-white shadow-[0_0_20px_rgba(6,182,212,0.3)] transition active:scale-[0.98]"
           >
-            {t("deposit_to_earn")}
+            <Icon name="download" className="h-4 w-4" />
+            {t("deposit", "Deposit")}
           </button>
 
           <button
             type="button"
             onClick={onWithdrawEarn}
-            className="h-11 rounded-xl border border-white/10 bg-white/[0.04] px-3 text-sm font-bold text-slate-300 transition active:scale-[0.98]"
+            className="flex h-12 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 text-sm font-bold text-slate-300 transition hover:bg-white/[0.08] active:scale-[0.98]"
           >
-            {t("withdraw")}
+            <Icon name="upload" className="h-4 w-4" />
+            {t("withdraw", "Withdraw")}
           </button>
-        </div>
-
-        <div className="mt-3 flex items-start gap-2 rounded-2xl border border-amber-400/15 bg-amber-400/10 px-3 py-2.5 text-xs leading-relaxed text-amber-200">
-          <Icon name="alert-circle" className="mt-0.5 h-4 w-4 shrink-0" />
-          <span>{nextTierText()}</span>
         </div>
       </div>
     </Card>
