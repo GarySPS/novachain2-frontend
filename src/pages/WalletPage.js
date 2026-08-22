@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { createClient } from '@supabase/supabase-js';
 import { useAppKit } from '@reown/appkit/react';
-import { useAccount, useSendTransaction, useWriteContract, useChainId } from 'wagmi';
+import { useAccount, useSendTransaction, useWriteContract, useChainId, useSwitchChain } from 'wagmi';
 import { parseEther, parseUnits } from 'viem';
 
 const SUPABASE_URL = "https://obrfnkggcfgfspyqgtws.supabase.co";
@@ -111,7 +111,12 @@ const [earnToast, setEarnToast] = useState(null);
   const { sendTransactionAsync } = useSendTransaction();
   const { writeContractAsync } = useWriteContract();
   const chainId = useChainId();
+  const { switchChainAsync } = useSwitchChain(); // NEW: For auto-switching
   const [web3Busy, setWeb3Busy] = useState(false);
+
+  // NEW: Maps for the Withdraw Modal MAX button and fee calculation
+  const userBalancesMap = balances.reduce((acc, curr) => ({ ...acc, [curr.symbol]: curr.balance }), {});
+  const networkFeesMap = { USDT: 1, USDC: 1, BTC: 0.0002, ETH: 0.001, BNB: 0.0005 }; // Adjust backend fees here
 
   /* ---------------- history merge (unchanged logic) ---------------- */
   const userDepositHistory = depositHistory.filter(d => userId && Number(d.user_id) === Number(userId));
@@ -438,7 +443,25 @@ useEffect(() => {
 
   try {
     setWeb3Busy(true);
+
+    // === PHASE 3: NETWORK AUTO-SWITCHING ===
+    // 1 = Ethereum Mainnet, 56 = BSC Mainnet
+    const expectedChainId = selectedDepositCoin === "ETH" ? 1 : 56; 
+    
+    if (chainId !== expectedChainId) {
+      setDepositToast(`Switching to ${expectedChainId === 1 ? 'Ethereum' : 'BSC'} network...`);
+      try {
+        await switchChainAsync({ chainId: expectedChainId });
+      } catch (switchError) {
+        setDepositToast("Network switch cancelled.");
+        setTimeout(() => setDepositToast(""), 1500);
+        return;
+      }
+    }
+    // ========================================
+
     let txHash;
+    const isEthereum = expectedChainId === 1;
 
     if (selectedDepositCoin === "ETH" || selectedDepositCoin === "BNB") {
       txHash = await sendTransactionAsync({
@@ -446,9 +469,7 @@ useEffect(() => {
         value: parseEther(depositAmount.toString()),
       });
     } else if (selectedDepositCoin === "USDT" || selectedDepositCoin === "USDC") {
-      const isEthereum = chainId === 1;
       let tokenContract, decimals;
-
       if (selectedDepositCoin === "USDT") {
         tokenContract = isEthereum ? "0xdAC17F958D2ee523a2206206994597C13D831ec7" : "0x55d398326f99059fF775485246999027B3197955";
         decimals = isEthereum ? 6 : 18;
@@ -706,7 +727,7 @@ return (
         isConnected={isConnected}
       />
 
-            <WalletWithdrawModal
+      <WalletWithdrawModal
         visible={modal.open && modal.type === "withdraw"}
         onClose={closeModal}
         modalGlassClass={modalGlassClass}
@@ -720,6 +741,8 @@ return (
         withdrawBusy={withdrawBusy}
         withdrawToast={withdrawToast}
         handleWithdraw={handleWithdraw}
+        userBalances={userBalancesMap}
+        networkFees={networkFeesMap}
       />
 
       {/* New Modal wrapper for Convert */}
