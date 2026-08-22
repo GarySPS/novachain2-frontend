@@ -51,7 +51,7 @@ function AppShell() {
   };
 
   return (
-    <div className="relative min-h-[100dvh] w-full overflow-hidden bg-[#0b1020] text-white">
+    <div className="relative min-h-screen w-full bg-[#0b1020] text-white">
       
       {/* 1. GLOBAL HARDWARE-ACCELERATED BACKGROUND */}
       <div
@@ -76,19 +76,13 @@ function AppShell() {
         }}
       />
       
-      <div
-        className={`relative z-10 min-h-[100dvh] w-full ${
-          hideHeader
-            ? "flex flex-col"
-            : "grid grid-rows-[auto_minmax(0,1fr)_auto]"
-        }`}
-      >
+      <div className="relative z-10 flex flex-col min-h-screen w-full">
         {!hideHeader && <NavBar />}
 
         <main
-          className={`min-h-0 overflow-y-auto overscroll-contain ${
+          className={`flex-1 w-full ${
             hideHeader
-              ? "flex-1"
+              ? ""
               : "pb-[calc(112px+env(safe-area-inset-bottom))] md:pb-0"
           }`}
         >

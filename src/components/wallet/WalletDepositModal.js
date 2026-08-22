@@ -102,9 +102,13 @@ export default function WalletDepositModal({
             <button 
               type="button" 
               onClick={() => setIsQRExpanded(false)} 
-              className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-95"
+              className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-95 shadow-lg"
             >
-              <Icon name="x" className="h-4 w-4" />
+              {/* Hardcoded SVG guarantees the X renders correctly */}
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
             </button>
             
             <h3 className="mb-6 text-lg font-black text-white">Scan to Deposit</h3>
@@ -117,13 +121,25 @@ export default function WalletDepositModal({
               />
             </div>
             
-            <div className="mt-6 text-center">
+            <div className="mt-6 flex flex-col items-center text-center">
               <div className="mb-1 text-[10px] font-black uppercase tracking-widest text-sky-400">
                 {selectedDepositCoin} Address ({depositNetworks[selectedDepositCoin]})
               </div>
               <p className="w-full max-w-[280px] break-all font-mono text-sm font-bold text-gray-300">
                 {walletAddresses[selectedDepositCoin]}
               </p>
+              
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(walletAddresses[selectedDepositCoin] || "");
+                  setDepositToast(t("copied", "Copied"));
+                }}
+                className="mt-4 flex h-10 items-center justify-center gap-2 rounded-xl bg-sky-500/10 px-6 text-xs font-black text-sky-400 ring-1 ring-sky-500/30 transition hover:bg-sky-500/20 active:scale-95"
+              >
+                <Icon name="copy" className="h-4 w-4" />
+                COPY ADDRESS
+              </button>
             </div>
           </div>
         )}
