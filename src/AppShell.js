@@ -1,4 +1,5 @@
 //src>AppShell.js
+
 import React, { useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -31,8 +32,8 @@ function AppShell() {
   const { t } = useTranslation();
   const location = useLocation();
   const hideHeader = ["/login", "/signup", "/verify-otp", "/forgot"].some((p) =>
-  location.pathname.startsWith(p)
-);
+    location.pathname.startsWith(p)
+  );
 
   const [showIOSModal, setShowIOSModal] = useState(false);
 
@@ -50,35 +51,47 @@ function AppShell() {
   };
 
   return (
-    <div className="relative min-h-[100dvh] w-full overflow-hidden bg-[#05070d] text-white">
+    <div className="relative min-h-[100dvh] w-full overflow-hidden bg-[#0b1020] text-white">
+      
+      {/* 1. GLOBAL HARDWARE-ACCELERATED BACKGROUND */}
       <div
+        className="fixed inset-0"
         style={{
-          position: "fixed",
           zIndex: 0,
-          inset: 0,
-          backgroundColor: "#050505",
-          backgroundImage: "radial-gradient(circle at 50% 0%, #111a24 0%, #050505 60%)",
-          pointerEvents: "none",
+          backgroundImage: 'url("/novachain.jpg")',
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          transform: "translateZ(0)", /* Forces GPU rendering, killing scroll lag! */
+          willChange: "transform"
+        }}
+      />
+      
+      {/* 2. GLOBAL GRADIENT OVERLAY */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          zIndex: 0,
+          background: "linear-gradient(120deg, #0b1020f0 0%, #0d1220d8 60%, #0a101dd1 100%)",
         }}
       />
       
       <div
-  className={`relative z-10 min-h-[100dvh] w-full ${
-    hideHeader
-      ? "flex flex-col"
-      : "grid grid-rows-[auto_minmax(0,1fr)_auto]"
-  }`}
->
-        
+        className={`relative z-10 min-h-[100dvh] w-full ${
+          hideHeader
+            ? "flex flex-col"
+            : "grid grid-rows-[auto_minmax(0,1fr)_auto]"
+        }`}
+      >
         {!hideHeader && <NavBar />}
 
         <main
-  className={`min-h-0 overflow-y-auto overscroll-contain ${
-    hideHeader
-      ? "flex-1"
-      : "pb-[calc(112px+env(safe-area-inset-bottom))] md:pb-0"
-  }`}
->
+          className={`min-h-0 overflow-y-auto overscroll-contain ${
+            hideHeader
+              ? "flex-1"
+              : "pb-[calc(112px+env(safe-area-inset-bottom))] md:pb-0"
+          }`}
+        >
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/trade" element={<TradePage />} />

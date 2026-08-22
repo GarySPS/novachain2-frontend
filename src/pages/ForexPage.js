@@ -29,9 +29,9 @@ const profitMap = { 30: 0.3, 60: 0.5, 90: 0.7, 120: 1.0 };
 const formatPercent = (n) => {
   const num = Number(n || 0);
   const prefix = num > 0 ? "+" : "";
-  const colorClass = num >= 0 ? "text-green-500" : "text-red-500";
+  const colorClass = num >= 0 ? "text-emerald-400 bg-emerald-400/10" : "text-rose-400 bg-rose-400/10";
   return (
-    <span className={`font-bold ${colorClass}`}>
+    <span className={`px-2 py-0.5 rounded-md text-[10px] font-black tracking-wider ${colorClass}`}>
       {prefix}{num.toFixed(2)}%
     </span>
   );
@@ -400,14 +400,6 @@ export default function ForexPage() {
       animate={{ opacity: 1, y: 0 }}
       className="w-full max-w-full px-3 pt-5 overflow-x-hidden"
     >
-      {/* soft overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          zIndex: 0,
-          background: "linear-gradient(120deg, #0b1020f0 0%, #0d1220d8 60%, #0a101dd1 100%)",
-        }}
-      />
       <div style={{ position: "relative", zIndex: 1 }} className="w-full">
         <div className="w-full max-w-[1300px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr,380px] gap-7 lg:gap-8">
           {/* ---------------- Left: Chart & selectors ---------------- */}
@@ -651,18 +643,14 @@ export default function ForexPage() {
                         disabled={timerActive}
                         onClick={() => setSelectedCommodity(commodity)}
                         className={`
-                          relative h-12 rounded-xl border transition-all duration-200
-                          flex items-center justify-center text-sm font-bold
+                          h-10 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all
                           ${active
-                            ? "bg-gradient-to-br from-cyan-500/30 to-blue-500/20 border-cyan-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.5)]"
-                            : "bg-[#0b1020] border-[#2c3040] text-gray-400 hover:text-white hover:border-cyan-500/40 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]"}
-                          ${timerActive ? "opacity-40" : ""}
+                            ? "bg-[#1a2343] text-sky-400 ring-1 ring-sky-500/30 shadow-sm"
+                            : "bg-transparent text-gray-500 border border-[#2c3040] hover:text-gray-300 hover:border-gray-500"}
+                          ${timerActive ? "opacity-40 cursor-not-allowed" : ""}
                         `}
                       >
                         {commodity.symbol.split("/")[0]}
-                        {active && (
-                          <div className="absolute inset-0 rounded-xl pointer-events-none ring-2 ring-cyan-400/50 ring-offset-0" />
-                        )}
                       </button>
                     );
                   })}

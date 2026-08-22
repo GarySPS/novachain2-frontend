@@ -28,10 +28,9 @@ const profitMap = { 30: 0.3, 60: 0.5, 90: 0.7, 120: 1.0 };
 const formatPercent = (n) => {
   const num = Number(n || 0);
   const prefix = num > 0 ? "+" : "";
-  // Use Tailwind's text color classes
-  const colorClass = num >= 0 ? "text-green-500" : "text-red-500";
+  const colorClass = num >= 0 ? "text-emerald-400 bg-emerald-400/10" : "text-rose-400 bg-rose-400/10";
   return (
-    <span className={`font-bold ${colorClass}`}>
+    <span className={`px-2 py-0.5 rounded-md text-[10px] font-black tracking-wider ${colorClass}`}>
       {prefix}{num.toFixed(2)}%
     </span>
   );
@@ -360,14 +359,6 @@ export default function TradePage() {
       animate={{ opacity: 1, y: 0 }}
       className="w-full max-w-full px-3 pt-5 overflow-x-hidden"
     >
-      {/* soft overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          zIndex: 0,
-          background: "linear-gradient(120deg, #0b1020f0 0%, #0d1220d8 60%, #0a101dd1 100%)",
-        }}
-      />
       <div style={{ position: "relative", zIndex: 1 }} className="w-full">
         <div className="w-full max-w-[1300px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr,380px] gap-7 lg:gap-8">
           {/* ---------------- Left: Chart & selectors ---------------- */}
@@ -377,23 +368,10 @@ export default function TradePage() {
 
              {/* MOBILE PRICE STATS CARD - Only visible on mobile */}
             <div className="lg:hidden mb-4 relative z-10">
-              {/* Changed <Card> to <div> to remove conflicting hidden styles */}
-              <div 
-                className="w-full px-4 py-4 rounded-2xl bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343] relative overflow-hidden group"
-                style={{ 
-                  boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5), 0 0 30px rgba(34,211,238,0.2), inset 0 1px 1px rgba(255,255,255,0.05)'
-                }}
-              >
-                {/* Animated top gradient glow */}
-                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
-                
-                {/* Corner glows */}
-                <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 blur-2xl rounded-full pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/5 blur-2xl rounded-full pointer-events-none" />
-                
+              <div className="w-full px-4 py-4 rounded-2xl bg-[#0b1020] border border-[#2c3040]">
                 <div className="relative z-10">
                   {/* Asset Selection at the TOP - Centered */}
-                  <div className="flex overflow-x-auto pb-3 mb-3 border-b border-white/5 no-scrollbar">
+                  <div className="flex overflow-x-auto pb-3 mb-3 border-b border-white/5 scrollbar-hide">
                     <div className="flex gap-2 mx-auto">
                       {COINS.map((coin) => (
                         <button
@@ -401,10 +379,10 @@ export default function TradePage() {
                           disabled={timerActive}
                           onClick={() => setSelectedCoin(coin)}
                           className={`
-                            px-4 py-1.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all flex-shrink-0
+                            px-4 py-1.5 rounded-lg text-[11px] font-black uppercase tracking-wider transition-all flex-shrink-0
                             ${selectedCoin.symbol === coin.symbol
-                              ? "bg-gradient-to-br from-cyan-500/30 to-blue-500/20 text-white border border-cyan-400/50 shadow-[0_0_15px_rgba(34,211,238,0.3)]"
-                              : "bg-[#0b1020] text-gray-400 border border-[#2c3040] hover:text-white hover:border-cyan-500/40 hover:shadow-[0_0_10px_rgba(34,211,238,0.1)]"}
+                              ? "bg-sky-500/15 text-sky-400 ring-1 ring-sky-500/30"
+                              : "bg-transparent text-gray-500 hover:text-gray-300 hover:bg-white/5"}
                             ${timerActive ? "opacity-40" : ""}
                           `}
                         >
@@ -467,21 +445,9 @@ export default function TradePage() {
               </div>
             </div>
 
-            {/* chart box - enhanced premium glow effect */}
-<div 
-  className="relative w-full rounded-2xl bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343] overflow-hidden group"
-  style={{ 
-    boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5), 0 0 30px rgba(34,211,238,0.2), inset 0 1px 1px rgba(255,255,255,0.05)'
-  }}
->
-  {/* Animated top gradient glow */}
-  <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
-  
-  {/* Corner glows */}
-  <div className="absolute top-0 left-0 w-20 h-20 bg-cyan-500/5 blur-3xl rounded-full" />
-  <div className="absolute bottom-0 right-0 w-20 h-20 bg-blue-500/5 blur-3xl rounded-full" />
-  
-  <div id="tradingview_chart_container" className="w-full h-[420px] relative z-10" />
+           {/* Chart Container */}
+            <div className="relative w-full h-[400px] lg:h-[480px] rounded-2xl bg-[#070b16] border border-[#2c3040] overflow-hidden flex flex-col">
+              <div id="tradingview_chart_container" className="flex-1 w-full" />
   {loadingChart && (
     <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0c1323e6] backdrop-blur-sm">
       <svg className="animate-spin mb-4" width="54" height="54" viewBox="0 0 54 54" fill="none">
@@ -565,20 +531,9 @@ export default function TradePage() {
 )}
           </div>
 
-          {/* ---------------- Right: Trade panel (Desktop only) ---------------- */}
-<div className="hidden lg:block w-full">
-  <Card 
-    className="w-full px-5 py-6 rounded-3xl bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343] relative overflow-hidden group"
-    style={{ 
-      boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5), 0 0 30px rgba(34,211,238,0.2), inset 0 1px 1px rgba(255,255,255,0.05)'
-    }}
-  >
-    {/* Enhanced top glow */}
-    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
-    
-    {/* Corner glows */}
-    <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 blur-3xl rounded-full" />
-    <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500/5 blur-3xl rounded-full" />
+         {/* ---------------- Right: Trade panel (Desktop only) ---------------- */}
+          <div className="hidden lg:block w-full">
+            <Card className="w-full p-5 rounded-2xl bg-[#0b1020] border border-[#2c3040]">
 
     {/* header */}
     <div className="flex items-center justify-between mb-4 relative z-10">
@@ -626,34 +581,28 @@ export default function TradePage() {
           </div>
       </div>
 
-      <div className="grid grid-cols-5 gap-2 mt-2">
-        {COINS.map((coin) => {
-          const active = selectedCoin.symbol === coin.symbol;
-
-          return (
-            <button
-              key={coin.symbol}
-              disabled={timerActive}
-              onClick={() => setSelectedCoin(coin)}
-              className={`
-                relative h-12 rounded-xl border transition-all duration-200
-                flex items-center justify-center text-sm font-bold
-                ${active
-                  ? "bg-gradient-to-br from-cyan-500/30 to-blue-500/20 border-cyan-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.5)]"
-                  : "bg-[#0b1020] border-[#2c3040] text-gray-400 hover:text-white hover:border-cyan-500/40 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)]"}
-                ${timerActive ? "opacity-40" : ""}
-              `}
-            >
-              {coin.symbol}
-
-              {active && (
-                <div className="absolute inset-0 rounded-xl pointer-events-none
-                ring-2 ring-cyan-400/50 ring-offset-0" />
-              )}
-            </button>
-          );
-        })}
-      </div>
+      <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Select Asset</label>
+              <div className="grid grid-cols-5 gap-2">
+                {COINS.map((coin) => {
+                  const active = selectedCoin.symbol === coin.symbol;
+                  return (
+                    <button
+                      key={coin.symbol}
+                      disabled={timerActive}
+                      onClick={() => setSelectedCoin(coin)}
+                      className={`
+                        h-10 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all
+                        ${active
+                          ? "bg-[#1a2343] text-sky-400 ring-1 ring-sky-500/30 shadow-sm"
+                          : "bg-transparent text-gray-500 border border-[#2c3040] hover:text-gray-300 hover:border-gray-500"}
+                        ${timerActive ? "opacity-40 cursor-not-allowed" : ""}
+                      `}
+                    >
+                      {coin.symbol}
+                    </button>
+                  );
+                })}
+              </div>
     </div>
 
     {/* Buy/Sell Buttons */}
