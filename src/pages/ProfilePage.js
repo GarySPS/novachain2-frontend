@@ -336,16 +336,10 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
   }
 
   /* ======================= UI ======================= */
-  const cardClass = "p-6 md:p-8 rounded-3xl border border-[#1a2343] bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] shadow-[0_10px_30px_rgba(0,0,0,0.4)]";
+  const cardClass = "p-6 md:p-8 rounded-3xl bg-[#0b1020] border border-[#2c3040] shadow-md";
 
   return (
-    <div
-      className="min-h-screen w-full flex flex-col items-center px-3 pt-8 pb-32"
-      style={{
-        background: 'url("/novachain.jpg") no-repeat center/cover fixed',
-      }}
-    >
-      <div className="fixed inset-0 bg-[linear-gradient(120deg,#0b1020f0_0%,#0d1220d8_60%,#0a101dd1_100%)] pointer-events-none" />
+    <div className="relative min-h-screen w-full flex flex-col items-center px-3 pt-8 pb-32">
 
       <div className="relative z-10 w-full max-w-7xl space-y-6 md:space-y-8">
 
@@ -358,7 +352,7 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
                 <img
                   src={avatarFile ? URL.createObjectURL(avatarFile) : bustCache(avatarUrl) || "/logo192_new.png"}
                   alt="Profile"
-                  className="w-28 h-28 rounded-full border-[3px] border-sky-500 shadow-[0_0_20px_rgba(14,165,233,0.3)] bg-[#0b1020] object-cover"
+                  className="w-24 h-24 rounded-full border-2 border-[#2c3040] bg-[#1a2035] object-cover"
                   onError={(e) => { e.currentTarget.src = "/logo192_new.png"; }}
                 />
               </div>
@@ -410,7 +404,7 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
 
             <div className="mt-8 grid grid-cols-1 gap-3">
               <button 
-                className="h-12 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:scale-[1.02] transition flex items-center justify-center border border-white/10"
+                className="h-12 rounded-xl font-bold bg-sky-600 text-white hover:bg-sky-500 active:scale-[0.98] transition flex items-center justify-center"
                 onClick={() => navigate(`/wallet?action=deposit&coin=USDT`)}
               >
                 {t('profile_deposit')}
@@ -700,17 +694,17 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
           <Card className={cardClass}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
-  className="h-12 rounded-xl font-bold text-white bg-gradient-to-r from-[#1EBEA5] to-[#25D366] hover:brightness-110 shadow-[0_0_15px_rgba(37,211,102,0.2)] transition flex items-center justify-center border border-white/10"
-  onClick={() => window.open('https://wa.me/16627053615', '_blank')}
->
-   {t('profile_whatsapp')}
-</button>
+                className="h-12 rounded-xl font-bold text-white bg-[#1EBEA5] hover:bg-[#128C7E] active:scale-[0.98] transition flex items-center justify-center"
+                onClick={() => window.open('https://wa.me/16627053615', '_blank')}
+              >
+               {t('profile_whatsapp')}
+              </button>
               <button
-  className="h-12 rounded-xl font-bold text-white bg-gradient-to-r from-[#0088cc] to-[#229ED9] hover:brightness-110 shadow-[0_0_15px_rgba(34,158,217,0.2)] transition flex items-center justify-center border border-white/10"
-  onClick={() => window.open('https://t.me/novachainsgofficialcom', '_blank')}
->
-   {t('profile_telegram')}
-</button>
+                className="h-12 rounded-xl font-bold text-white bg-[#0088cc] hover:bg-[#0077b5] active:scale-[0.98] transition flex items-center justify-center"
+                onClick={() => window.open('https://t.me/novachainsgofficialcom', '_blank')}
+              >
+               {t('profile_telegram')}
+              </button>
             </div>
             <div className="mt-4 text-xs text-gray-500 font-medium text-center uppercase tracking-wider">
               {t('profile_support_note')}
