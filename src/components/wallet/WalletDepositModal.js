@@ -30,10 +30,11 @@ export default function WalletDepositModal({
   web3Busy,
   isConnected,
 }) {
-  // State for the tab switcher
   const [activeTab, setActiveTab] = useState("web3");
+  // NEW: State controls for our premium UI popups
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isQRExpanded, setIsQRExpanded] = useState(false);
 
-  // Auto-detect if user is in an in-app Web3 browser (OKX, MetaMask, Trust)
   useEffect(() => {
     if (typeof window !== "undefined") {
       const isWeb3Browser =
@@ -49,9 +50,84 @@ export default function WalletDepositModal({
       classWrap={modalGlassClass}
       classButtonClose="text-gray-400 hover:text-white z-20"
     >
-      {/* Scrollable container to fix mobile keyboard overlap */}
-      <div className="max-h-[78vh] overflow-y-auto overscroll-contain px-2 pb-6 pt-2 scrollbar-hide">
+      {/* Scrollable, relative container for our custom absolute overlays */}
+      <div className="relative max-h-[78vh] overflow-y-auto overscroll-contain px-2 pb-6 pt-2 scrollbar-hide">
         
+        {/* ================= OVERLAY: Custom Asset Selector ================= */}
+        {isDropdownOpen && (
+          <div className="absolute inset-0 z-[60] flex flex-col rounded-xl bg-[#0f1424] p-2 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="mb-2 flex items-center justify-between px-2 pt-2">
+              <h3 className="text-sm font-black uppercase tracking-widest text-gray-400">Select Asset</h3>
+              <button 
+                type="button" 
+                onClick={() => setIsDropdownOpen(false)} 
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-gray-400 transition hover:bg-white/10 hover:text-white"
+              >
+                <Icon name="x" className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex-1 space-y-1 overflow-y-auto pr-1 scrollbar-hide">
+              {coinSymbols.map((c) => (
+                <div
+                  key={c}
+                  onClick={() => {
+                    setSelectedDepositCoin(c);
+                    setIsDropdownOpen(false);
+                  }}
+                  className={`flex cursor-pointer items-center justify-between rounded-xl p-3 transition active:scale-95 ${
+                    selectedDepositCoin === c ? "bg-sky-500/10 border border-sky-500/20" : "hover:bg-white/5 border border-transparent"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1a2035] p-1.5 shadow-inner">
+                      <img
+                        src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${c.toLowerCase()}.svg`}
+                        alt={c}
+                        className="h-full w-full object-contain"
+                        onError={(e) => (e.currentTarget.style.display = "none")}
+                      />
+                    </div>
+                    <span className="font-bold text-white">{c}</span>
+                  </div>
+                  {selectedDepositCoin === c && <Icon name="check" className="h-4 w-4 text-sky-400" />}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ================= OVERLAY: QR Code Enlarger ================= */}
+        {isQRExpanded && walletQRCodes[selectedDepositCoin] && (
+          <div className="absolute inset-0 z-[60] flex flex-col items-center justify-center rounded-xl bg-[#0a0f1d]/95 p-4 backdrop-blur-sm animate-in fade-in zoom-in-95 duration-200">
+            <button 
+              type="button" 
+              onClick={() => setIsQRExpanded(false)} 
+              className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 active:scale-95"
+            >
+              <Icon name="x" className="h-4 w-4" />
+            </button>
+            
+            <h3 className="mb-6 text-lg font-black text-white">Scan to Deposit</h3>
+            
+            <div className="rounded-3xl bg-white p-5 shadow-[0_0_40px_rgba(255,255,255,0.1)]">
+              <img
+                src={walletQRCodes[selectedDepositCoin]}
+                alt="Enlarged QR"
+                className="h-48 w-48 object-contain md:h-64 md:w-64"
+              />
+            </div>
+            
+            <div className="mt-6 text-center">
+              <div className="mb-1 text-[10px] font-black uppercase tracking-widest text-sky-400">
+                {selectedDepositCoin} Address ({depositNetworks[selectedDepositCoin]})
+              </div>
+              <p className="w-full max-w-[280px] break-all font-mono text-sm font-bold text-gray-300">
+                {walletAddresses[selectedDepositCoin]}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Sleek Header */}
         <h2 className="mb-4 text-center text-lg font-bold text-white tracking-wide">
           {t("deposit", "Deposit")}
@@ -90,10 +166,7 @@ export default function WalletDepositModal({
           <div className="absolute left-1/2 top-4 z-[70] w-full max-w-[260px] -translate-x-1/2">
             <div
               className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-bold text-white shadow-xl backdrop-blur ${
-                depositToast.includes("Failed") ||
-                depositToast.includes("error")
-                  ? "bg-rose-500/90"
-                  : "bg-emerald-500/90"
+                depositToast.includes("Failed") || depositToast.includes("error") ? "bg-rose-500/90" : "bg-emerald-500/90"
               }`}
             >
               <Icon
@@ -109,26 +182,26 @@ export default function WalletDepositModal({
 
         {/* Professional Side-by-Side Asset & Network Selector */}
         <div className="mb-4 flex gap-3">
-          <div className="flex-1 rounded-xl border border-[#2c3040] bg-[#0b1020]/50 p-2.5 transition-colors focus-within:border-sky-500/50">
-            <label className="mb-1 block text-[9px] font-black uppercase tracking-widest text-gray-500">
+          
+          {/* CUSTOM DROPDOWN TRIGGER */}
+          <div 
+            className="flex-1 cursor-pointer rounded-xl border border-[#2c3040] bg-[#0b1020]/50 p-2.5 transition-colors hover:bg-white/5 active:scale-95"
+            onClick={() => setIsDropdownOpen(true)}
+          >
+            <label className="mb-1 block cursor-pointer text-[9px] font-black uppercase tracking-widest text-gray-500">
               {t("coin", "Asset")}
             </label>
-            <div className="relative">
-              <select
-                className="w-full appearance-none bg-transparent text-sm font-bold text-white outline-none"
-                value={selectedDepositCoin}
-                onChange={(e) => setSelectedDepositCoin(e.target.value)}
-              >
-                {coinSymbols.map((c) => (
-                  <option key={c} value={c} className="bg-[#0b1020]">
-                    {c}
-                  </option>
-                ))}
-              </select>
-              <Icon
-                name="arrow-down"
-                className="pointer-events-none absolute right-0 top-0.5 h-3.5 w-3.5 text-gray-500"
-              />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <img
+                  src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${selectedDepositCoin.toLowerCase()}.svg`}
+                  alt={selectedDepositCoin}
+                  className="h-4 w-4 object-contain"
+                  onError={(e) => (e.currentTarget.style.display = "none")}
+                />
+                <span className="text-sm font-bold text-white">{selectedDepositCoin}</span>
+              </div>
+              <Icon name="chevron-down" className="h-3.5 w-3.5 text-gray-500" />
             </div>
           </div>
 
@@ -210,16 +283,28 @@ export default function WalletDepositModal({
             
             {/* Side-by-Side QR & Address Card */}
             <div className="flex items-center gap-3 rounded-xl border border-white/5 bg-[#070b16] p-3">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-white p-1">
+              
+              {/* CLICKABLE THUMBNAIL QR */}
+              <div 
+                className="group relative flex h-16 w-16 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-white p-1 overflow-hidden transition active:scale-95"
+                onClick={() => {
+                  if(walletQRCodes[selectedDepositCoin]) setIsQRExpanded(true);
+                }}
+              >
                 {walletQRCodes[selectedDepositCoin] ? (
-                  <img
-                    src={walletQRCodes[selectedDepositCoin]}
-                    alt={t("deposit_qr", "QR")}
-                    className="h-full w-full object-contain"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
+                  <>
+                    <img
+                      src={walletQRCodes[selectedDepositCoin]}
+                      alt={t("deposit_qr", "QR")}
+                      className="h-full w-full object-contain transition duration-300 group-hover:blur-[2px]"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition duration-300 group-hover:opacity-100">
+                      <Icon name="maximize" className="h-5 w-5 text-white" />
+                    </div>
+                  </>
                 ) : (
                   <Icon name="qr-code" className="h-6 w-6 text-gray-300" />
                 )}
