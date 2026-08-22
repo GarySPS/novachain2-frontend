@@ -116,19 +116,22 @@ exit={{ y: "100%" }}
               </div>
 
               <div className="relative">
-              <input
+                <input
                   id="modal-amount"
                   type="number"
+                  inputMode="decimal" /* Forces the mobile number pad */
+                  pattern="[0-9]*" /* Strict validation for older browsers */
                   min={1}
                   value={amount}
                   onChange={(e) => {
-                    const val = e.target.value;
+                    // Block "e", "-", "+", and any other non-numeric characters completely
+                    const val = e.target.value.replace(/[^0-9.]/g, "");
                     setAmount(val === "" ? "" : Number(val));
                   }}
                   required
-                  className="w-full h-14 px-4 py-2 rounded-xl bg-black/50 border border-white/10 text-white text-xl font-black focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-400/50 focus:bg-white/5 outline-none transition-all shadow-inner"
+                  className="w-full h-14 px-4 py-2 rounded-xl bg-[#070b16] border border-[#2c3040] text-white text-xl font-black outline-none transition-colors focus:border-sky-500"
                 />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">
+                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-500">
                   USDT
                 </div>
               </div>
