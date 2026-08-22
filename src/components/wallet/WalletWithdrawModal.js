@@ -22,10 +22,15 @@ export default function WalletWithdrawModal({
   networkFees = {},
 }) {
   const [step, setStep] = useState(1); // 1 = Input, 2 = Confirmation
+  // NEW: State for custom asset dropdown
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // Reset step when modal opens/closes
   useEffect(() => {
-    if (!visible) setStep(1);
+    if (!visible) {
+      setStep(1);
+      setIsDropdownOpen(false);
+    }
   }, [visible]);
 
   // Derived values with safe fallbacks
@@ -73,9 +78,52 @@ export default function WalletWithdrawModal({
       classWrap={modalGlassClass}
       classButtonClose="text-gray-400 hover:text-white z-20"
     >
-      {/* Scrollable container to fix mobile keyboard overlap */}
-      <div className="max-h-[78vh] overflow-y-auto overscroll-contain px-2 pb-6 pt-2 scrollbar-hide">
+      {/* Scrollable, relative container for our custom absolute overlays */}
+      <div className="relative max-h-[78vh] overflow-y-auto overscroll-contain px-2 pb-6 pt-2 scrollbar-hide">
         
+        {/* ================= OVERLAY: Custom Asset Selector ================= */}
+        {isDropdownOpen && (
+          <div className="absolute inset-0 z-[60] flex flex-col rounded-xl bg-[#0f1424] p-2 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="mb-2 flex items-center justify-between px-2 pt-2">
+              <h3 className="text-sm font-black uppercase tracking-widest text-gray-400">Select Asset</h3>
+              <button 
+                type="button" 
+                onClick={() => setIsDropdownOpen(false)} 
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-gray-400 transition hover:bg-white/10 hover:text-white"
+              >
+                <Icon name="x" className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="flex-1 space-y-1 overflow-y-auto pr-1 scrollbar-hide">
+              {coinSymbols.map((c) => (
+                <div
+                  key={c}
+                  onClick={() => {
+                    setSelectedWithdrawCoin(c);
+                    setIsDropdownOpen(false);
+                  }}
+                  className={`flex cursor-pointer items-center justify-between rounded-xl p-3 transition active:scale-95 ${
+                    selectedWithdrawCoin === c ? "bg-sky-500/10 border border-sky-500/20" : "hover:bg-white/5 border border-transparent"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1a2035] p-1.5 shadow-inner">
+                      <img
+                        src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${c.toLowerCase()}.svg`}
+                        alt={c}
+                        className="h-full w-full object-contain"
+                        onError={(e) => (e.currentTarget.style.display = "none")}
+                      />
+                    </div>
+                    <span className="font-bold text-white">{c}</span>
+                  </div>
+                  {selectedWithdrawCoin === c && <Icon name="check" className="h-4 w-4 text-sky-400" />}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Toast Notification */}
         {withdrawToast && (
           <div className="absolute left-1/2 top-4 z-[70] w-full max-w-[260px] -translate-x-1/2">
@@ -114,26 +162,26 @@ export default function WalletWithdrawModal({
 
             {/* Professional Side-by-Side Asset & Network Selector */}
             <div className="mb-4 flex gap-3">
-              <div className="flex-1 rounded-xl border border-[#2c3040] bg-[#0b1020]/50 p-2.5 transition-colors focus-within:border-sky-500/50">
-                <label className="mb-1 block text-[9px] font-black uppercase tracking-widest text-gray-500">
+              
+              {/* CUSTOM DROPDOWN TRIGGER */}
+              <div 
+                className="flex-1 cursor-pointer rounded-xl border border-[#2c3040] bg-[#0b1020]/50 p-2.5 transition-colors hover:bg-white/5 active:scale-95"
+                onClick={() => setIsDropdownOpen(true)}
+              >
+                <label className="mb-1 block cursor-pointer text-[9px] font-black uppercase tracking-widest text-gray-500">
                   {t("coin", "Asset")}
                 </label>
-                <div className="relative">
-                  <select
-                    className="w-full appearance-none bg-transparent text-sm font-bold text-white outline-none"
-                    value={selectedWithdrawCoin}
-                    onChange={(e) => setSelectedWithdrawCoin(e.target.value)}
-                  >
-                    {coinSymbols.map((c) => (
-                      <option key={c} value={c} className="bg-[#0b1020]">
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                  <Icon
-                    name="arrow-down"
-                    className="pointer-events-none absolute right-0 top-0.5 h-3.5 w-3.5 text-gray-500"
-                  />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${selectedWithdrawCoin.toLowerCase()}.svg`}
+                      alt={selectedWithdrawCoin}
+                      className="h-4 w-4 object-contain"
+                      onError={(e) => (e.currentTarget.style.display = "none")}
+                    />
+                    <span className="text-sm font-bold text-white">{selectedWithdrawCoin}</span>
+                  </div>
+                  <Icon name="chevron-down" className="h-3.5 w-3.5 text-gray-500" />
                 </div>
               </div>
 
