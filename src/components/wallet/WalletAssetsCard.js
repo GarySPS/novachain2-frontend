@@ -1,7 +1,9 @@
 //src/components/wallet/WalletAssetsCard.js
 
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Card from "../card";
+import Icon from "../icon";
 
 export default function WalletAssetsCard({
   cardClass,
@@ -10,9 +12,17 @@ export default function WalletAssetsCard({
   fmtUSD,
   t,
 }) {
+  const navigate = useNavigate();
+  const [expandedRow, setExpandedRow] = useState(null);
+
   const getCoinUsdValue = (symbol, balance) => {
     const p = symbol === "USDT" ? 1 : prices[symbol] ?? undefined;
     return p !== undefined ? fmtUSD(Number(balance) * p) : "--";
+  };
+
+  const getUnitPrice = (symbol) => {
+    const p = symbol === "USDT" ? 1 : prices[symbol] ?? undefined;
+    return p !== undefined ? fmtUSD(p) : "--";
   };
 
   const formatCoinAmount = (symbol, value) => {
@@ -22,12 +32,18 @@ export default function WalletAssetsCard({
     });
   };
 
+  // Triggers the modals via URL params (picked up by WalletPage.js)
+  const handleAction = (e, action, symbol) => {
+    e.stopPropagation();
+    navigate(`?action=${action}&coin=${symbol}`);
+  };
+
   return (
     <Card className={`${cardClass} p-0`}>
       <div className="flex items-center justify-between border-b border-white/5 px-4 pb-3 pt-4 sm:px-5 sm:pt-5">
         <div>
           <div className="text-sm font-black uppercase tracking-wider text-gray-200">
-            {t("my_assets")}
+            {t("my_assets", "My Assets")}
           </div>
           <div className="mt-1 text-xs font-medium text-slate-500">
             Spot wallet holdings
@@ -40,49 +56,76 @@ export default function WalletAssetsCard({
       </div>
 
       <div className="w-full">
-        {/* Mobile */}
-        <div className="flex flex-col divide-y divide-white/5 md:hidden">
+        
+        {/* ================= MOBILE VIEW ================= */}
+        <div className="flex flex-col md:hidden">
           {balances.map(({ symbol, balance, frozen }) => (
-            <div
-              key={symbol}
-              className="flex items-center justify-between gap-3 px-4 py-3 transition-colors hover:bg-white/[0.02]"
-            >
-              <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/5 bg-[#1a2035] p-1.5 shadow-inner">
-                  <img
-                    src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${symbol.toLowerCase()}.svg`}
-                    alt={symbol}
-                    className="h-full w-full object-contain drop-shadow-md"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
+            <div key={symbol} className="flex flex-col border-b border-white/5 last:border-0">
+              <div
+                className="flex cursor-pointer items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:bg-white/[0.02] active:bg-white/[0.05]"
+                onClick={() => setExpandedRow(expandedRow === symbol ? null : symbol)}
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/5 bg-[#1a2035] p-1.5 shadow-inner">
+                    <img
+                      src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${symbol.toLowerCase()}.svg`}
+                      alt={symbol}
+                      className="h-full w-full object-contain drop-shadow-md"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="text-base font-black text-gray-100 flex items-center gap-1.5">
+                      {symbol}
+                      <Icon
+                        name="chevron-down"
+                        className={`h-3 w-3 text-gray-500 transition-transform duration-300 ${
+                          expandedRow === symbol ? "rotate-180" : ""
+                        }`}
+                      />
+                    </div>
+                    <div className="text-[11px] font-medium text-sky-400/80">
+                      {getUnitPrice(symbol)}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="min-w-0">
-                  <div className="text-base font-black text-gray-100">
-                    {symbol}
+                <div className="min-w-0 text-right">
+                  <div className="whitespace-nowrap text-base font-black tracking-tight text-white tabular-nums">
+                    {getCoinUsdValue(symbol, balance)}
                   </div>
-                  <div className="text-[11px] font-medium text-gray-500">
-                    {t("frozen", "Frozen")}:{" "}
-                    {Number(frozen || 0).toLocaleString(undefined, {
-                      maximumFractionDigits: 6,
-                    })}
+                  <div className="whitespace-nowrap text-[11px] font-medium text-gray-400">
+                    {formatCoinAmount(symbol, balance)} {symbol}
                   </div>
                 </div>
               </div>
 
-              <div className="min-w-0 text-right">
-                <div className="whitespace-nowrap text-base font-black tracking-tight text-white tabular-nums">
-                  {getCoinUsdValue(symbol, balance)}
+              {/* Mobile Expandable Actions */}
+              {expandedRow === symbol && (
+                <div className="flex gap-2 bg-white/[0.01] px-4 pb-3 pt-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                  <button
+                    onClick={(e) => handleAction(e, "deposit", symbol)}
+                    className="flex-1 rounded-lg bg-sky-500/15 py-2 text-[10px] font-black uppercase tracking-widest text-sky-400 transition hover:bg-sky-500/25 active:scale-95"
+                  >
+                    Deposit
+                  </button>
+                  <button
+                    onClick={(e) => handleAction(e, "withdraw", symbol)}
+                    className="flex-1 rounded-lg bg-white/5 py-2 text-[10px] font-black uppercase tracking-widest text-white transition hover:bg-white/10 active:scale-95"
+                  >
+                    Withdraw
+                  </button>
+                  <button
+                    onClick={(e) => handleAction(e, "convert", symbol)}
+                    className="flex-1 rounded-lg bg-white/5 py-2 text-[10px] font-black uppercase tracking-widest text-white transition hover:bg-white/10 active:scale-95"
+                  >
+                    Trade
+                  </button>
                 </div>
-                <div className="whitespace-nowrap text-[11px] font-medium text-gray-400">
-                  {Number(balance || 0).toLocaleString(undefined, {
-                    maximumFractionDigits: 6,
-                  })}{" "}
-                  {symbol}
-                </div>
-              </div>
+              )}
             </div>
           ))}
 
@@ -93,21 +136,16 @@ export default function WalletAssetsCard({
           )}
         </div>
 
-        {/* Desktop */}
+        {/* ================= DESKTOP VIEW ================= */}
         <div className="hidden w-full overflow-x-auto md:block">
-          <table className="w-full min-w-[560px] text-base">
+          <table className="w-full min-w-[650px] text-base">
             <thead className="sticky top-0 z-10 bg-[#0f1424]">
-              <tr className="border-y border-white/5 text-left text-sm uppercase tracking-wider text-gray-400">
-                <th className="py-4 pl-6 pr-2 font-semibold">{t("type")}</th>
-                <th className="px-2 py-4 text-right font-semibold">
-                  {t("amount")}
-                </th>
-                <th className="px-2 py-4 text-right font-semibold">
-                  {t("frozen", "Frozen")}
-                </th>
-                <th className="py-4 pl-2 pr-6 text-right font-semibold">
-                  {t("usd_value", "USD Value")}
-                </th>
+              <tr className="border-y border-white/5 text-left text-[10px] font-black uppercase tracking-widest text-gray-500">
+                <th className="py-3 pl-6 pr-2">{t("type", "Asset")}</th>
+                <th className="px-2 py-3 text-right">{t("amount", "Balance")}</th>
+                <th className="px-2 py-3 text-right">{t("frozen", "Frozen")}</th>
+                <th className="px-2 py-3 text-right">{t("usd_value", "USD Value")}</th>
+                <th className="py-3 pl-2 pr-6 text-right">Actions</th>
               </tr>
             </thead>
 
@@ -116,11 +154,11 @@ export default function WalletAssetsCard({
                 <tr
                   key={symbol}
                   className="group transition-colors hover:bg-white/[0.02]"
-                  style={{ height: 68 }}
+                  style={{ height: 72 }}
                 >
                   <td className="py-3 pl-6 pr-2">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full border border-white/5 bg-[#1a2035] p-1.5 shadow-inner">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/5 bg-[#1a2035] p-1.5 shadow-inner">
                         <img
                           src={`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/svg/color/${symbol.toLowerCase()}.svg`}
                           alt={symbol}
@@ -130,11 +168,14 @@ export default function WalletAssetsCard({
                           }}
                         />
                       </div>
-                      <span className="font-bold text-gray-100">{symbol}</span>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-black text-gray-100">{symbol}</span>
+                        <span className="text-[11px] font-medium text-sky-400/80">{getUnitPrice(symbol)}</span>
+                      </div>
                     </div>
                   </td>
 
-                  <td className="px-2 py-3 text-right font-semibold tabular-nums text-gray-300">
+                  <td className="px-2 py-3 text-right font-semibold tabular-nums text-gray-200">
                     {formatCoinAmount(symbol, balance)}
                   </td>
 
@@ -142,8 +183,32 @@ export default function WalletAssetsCard({
                     {formatCoinAmount(symbol, frozen)}
                   </td>
 
-                  <td className="py-3 pl-2 pr-6 text-right font-bold tabular-nums text-white">
+                  <td className="px-2 py-3 text-right font-black tabular-nums text-white">
                     {getCoinUsdValue(symbol, balance)}
+                  </td>
+
+                  <td className="py-3 pl-2 pr-6 text-right">
+                    {/* Hover Quick Actions */}
+                    <div className="flex items-center justify-end gap-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                      <button
+                        onClick={(e) => handleAction(e, "deposit", symbol)}
+                        className="rounded-md bg-sky-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-sky-400 transition hover:bg-sky-500 hover:text-white"
+                      >
+                        Deposit
+                      </button>
+                      <button
+                        onClick={(e) => handleAction(e, "withdraw", symbol)}
+                        className="rounded-md bg-white/5 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white transition hover:bg-white/10"
+                      >
+                        Withdraw
+                      </button>
+                      <button
+                        onClick={(e) => handleAction(e, "convert", symbol)}
+                        className="rounded-md bg-white/5 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white transition hover:bg-white/10"
+                      >
+                        Trade
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -151,7 +216,7 @@ export default function WalletAssetsCard({
               {balances.length === 0 && (
                 <tr>
                   <td
-                    colSpan="4"
+                    colSpan="5"
                     className="py-10 text-center text-sm font-medium text-slate-500"
                   >
                     {t("no_assets") || "No assets found"}
