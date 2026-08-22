@@ -16,10 +16,10 @@ function formatBigNum(number) {
 }
 const pctClass = (v) =>
   v > 0
-    ? "text-emerald-600 bg-emerald-50 ring-1 ring-emerald-200"
+    ? "text-emerald-400 bg-emerald-500/10 ring-1 ring-emerald-500/20"
     : v < 0
-    ? "text-rose-600 bg-rose-50 ring-1 ring-rose-200"
-    : "text-slate-600 bg-slate-50 ring-1 ring-slate-200";
+    ? "text-rose-400 bg-rose-500/10 ring-1 ring-rose-500/20"
+    : "text-gray-400 bg-white/5 ring-1 ring-white/10";
 
 export default function Dashboard() {
   const [coins, setCoins] = useState([]);
@@ -215,28 +215,13 @@ export default function Dashboard() {
   );
 
 return (
-    <div
-      className="min-h-screen w-full flex flex-col items-center py-8 px-3"
-      style={{
-        background: 'url("/novachain.jpg") no-repeat center center fixed',
-        backgroundSize: "cover",
-        minHeight: "100vh", // Ensure it covers viewport height
-        position: "relative",
-      }}
-    >
-      {/* overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          zIndex: 0,
-          background: "linear-gradient(120deg, #0b1020f0 0%, #0d1220d8 60%, #0a101dd1 100%)",
-        }}
-      />
+    <div className="relative min-h-screen w-full flex flex-col items-center py-8 px-3">
+      {/* Global background and overlay are now handled cleanly by AppShell.js */}
       {/* pb-32 prevents the bottom NavBar from hiding the footer */}
       <div style={{ position: "relative", zIndex: 1 }} className="w-full max-w-7xl mx-auto space-y-6 pb-32">
 
         {/* ---- ✨ Polished Top Stats Card ---- */}
-        <Card className="p-0 overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343]">
+        <Card className="p-0 overflow-hidden rounded-2xl bg-[#0b1020] border border-[#2c3040] shadow-lg">
           <div className="px-4 py-4 md:px-6 md:py-5">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
               {/* Market Cap */}
@@ -290,14 +275,13 @@ return (
           </div>
         {/* ---- ✨ Premium Quick Trade Cards ---- */}
         <div className="grid grid-cols-2 gap-4">
-          {/* BTC Cyberpunk Card */}
+          {/* BTC Quick Card */}
           {(() => {
             const btc = coins.find(c => c.symbol === 'BTC');
             const price = btc?.quote?.USD?.price;
             const change = btc?.quote?.USD?.percent_change_24h;
             return (
-              <Link to="/trade?coin=BTC" className="block relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#141a2b] to-[#0b1020] border border-[#2c3040] p-4 hover:border-sky-500/50 hover:-translate-y-1 transition-all group shadow-lg">
-                <div className="absolute -right-4 -top-4 w-20 h-20 bg-sky-500/10 rounded-full blur-2xl group-hover:bg-sky-500/20 transition-all"></div>
+              <Link to="/trade?coin=BTC" className="block relative overflow-hidden rounded-2xl bg-[#070b16] border border-[#2c3040] p-4 hover:border-sky-500/50 transition-all group shadow-md">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-full bg-[#0b1020] border border-white/5 flex items-center justify-center p-1.5 shadow-inner">
                     <img src="https://assets.coincap.io/assets/icons/btc@2x.png" alt="BTC" className="w-full h-full object-contain" />
@@ -319,9 +303,8 @@ return (
             );
           })()}
 
-          {/* XAU (Gold) Cyberpunk Card */}
-          <Link to="/forex" className="block relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#141a2b] to-[#0b1020] border border-[#2c3040] p-4 hover:border-amber-500/50 hover:-translate-y-1 transition-all group shadow-lg">
-            <div className="absolute -right-4 -top-4 w-20 h-20 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-all"></div>
+          {/* XAU (Gold) Quick Card */}
+          <Link to="/forex" className="block relative overflow-hidden rounded-2xl bg-[#070b16] border border-[#2c3040] p-4 hover:border-amber-500/50 transition-all group shadow-md">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-[#0b1020] border border-white/5 flex items-center justify-center shadow-inner text-amber-400">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
@@ -474,7 +457,7 @@ return (
         </Card> {/* This closes the main card that wraps stats and table */}
 
         {/* ---- ✨ Polished News Ticker ---- */}
-        <Card className="p-0 rounded-2xl shadow-lg bg-gradient-to-br from-[#141a2b] via-[#0f1424] to-[#0b1020] border border-[#1a2343]">
+        <Card className="p-0 rounded-2xl bg-[#0b1020] border border-[#2c3040] shadow-md">
           <div className="px-3 md:px-4 py-4">
             {/* Assuming NewsTicker component uses appropriate text colors or inherits */}
             <NewsTicker
