@@ -42,8 +42,8 @@ exit={{ y: "100%" }}
             className="
               w-full
               max-w-md
-              h-[85vh]
-              p-6
+              h-[85dvh]
+              px-6 pt-6 pb-32
               rounded-t-[2.5rem]
               bg-[#050505]/85
               backdrop-blur-2xl
@@ -127,6 +127,12 @@ exit={{ y: "100%" }}
                     // Block "e", "-", "+", and any other non-numeric characters completely
                     const val = e.target.value.replace(/[^0-9.]/g, "");
                     setAmount(val === "" ? "" : Number(val));
+                  }}
+                  onFocus={(e) => {
+                    // Auto-scroll the input into view when the mobile keyboard opens
+                    setTimeout(() => {
+                      e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
                   }}
                   required
                   className="w-full h-14 px-4 py-2 rounded-xl bg-[#070b16] border border-[#2c3040] text-white text-xl font-black outline-none transition-colors focus:border-sky-500"
