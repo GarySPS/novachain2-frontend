@@ -656,14 +656,20 @@ const cardClass = "rounded-3xl shadow-[0_10px_30px_rgba(0,0,0,0.4)] border borde
 };
 
 return (
-    <div
-      className="min-h-screen w-full flex flex-col items-center px-3 pt-6 pb-32"
-      style={{
-        background: 'url("/novachain.jpg") no-repeat center center fixed',
-        backgroundSize: "cover",
-      }}
-    >
-      <div className="fixed inset-0 bg-[linear-gradient(120deg,#0b1020f0_0%,#0d1220d8_60%,#0a101dd1_100%)] pointer-events-none" />
+    <div className="relative min-h-screen w-full flex flex-col items-center px-3 pt-6 pb-32">
+      
+      {/* 1. Hardware-accelerated fixed background to fix mobile scrolling lag */}
+      <div 
+        className="fixed inset-0 z-[-2]"
+        style={{
+          backgroundImage: 'url("/novachain.jpg")',
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat"
+        }}
+      />
+      {/* 2. Gradient Overlay */}
+      <div className="fixed inset-0 z-[-1] bg-[linear-gradient(120deg,#0b1020f0_0%,#0d1220d8_60%,#0a101dd1_100%)] pointer-events-none" />
       
       <div className="relative z-10 w-full max-w-7xl space-y-5 md:space-y-6">
         
