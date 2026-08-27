@@ -486,15 +486,23 @@ useEffect(() => {
       });
     }
 
-    await axios.post(`${MAIN_API_BASE}/deposit`, { 
+    const res = await axios.post(`${MAIN_API_BASE}/deposit`, { 
       coin: selectedDepositCoin,
       amount: depositAmount,
       address: depositAddress,
       screenshot: `web3-tx-${txHash}`, 
     }, { headers: { Authorization: `Bearer ${token}` } });
 
-    setDepositToast("Web3 Deposit Successful!");
+    if (res.data && res.data.autoApproved) {
+      setDepositToast("Web3 Deposit Auto-Approved! Balance updated.");
+    } else {
+      setDepositToast("Web3 Deposit Submitted! Pending confirmation.");
+    }
+
     fetchBalances();
+    axios.get(`${MAIN_API_BASE}/deposits`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => setDepositHistory(res.data));
+
     setTimeout(() => { closeModal(); setDepositAmount(""); }, 1500);
   } catch (err) {
     console.error(err);
@@ -671,7 +679,7 @@ return (
             onDeposit={() => openDepositForCoin("USDT")}
             onWithdraw={() => openWithdrawForCoin("USDT")}
             onConvert={() => openModal("convert")}
-            onEarn={() => openModal("earn")} 
+            onMining={() => navigate('/mining')} 
             onBuyCrypto={openBuyCrypto}
           />
           
