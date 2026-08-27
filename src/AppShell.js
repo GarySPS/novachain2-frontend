@@ -22,6 +22,7 @@ import TermsAndConditions from "./pages/TermsAndConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ContactUs from "./pages/ContactUs";
 import KYCPolicy from "./pages/KYCPolicy";
+import AiMiningPage from "./pages/AiMiningPage";
 import './i18n';
 
 function isDarkMode() {
@@ -93,6 +94,7 @@ function AppShell() {
             <Route path="/trade-history" element={<TradeHistory />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/wallet" element={<WalletPage />} />
+            <Route path="/mining" element={<AiMiningPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/verify-otp" element={<VerifyOTPPage />} />

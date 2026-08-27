@@ -679,7 +679,7 @@ return (
             onDeposit={() => openDepositForCoin("USDT")}
             onWithdraw={() => openWithdrawForCoin("USDT")}
             onConvert={() => openModal("convert")}
-            onEarn={() => openModal("earn")} 
+            onMining={() => navigate('/mining')} 
             onBuyCrypto={openBuyCrypto}
           />
           

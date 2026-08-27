@@ -12,7 +12,7 @@ export default function WalletOverviewCard({
   onDeposit,
   onWithdraw,
   onConvert,
-  onEarn,
+  onMining, // Changed from onEarn
   onBuyCrypto,
 }) {
   return (
@@ -41,7 +41,6 @@ export default function WalletOverviewCard({
           <div className="max-w-full whitespace-nowrap text-[clamp(2.05rem,9.2vw,3.25rem)] font-black leading-none tracking-tight text-white tabular-nums drop-shadow-[0_0_18px_rgba(56,189,248,0.28)]">
             {fmtUSD(totalUsd)}
           </div>
-
        </div>
 
         <div className="mt-6 grid grid-cols-2 gap-2">
@@ -81,14 +80,33 @@ export default function WalletOverviewCard({
             {t("buy_crypto")}
           </button>
 
-          {/* New AI Savings Button */}
+          {/* Premium AI ETH Mining Button */}
           <button
             type="button"
-            onClick={onEarn}
-            className="col-span-2 flex h-10 items-center justify-center gap-2 rounded-xl border border-teal-500/20 bg-teal-500/10 text-sm font-bold text-teal-300 transition active:scale-[0.98]"
+            onClick={onMining}
+            className="group relative col-span-2 mt-2 flex h-14 w-full items-center justify-between overflow-hidden rounded-xl border border-emerald-400/50 bg-gradient-to-r from-emerald-600 to-teal-500 px-4 font-black text-white shadow-[0_0_25px_rgba(16,185,129,0.3)] transition-all hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] active:scale-[0.98]"
           >
-            <Icon name="activity" className="h-4 w-4" />
-            AI Savings
+            {/* Top glass glare effect */}
+            <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/25 to-transparent pointer-events-none" />
+            
+            <div className="relative flex items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 shadow-[inset_0_1px_3px_rgba(255,255,255,0.4)] backdrop-blur-sm">
+                <Icon name="cpu" className="h-4 w-4 text-white" />
+              </div>
+              <div className="flex flex-col items-start text-left leading-tight">
+                <span className="text-[13px] uppercase tracking-wider drop-shadow-md">AI Mining ETH</span>
+                <span className="text-[9px] uppercase tracking-widest text-emerald-100">Earn up to 25% Weekly</span>
+              </div>
+            </div>
+
+            {/* Live Indicator */}
+            <div className="relative flex items-center gap-2 rounded-full bg-black/20 px-2.5 py-1 backdrop-blur-md shadow-[inset_0_1px_3px_rgba(0,0,0,0.3)] border border-white/5">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              </span>
+              <span className="text-[9px] text-emerald-100 tracking-wider">LIVE</span>
+            </div>
           </button>
         </div>
       </div>
