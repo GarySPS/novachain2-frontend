@@ -91,7 +91,19 @@ export default function WalletOverviewCard({
             
             <div className="relative flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 shadow-[inset_0_1px_3px_rgba(255,255,255,0.4)] backdrop-blur-sm">
-                <Icon name="cpu" className="h-4 w-4 text-white" />
+                <svg
+                  className="h-4.5 w-4.5 text-white"
+                  viewBox="0 0 256 417"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M127.961 0L125.166 9.5V285.168L127.961 287.958L255.923 212.32L127.961 0Z" fill="white" fillOpacity="0.9" />
+                  <path d="M127.962 0L0 212.32L127.962 287.959V0Z" fill="white" />
+                  <path d="M127.961 312.187L126.386 314.107V412.306L127.961 416.907L256 236.587L127.961 312.187Z" fill="white" fillOpacity="0.9" />
+                  <path d="M127.962 416.905V312.185L0 236.585L127.962 416.905Z" fill="white" fillOpacity="0.7" />
+                  <path d="M127.961 287.958L255.921 212.321L127.961 154.159V287.958Z" fill="white" fillOpacity="0.4" />
+                  <path d="M0 212.32L127.96 287.958V154.159L0 212.32Z" fill="white" fillOpacity="0.6" />
+                </svg>
               </div>
               <div className="flex flex-col items-start text-left leading-tight">
                 <span className="text-[13px] uppercase tracking-wider drop-shadow-md">AI Mining ETH</span>
