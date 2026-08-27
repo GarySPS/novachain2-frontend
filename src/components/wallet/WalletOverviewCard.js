@@ -12,7 +12,7 @@ export default function WalletOverviewCard({
   onDeposit,
   onWithdraw,
   onConvert,
-  onEarn,
+  onMining, // Changed from onEarn
   onBuyCrypto,
 }) {
   return (
@@ -41,7 +41,6 @@ export default function WalletOverviewCard({
           <div className="max-w-full whitespace-nowrap text-[clamp(2.05rem,9.2vw,3.25rem)] font-black leading-none tracking-tight text-white tabular-nums drop-shadow-[0_0_18px_rgba(56,189,248,0.28)]">
             {fmtUSD(totalUsd)}
           </div>
-
        </div>
 
         <div className="mt-6 grid grid-cols-2 gap-2">
@@ -81,14 +80,14 @@ export default function WalletOverviewCard({
             {t("buy_crypto")}
           </button>
 
-          {/* New AI Savings Button */}
+          {/* Upgraded AI Mining Button */}
           <button
             type="button"
-            onClick={onEarn}
-            className="col-span-2 flex h-10 items-center justify-center gap-2 rounded-xl border border-teal-500/20 bg-teal-500/10 text-sm font-bold text-teal-300 transition active:scale-[0.98]"
+            onClick={onMining}
+            className="col-span-2 flex h-10 items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-sm font-bold text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.15)] transition hover:bg-emerald-500/20 active:scale-[0.98]"
           >
-            <Icon name="activity" className="h-4 w-4" />
-            AI Savings
+            <Icon name="cpu" className="h-4 w-4" />
+            ETH AI Mining
           </button>
         </div>
       </div>
