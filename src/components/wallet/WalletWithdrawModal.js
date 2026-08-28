@@ -85,8 +85,8 @@ export default function WalletWithdrawModal({
         {isDropdownOpen && (
           <div className="absolute inset-0 z-[60] flex flex-col rounded-xl bg-[#0f1424] p-2 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             <div className="mb-2 flex items-center justify-between px-2 pt-2">
-              <h3 className="text-sm font-black uppercase tracking-widest text-gray-400">Select Asset</h3>
-              <button 
+              <h3 className="text-sm font-black uppercase tracking-widest text-gray-400">{t("select_asset")}</h3>
+              <button
                 type="button" 
                 onClick={() => setIsDropdownOpen(false)} 
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-gray-400 transition hover:bg-white/10 hover:text-white"
@@ -156,7 +156,7 @@ export default function WalletWithdrawModal({
             <div className="mb-4 text-center">
               <h2 className="text-lg font-bold text-white tracking-wide">{t("withdraw", "Withdraw")}</h2>
               <p className="mt-1 text-[11px] font-medium text-slate-500">
-                Send crypto to an external wallet or exchange.
+                {t("send_crypto_external")}
               </p>
             </div>
 
@@ -217,7 +217,7 @@ export default function WalletWithdrawModal({
                   onClick={handlePaste}
                   className="absolute right-2 rounded-lg bg-white/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-white transition hover:bg-white/20 active:scale-95"
                 >
-                  Paste
+                  {t("paste")}
                 </button>
               </div>
             </div>
@@ -229,7 +229,7 @@ export default function WalletWithdrawModal({
                   {t("amount_with_coin", { coin: selectedWithdrawCoin })}
                 </label>
                 <span className="text-[10px] font-bold text-sky-400">
-                  Available: {availableBalance} {selectedWithdrawCoin}
+                  {t("available")}: {availableBalance} {selectedWithdrawCoin}
                 </span>
               </div>
               <div className="relative flex items-center">
@@ -251,7 +251,7 @@ export default function WalletWithdrawModal({
                   onClick={handleMax}
                   className="absolute right-2 rounded-lg bg-sky-500/20 px-2.5 py-1 text-[9px] font-black uppercase tracking-wider text-sky-400 transition hover:bg-sky-500/30 active:scale-95"
                 >
-                  MAX
+                  {t("max", "MAX")}
                 </button>
               </div>
             </div>
@@ -265,7 +265,7 @@ export default function WalletWithdrawModal({
                   : "bg-sky-600 shadow-[0_0_15px_rgba(2,132,199,0.3)] hover:bg-sky-500 active:scale-[0.98]"
               }`}
             >
-              Review Withdrawal
+              {t("review_withdrawal")}
             </button>
           </form>
         ) : (
@@ -280,15 +280,15 @@ export default function WalletWithdrawModal({
               >
                 <Icon name="arrow-left" className="h-3.5 w-3.5" />
               </button>
-              <h2 className="text-lg font-bold text-white tracking-wide">Security Check</h2>
+              <h2 className="text-lg font-bold text-white tracking-wide">{t("security_check")}</h2>
               <p className="mt-1 text-[11px] font-medium text-slate-500">
-                Please verify the details below.
+                {t("verify_details_below")}
               </p>
             </div>
 
             <div className="rounded-2xl border border-white/5 bg-[#0b1020]/55 p-4 shadow-inner">
               <div className="mb-5 text-center">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500">You are sending</div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500">{t("you_are_sending")}</div>
                 <div className="mt-1 text-2xl font-black text-white">
                   {withdrawForm.amount} <span className="text-base text-sky-400">{selectedWithdrawCoin}</span>
                 </div>
@@ -296,21 +296,21 @@ export default function WalletWithdrawModal({
 
               <div className="space-y-3 rounded-xl bg-[#070b16] p-3 ring-1 ring-[#2c3040]">
                 <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                  <span className="text-[11px] font-bold text-gray-500">To Address</span>
+                  <span className="text-[11px] font-bold text-gray-500">{t("to_address")}</span>
                   <span className="font-mono text-[11px] font-bold text-white">
                     {truncateAddress(withdrawForm.address)}
                   </span>
                 </div>
                 
                 <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                  <span className="text-[11px] font-bold text-gray-500">Network</span>
+                  <span className="text-[11px] font-bold text-gray-500">{t("network")}</span>
                   <span className="text-[11px] font-bold text-white">
                     {depositNetworks[selectedWithdrawCoin]}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between border-b border-white/5 pb-2">
-                  <span className="text-[11px] font-bold text-gray-500">Network Fee</span>
+                  <span className="text-[11px] font-bold text-gray-500">{t("network_fee")}</span>
                   <span className="text-[11px] font-bold text-white">
                     {estimatedFee} {selectedWithdrawCoin}
                   </span>
@@ -318,7 +318,7 @@ export default function WalletWithdrawModal({
 
                 <div className="flex items-center justify-between pt-1">
                   <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">
-                    Total Received
+                    {t("total_received")}
                   </span>
                   <span className="text-sm font-black text-emerald-400">
                     ~{receiveAmount > 0 ? receiveAmount.toFixed(6).replace(/\.?0+$/, '') : 0} {selectedWithdrawCoin}
@@ -349,7 +349,7 @@ export default function WalletWithdrawModal({
                   {t("submitting", "Processing...")}
                 </>
               ) : (
-                "Confirm & Send"
+                t("confirm_and_send")
               )}
             </button>
           </form>

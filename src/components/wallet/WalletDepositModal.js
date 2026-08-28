@@ -57,8 +57,8 @@ export default function WalletDepositModal({
         {isDropdownOpen && (
           <div className="absolute inset-0 z-[60] flex flex-col rounded-xl bg-[#0f1424] p-2 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             <div className="mb-2 flex items-center justify-between px-2 pt-2">
-              <h3 className="text-sm font-black uppercase tracking-widest text-gray-400">Select Asset</h3>
-              <button 
+              <h3 className="text-sm font-black uppercase tracking-widest text-gray-400">{t("select_asset")}</h3>
+              <button
                 type="button" 
                 onClick={() => setIsDropdownOpen(false)} 
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 text-gray-400 transition hover:bg-white/10 hover:text-white"
@@ -111,7 +111,7 @@ export default function WalletDepositModal({
               </svg>
             </button>
             
-            <h3 className="mb-6 text-lg font-black text-white">Scan to Deposit</h3>
+            <h3 className="mb-6 text-lg font-black text-white">{t("scan_to_deposit")}</h3>
             
             <div className="rounded-3xl bg-white p-5 shadow-[0_0_40px_rgba(255,255,255,0.1)]">
               <img
@@ -123,7 +123,7 @@ export default function WalletDepositModal({
             
             <div className="mt-6 flex flex-col items-center text-center">
               <div className="mb-1 text-[10px] font-black uppercase tracking-widest text-sky-400">
-                {selectedDepositCoin} Address ({depositNetworks[selectedDepositCoin]})
+                {selectedDepositCoin} {t("address")} ({depositNetworks[selectedDepositCoin]})
               </div>
               <p className="w-full max-w-[280px] break-all font-mono text-sm font-bold text-gray-300">
                 {walletAddresses[selectedDepositCoin]}
@@ -139,7 +139,7 @@ export default function WalletDepositModal({
                 className="mt-4 flex h-10 items-center justify-center gap-2 rounded-xl bg-sky-500/10 px-6 text-xs font-black text-sky-400 ring-1 ring-sky-500/30 transition hover:bg-sky-500/20 active:scale-95"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                COPY ADDRESS
+                {t("copy_address")}
               </button>
             </div>
           </div>
@@ -162,7 +162,7 @@ export default function WalletDepositModal({
             }`}
           >
             <Icon name="zap" className="h-3.5 w-3.5" />
-            Web3 Instant
+            {t("web3_instant")}
           </button>
           <button
             type="button"
@@ -174,7 +174,7 @@ export default function WalletDepositModal({
             }`}
           >
             <Icon name="copy" className="h-3.5 w-3.5" />
-            Direct / CEX
+            {t("direct_cex")}
           </button>
         </div>
 
@@ -266,9 +266,8 @@ export default function WalletDepositModal({
           <div className="mt-2 animate-in fade-in slide-in-from-bottom-2 duration-300">
             {!["USDC", "ETH", "BNB"].includes(selectedDepositCoin) ? (
               <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-4 text-center text-xs font-medium leading-relaxed text-rose-300">
-                Web3 deposits are currently not supported for{" "}
-                <strong className="text-rose-200">{selectedDepositCoin}</strong>. 
-                Please use the Direct / CEX tab.
+                {t("web3_not_supported_for")} <strong className="text-rose-200">{selectedDepositCoin}</strong>. 
+                {t("please_use_direct_cex")}
               </div>
             ) : (
               <div>
@@ -293,11 +292,11 @@ export default function WalletDepositModal({
                   ) : !isConnected ? (
                     t("connect_to_pay", "Connect Wallet to Deposit")
                   ) : (
-                    "Confirm Deposit via Wallet"
+                    t("confirm_deposit_wallet")
                   )}
                 </button>
                 <p className="mt-3 text-center text-[10px] text-gray-500">
-                  Transaction will be signed securely via your connected wallet. No screenshots needed.
+                  {t("transaction_signed_securely")}
                 </p>
               </div>
             )}
@@ -350,7 +349,7 @@ export default function WalletDepositModal({
                   className="mt-1.5 flex items-center gap-1 text-[10px] font-bold text-sky-400 transition hover:text-sky-300 active:scale-95"
                 >
                   <Icon name="copy" className="h-3 w-3" />
-                  COPY ADDRESS
+                  {t("copy_address")}
                 </button>
               </div>
             </div>
@@ -378,7 +377,7 @@ export default function WalletDepositModal({
                   }`}
                 >
                   <Icon name={fileLocked ? "check-circle" : "upload-cloud"} className="h-4 w-4" />
-                  {fileLocked ? t("screenshot_uploaded", "Screenshot Uploaded") : t("choose_file", "Upload Transfer Proof")}
+                  {fileLocked ? t("screenshot_uploaded", "Screenshot Uploaded") : t("upload_transfer_proof")}
                 </div>
               </div>
             </div>
@@ -392,7 +391,7 @@ export default function WalletDepositModal({
                   : "bg-emerald-600 shadow-[0_0_15px_rgba(5,150,105,0.3)] hover:bg-emerald-500 active:scale-[0.98]"
               }`}
             >
-              {depositBusy ? (t("submitting") || "Submitting...") : (t("submit") || "Submit Proof")}
+              {depositBusy ? (t("submitting") || "Submitting...") : t("submit_proof")}
             </button>
           </form>
         )}

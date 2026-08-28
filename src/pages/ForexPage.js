@@ -627,7 +627,7 @@ export default function ForexPage() {
                       <span className="font-bold text-gray-200 tabular-nums">{coinStats ? "$" + coinStats.low.toLocaleString() : "..."}</span>
                     </div>
                     <div className="flex justify-end gap-2 items-center">
-                      <span className="text-gray-500 font-semibold uppercase tracking-wider">24h Vol:</span>
+                      <span className="text-gray-500 font-semibold uppercase tracking-wider">{t("24h_vol")}:</span>
                       <span className="font-black text-cyan-400 tabular-nums drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]">{coinStats ? formatVolume(coinStats.vol) : "..."}</span>
                     </div>
                   </div>

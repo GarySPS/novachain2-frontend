@@ -44,7 +44,7 @@ export default function WalletRecentActivityCard({
             </div>
 
             <div className="mt-1 text-xs font-medium text-slate-500">
-              Latest wallet deposits and withdrawals.
+              {t("latest_wallet_activity")}
             </div>
           </div>
 
@@ -100,7 +100,7 @@ export default function WalletRecentActivityCard({
 
           {rows.length > previewRows.length && (
             <div className="px-4 py-3 text-center text-xs font-bold text-slate-500">
-              +{rows.length - previewRows.length} more records
+              +{rows.length - previewRows.length} {t("more_records")}
             </div>
           )}
 

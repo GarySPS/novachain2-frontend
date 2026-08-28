@@ -99,7 +99,7 @@ export default function WalletEarnSummaryCard({
                 <span className="text-2xl font-black tabular-nums leading-none">
                   {currentEarnRate}%
                 </span>
-                <span className="text-sm font-bold mb-0.5 text-emerald-400/80">APY</span>
+                <span className="text-sm font-bold mb-0.5 text-emerald-400/80">{t("apy", "APY")}</span>
               </div>
             </div>
             
@@ -125,7 +125,7 @@ export default function WalletEarnSummaryCard({
               </div>
               {!isMaxTier && (
                 <div className="text-sm font-bold text-cyan-300 mt-0.5">
-                  {nextRate}% APY
+                  {nextRate}% {t("apy", "APY")}
                 </div>
               )}
             </div>

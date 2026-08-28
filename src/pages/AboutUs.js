@@ -13,10 +13,10 @@ const team = [
 ];
 
 const certs = [
-  { name: "ISO 27001:2022", img: "/assets/iso27001.png" },
-  { name: "CyberTrust Award", img: "/assets/cybertrust.png" },
-  { name: "KYC Verified", img: "/assets/kyc.png" },
-  { name: "Smart Contract Audited", img: "/assets/smartcontract.png" }
+  { name: "ISO 27001:2022", key: "cert_iso", img: "/assets/iso27001.png" },
+  { name: "CyberTrust Award", key: "cert_cybertrust", img: "/assets/cybertrust.png" },
+  { name: "KYC Verified", key: "cert_kyc", img: "/assets/kyc.png" },
+  { name: "Smart Contract Audited", key: "cert_smart_contract", img: "/assets/smartcontract.png" }
 ];
 
 /* ---- Small UI helpers ---- */
@@ -158,9 +158,9 @@ return (
       </h3>
       <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 justify-items-center">
         {certs.map((c) => (
-          <div key={c.name} className="flex flex-col items-center">
-            <img src={c.img} alt={c.name} loading="lazy" className="h-24 w-24 md:h-28 md:w-28 object-contain mb-2" />
-            <div className="text-xs md:text-sm text-yellow-300/90 font-medium text-center">{c.name}</div>
+          <div key={c.key} className="flex flex-col items-center">
+            <img src={c.img} alt={t(c.key, c.name)} loading="lazy" className="h-24 w-24 md:h-28 md:w-28 object-contain mb-2" />
+            <div className="text-xs md:text-sm text-yellow-300/90 font-medium text-center">{t(c.key, c.name)}</div>
           </div>
         ))}
       </div>
@@ -190,7 +190,7 @@ return (
             rel="noreferrer"
             className="text-sky-300 underline underline-offset-2 hover:text-sky-200"
           >
-            WhatsApp +1 662 705 3615
+            {t("whatsapp_contact", "WhatsApp +1 662 705 3615")}
           </a>
         </div>
       </div>

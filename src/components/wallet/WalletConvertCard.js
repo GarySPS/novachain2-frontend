@@ -89,7 +89,7 @@ export default function WalletConvertCard({
               type="button"
               onClick={onSwap}
               className="flex h-11 w-11 items-center justify-center rounded-2xl border-[4px] border-[#0f1424] bg-[#1a2343] text-sky-400 transition-all hover:bg-sky-500 hover:text-white active:scale-90 shadow-xl"
-              aria-label="Swap coins"
+              aria-label={t("swap_coins", "Swap coins")}
             >
               <Icon name="swap" className="h-5 w-5" />
             </button>

@@ -269,7 +269,7 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
     } catch (err) {
       console.error("KYC submit error:", err?.response?.status, err?.message);
       if (kycStatus !== "pending") {
-        setKycError(t("Upload failed. Please try again."));
+        setKycError(t("upload_failed", "Upload failed. Please try again."));
         setKycSubmitted(false);
       }
     }
@@ -294,10 +294,10 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
       const updated = await axios.get(`${MAIN_API_BASE}/profile`, { headers: { Authorization: `Bearer ${token}` } });
       setUser(updated.data.user);
       setAvatarFile(null);
-      setAvatarSuccess(t('profile_avatar_updated'));
+      setAvatarSuccess(t('profile_avatar_updated', 'Avatar updated successfully'));
       setTimeout(() => { setAvatarSuccess(""); setShowEditPic(false); }, 1700);
     } catch {
-      setAvatarError(t('profile_avatar_failed'));
+      setAvatarError(t('profile_avatar_failed', 'Failed to update avatar'));
     }
   }
 
@@ -305,7 +305,7 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
     e.preventDefault();
     setPwErr(""); setPwSuccess("");
     if (pw1.current.value !== pw2.current.value) {
-      setPwErr(t('Password Unmatch')); return;
+      setPwErr(t("password_unmatch", "Passwords do not match")); return;
     }
     try {
       const token = localStorage.getItem("token");
@@ -313,9 +313,9 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
         old_password: pwCurrent.current.value, new_password: pw1.current.value
       }, { headers: { Authorization: `Bearer ${token}` } });
       pwCurrent.current.value = ""; pw1.current.value = ""; pw2.current.value = "";
-      setPwSuccess(t('Successful'));
+      setPwSuccess(t("successful", "Successful"));
       setTimeout(() => { setPwSuccess(""); setShowChangePw(false); }, 1800);
-    } catch { setPwErr(t('Failed')); }
+    } catch { setPwErr(t("failed", "Failed")); }
   }
 
 /* -------- skeleton -------- */
@@ -376,10 +376,10 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
                   kycStatus === "rejected" ? "bg-rose-500/10 text-rose-400 ring-1 ring-rose-500/20" :
                   "bg-white/5 text-gray-400 ring-1 ring-white/10"}`}
               >
-                {kycStatus === "approved" ? t("Verified")
-                  : kycStatus === "pending" ? t("Automated review")
-                  : kycStatus === "rejected" ? t("Needs new upload")
-                  : t("Not verified")}
+                {kycStatus === "approved" ? t("verified", "Verified")
+                  : kycStatus === "pending" ? t("automated_review", "Automated review")
+                  : kycStatus === "rejected" ? t("needs_new_upload", "Needs new upload")
+                  : t("not_verified", "Not verified")}
               </div>
 
               <button
@@ -474,9 +474,9 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
                   ${kycStatus === "approved" ? "bg-emerald-400 shadow-[0_0_8px_#34d399]" :
                     kycStatus === "pending" ? "bg-amber-400 shadow-[0_0_8px_#fbbf24]" :
                     kycStatus === "rejected" ? "bg-rose-400 shadow-[0_0_8px_#fb7185]" : "bg-gray-500"}`} />
-                {kycStatus === "approved" ? t("Verified") :
-                 kycStatus === "pending" ? t("Automated review in progress") :
-                 kycStatus === "rejected" ? t("Needs new upload") : t("Not verified")}
+                {kycStatus === "approved" ? t("verified", "Verified") :
+                 kycStatus === "pending" ? t("automated_review_progress", "Automated review in progress") :
+                 kycStatus === "rejected" ? t("needs_new_upload", "Needs new upload") : t("not_verified", "Not verified")}
               </div>
             </div>
 
@@ -487,8 +487,8 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
                   <div>
                     <label className="mb-2 block font-semibold text-gray-300 text-sm">
                       <span className="inline-flex items-center gap-2">
-                        <Icon name="user" className="w-4 h-4 text-sky-400" /> {t('Upload Selfie')}
-                        <Tooltip text={t('profile_tooltip_selfie')} />
+                        <Icon name="user" className="w-4 h-4 text-sky-400" /> {t('upload_selfie', 'Upload Selfie')}
+                        <Tooltip text={t('profile_tooltip_selfie', 'Please upload a clear selfie')} />
                       </span>
                     </label>
                     <div className="bg-[#0b1020]/50 border-2 border-dashed border-[#2c3040] rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-sky-500/50 transition">
@@ -505,7 +505,7 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
                       />
                       <label htmlFor="selfie" className="cursor-pointer flex flex-col items-center text-gray-400 hover:text-white transition">
                         <Icon name="upload-cloud" className="w-8 h-8 mb-2 opacity-70" />
-                        <span className="text-sm font-semibold">{t('Selfie')}</span>
+                        <span className="text-sm font-semibold">{t('selfie', 'Selfie')}</span>
                       </label>
                       {kycSelfiePreview && (
                         <img src={kycSelfiePreview} alt="Selfie Preview" className="rounded-lg mt-4 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] max-w-[110px]" />
@@ -516,8 +516,8 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
                   <div>
                     <label className="mb-2 block font-semibold text-gray-300 text-sm">
                       <span className="inline-flex items-center gap-2">
-                        <Icon name="id-card" className="w-4 h-4 text-sky-400" /> {t('Upload ID')}
-                        <Tooltip text={t('profile_tooltip_id')} />
+                        <Icon name="id-card" className="w-4 h-4 text-sky-400" /> {t('upload_id', 'Upload ID')}
+                        <Tooltip text={t('profile_tooltip_id', 'Please upload a valid government ID')} />
                       </span>
                     </label>
                     <div className="bg-[#0b1020]/50 border-2 border-dashed border-[#2c3040] rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-sky-500/50 transition">
@@ -534,7 +534,7 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
                       />
                       <label htmlFor="id-card" className="cursor-pointer flex flex-col items-center text-gray-400 hover:text-white transition">
                         <Icon name="upload-cloud" className="w-8 h-8 mb-2 opacity-70" />
-                        <span className="text-sm font-semibold">{t('ID')}</span>
+                        <span className="text-sm font-semibold">{t('id', 'ID')}</span>
                       </label>
                       {kycIdPreview && (
                         <img src={kycIdPreview} alt="ID Preview" className="rounded-lg mt-4 border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.2)] max-w-[110px]" />

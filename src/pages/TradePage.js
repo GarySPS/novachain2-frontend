@@ -403,8 +403,8 @@ export default function TradePage() {
                           {typeof coinPrice === "number" && !isNaN(coinPrice) && coinPrice > 0
   ? "$" + coinPrice.toLocaleString(undefined, { maximumFractionDigits: 2 })
   : fetchError 
-    ? "Price unavailable" 
-    : "Loading price..."}
+    ? t("price_unavailable", "Price unavailable") 
+    : t("loading_price", "Loading price...")}
                         </span>
                         {coinStats && (
                           <div className="text-xs bg-white/5 px-2 py-0.5 rounded border border-white/10 shadow-inner">
@@ -423,19 +423,19 @@ export default function TradePage() {
                   {/* Stats row - 24h High/Low/Vol */}
                   <div className="grid grid-cols-3 gap-2 mt-2 pt-3 border-t border-white/5">
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">24h High</span>
+                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">{t("24h_high", "24h High")}</span>
                       <span className="text-xs font-bold text-gray-200 tabular-nums">
                         {coinStats ? "$" + coinStats.high.toLocaleString() : "..."}
                       </span>
                     </div>
                     <div className="flex flex-col text-center border-x border-white/5">
-                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">24h Low</span>
+                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">{t("24h_low", "24h Low")}</span>
                       <span className="text-xs font-bold text-gray-200 tabular-nums">
                         {coinStats ? "$" + coinStats.low.toLocaleString() : "..."}
                       </span>
                     </div>
                     <div className="flex flex-col text-right">
-                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">Volume</span>
+                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">{t("volume", "Volume")}</span>
                       <span className="text-xs font-black text-cyan-400 tabular-nums drop-shadow-[0_0_5px_rgba(34,211,238,0.3)]">
                         {coinStats ? formatVolume(coinStats.vol) : "..."}
                       </span>
@@ -567,21 +567,21 @@ export default function TradePage() {
           {/* Right: Stats Stack */}
           <div className="flex flex-col text-right text-xs space-y-1.5 pt-1">
               <div className="flex justify-end gap-2 items-center">
-                  <span className="text-gray-500 font-semibold uppercase tracking-wider">24h High:</span>
+                  <span className="text-gray-500 font-semibold uppercase tracking-wider">{t("24h_high", "24h High")}:</span>
                   <span className="font-bold text-gray-200 tabular-nums">{coinStats ? "$" + coinStats.high.toLocaleString() : "..."}</span>
               </div>
               <div className="flex justify-end gap-2 items-center">
-                  <span className="text-gray-500 font-semibold uppercase tracking-wider">24h Low:</span>
+                  <span className="text-gray-500 font-semibold uppercase tracking-wider">{t("24h_low", "24h Low")}:</span>
                   <span className="font-bold text-gray-200 tabular-nums">{coinStats ? "$" + coinStats.low.toLocaleString() : "..."}</span>
               </div>
               <div className="flex justify-end gap-2 items-center">
-                  <span className="text-gray-500 font-semibold uppercase tracking-wider">24h Vol:</span>
+                  <span className="text-gray-500 font-semibold uppercase tracking-wider">{t("24h_vol", "24h Vol")}:</span>
                   <span className="font-black text-cyan-400 tabular-nums drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]">{coinStats ? formatVolume(coinStats.vol) : "..."}</span>
               </div>
           </div>
       </div>
 
-      <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">Select Asset</label>
+      <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 block">{t("select_asset", "Select Asset")}</label>
               <div className="grid grid-cols-5 gap-2">
                 {COINS.map((coin) => {
                   const active = selectedCoin.symbol === coin.symbol;

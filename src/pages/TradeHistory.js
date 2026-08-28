@@ -276,14 +276,14 @@ export default function TradeHistory() {
             <div className="flex items-center gap-2">
               <span className="font-black text-white text-lg tracking-wide">{(trade.symbol || "N/A").toUpperCase()}</span>
               <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold tracking-widest ${isBuy ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
-                {isBuy ? 'BUY' : 'SELL'}
+                {isBuy ? t("buy_uppercase", "BUY") : t("sell_uppercase", "SELL")}
               </span>
             </div>
             <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{trade.id}</span>
           </div>
         </div>
         <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${chipClass(res)}`}>
-          {res || "--"}
+          {res ? t(res.toLowerCase(), res) : "--"}
         </span>
       </div>
       
@@ -370,7 +370,7 @@ export default function TradeHistory() {
       </td>
       <td className="py-3 px-3 text-center">
         <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${chipClass(res)}`}>
-          {res || "--"}
+          {res ? t(res.toLowerCase(), res) : "--"}
         </span>
       </td>
       <td className="py-3 px-3 text-right font-medium tabular-nums text-gray-400">

@@ -28,12 +28,12 @@ export default function WalletOverviewCard({
             </div>
 
             <div className="mt-2 text-xs font-medium text-slate-500">
-              Spot wallet balance
+              {t("spot_wallet_balance")}
             </div>
           </div>
 
           <div className="rounded-full border border-sky-400/15 bg-sky-400/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-sky-300">
-            Wallet
+            {t("wallet")}
           </div>
         </div>
 
@@ -106,8 +106,8 @@ export default function WalletOverviewCard({
                 </svg>
               </div>
               <div className="flex flex-col items-start text-left leading-tight">
-                <span className="text-[13px] uppercase tracking-wider drop-shadow-md">AI Mining ETH</span>
-                <span className="text-[9px] uppercase tracking-widest text-emerald-100">Earn up to 25% Weekly</span>
+                <span className="text-[13px] uppercase tracking-wider drop-shadow-md">{t("ai_mining_eth")}</span>
+                <span className="text-[9px] uppercase tracking-widest text-emerald-100">{t("earn_up_to_25_weekly")}</span>
               </div>
             </div>
 
@@ -117,7 +117,7 @@ export default function WalletOverviewCard({
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
               </span>
-              <span className="text-[9px] text-emerald-100 tracking-wider">LIVE</span>
+              <span className="text-[9px] text-emerald-100 tracking-wider">{t("live")}</span>
             </div>
           </button>
         </div>
