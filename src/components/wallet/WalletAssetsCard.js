@@ -110,31 +110,19 @@ export default function WalletAssetsCard({
                     onClick={(e) => handleAction(e, "deposit", symbol)}
                     className="flex-1 rounded-lg bg-sky-500/15 py-2 text-[10px] font-black uppercase tracking-widest text-sky-400 transition hover:bg-sky-500/25 active:scale-95"
                   >
-<<<<<<< HEAD
                     {t("deposit")}
-=======
-                    Deposit
->>>>>>> e3b9c75837d26c1a18eb7354c066932d8d318cbd
                   </button>
                   <button
                     onClick={(e) => handleAction(e, "withdraw", symbol)}
                     className="flex-1 rounded-lg bg-white/5 py-2 text-[10px] font-black uppercase tracking-widest text-white transition hover:bg-white/10 active:scale-95"
                   >
-<<<<<<< HEAD
                     {t("withdraw")}
-=======
-                    Withdraw
->>>>>>> e3b9c75837d26c1a18eb7354c066932d8d318cbd
                   </button>
                   <button
                     onClick={(e) => handleAction(e, "convert", symbol)}
                     className="flex-1 rounded-lg bg-white/5 py-2 text-[10px] font-black uppercase tracking-widest text-white transition hover:bg-white/10 active:scale-95"
                   >
-<<<<<<< HEAD
                     {t("trade")}
-=======
-                    Trade
->>>>>>> e3b9c75837d26c1a18eb7354c066932d8d318cbd
                   </button>
                 </div>
               )}
@@ -157,11 +145,7 @@ export default function WalletAssetsCard({
                 <th className="px-2 py-3 text-right">{t("amount", "Balance")}</th>
                 <th className="px-2 py-3 text-right">{t("frozen", "Frozen")}</th>
                 <th className="px-2 py-3 text-right">{t("usd_value", "USD Value")}</th>
-<<<<<<< HEAD
                 <th className="py-3 pl-2 pr-6 text-right">{t("actions")}</th>
-=======
-                <th className="py-3 pl-2 pr-6 text-right">Actions</th>
->>>>>>> e3b9c75837d26c1a18eb7354c066932d8d318cbd
               </tr>
             </thead>
 
@@ -210,31 +194,19 @@ export default function WalletAssetsCard({
                         onClick={(e) => handleAction(e, "deposit", symbol)}
                         className="rounded-md bg-sky-500/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-sky-400 transition hover:bg-sky-500 hover:text-white"
                       >
-<<<<<<< HEAD
                         {t("deposit")}
-=======
-                        Deposit
->>>>>>> e3b9c75837d26c1a18eb7354c066932d8d318cbd
                       </button>
                       <button
                         onClick={(e) => handleAction(e, "withdraw", symbol)}
                         className="rounded-md bg-white/5 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white transition hover:bg-white/10"
                       >
-<<<<<<< HEAD
                         {t("withdraw")}
-=======
-                        Withdraw
->>>>>>> e3b9c75837d26c1a18eb7354c066932d8d318cbd
                       </button>
                       <button
                         onClick={(e) => handleAction(e, "convert", symbol)}
                         className="rounded-md bg-white/5 px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-white transition hover:bg-white/10"
                       >
-<<<<<<< HEAD
                         {t("trade")}
-=======
-                        Trade
->>>>>>> e3b9c75837d26c1a18eb7354c066932d8d318cbd
                       </button>
                     </div>
                   </td>
