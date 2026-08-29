@@ -28,7 +28,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const coinSymbols = ["USDT", "USDC", "BTC", "ETH", "BNB"];
 const visibleWalletSymbols = ["USDT", "USDC", "BTC", "ETH", "BNB"];
 const depositNetworks = {
-  USDT: "TRC20",
+  USDT: "ERC20",
   USDC: "BEP20",
   BTC: "BTC",
   ETH: "ERC20",
@@ -445,7 +445,7 @@ useEffect(() => {
 
     // === PHASE 3: NETWORK AUTO-SWITCHING ===
     // 1 = Ethereum Mainnet, 56 = BSC Mainnet
-    const expectedChainId = selectedDepositCoin === "ETH" ? 1 : 56; 
+    const expectedChainId = (selectedDepositCoin === "ETH" || selectedDepositCoin === "USDT") ? 1 : 56;
     
     if (chainId !== expectedChainId) {
       setDepositToast(`Switching to ${expectedChainId === 1 ? 'Ethereum' : 'BSC'} network...`);
