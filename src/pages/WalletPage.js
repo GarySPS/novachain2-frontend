@@ -28,7 +28,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const coinSymbols = ["USDT", "USDC", "BTC", "ETH", "BNB"];
 const visibleWalletSymbols = ["USDT", "USDC", "BTC", "ETH", "BNB"];
 const depositNetworks = {
-  USDT: "ERC20",
+  USDT: "TRC20",
   USDC: "BEP20",
   BTC: "BTC",
   ETH: "ERC20",

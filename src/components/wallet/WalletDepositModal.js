@@ -264,7 +264,7 @@ export default function WalletDepositModal({
         {/* Dynamic Tab Content */}
         {activeTab === "web3" ? (
           <div className="mt-2 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            {!["USDT", "USDC", "ETH", "BNB"].includes(selectedDepositCoin) ? (
+            {!["USDC", "ETH", "BNB"].includes(selectedDepositCoin) ? (
               <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-4 text-center text-xs font-medium leading-relaxed text-rose-300">
                 {t("web3_not_supported_for")} <strong className="text-rose-200">{selectedDepositCoin}</strong>. 
                 {t("please_use_direct_cex")}
