@@ -4,83 +4,80 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { MAIN_API_BASE } from "../config";
 import ReactCodesInput from "react-codes-input";
+import { useTranslation } from "react-i18next";
 
 /* ---------- Inline Terms modal (updated) ---------- */
 function TermsModal({ open, onAgree }) {
+  const { t } = useTranslation();
   if (!open) return null;
   return (
-    <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-      aria-modal="true"
-      role="dialog"
-    >
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" aria-modal="true" role="dialog">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
       <div className="relative z-10 w-full max-w-2xl bg-[#0a0a0a]/90 backdrop-blur-2xl text-gray-300 border border-white/10 rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.9)] max-h-[90vh] flex flex-col overflow-hidden">
         
         <div className="px-6 py-6 border-b border-white/5 shrink-0">
           <h2 className="text-xl md:text-2xl font-black text-white tracking-tight">
-            Terms &amp; Conditions
+            {t("terms_and_conditions") || "Terms & Conditions"}
           </h2>
-          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1.5">Last updated: 18 Aug 2025</p>
+          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1.5">{t("last_updated") || "Last updated: 18 Aug 2025"}</p>
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5 text-sm leading-relaxed custom-scrollbar">
           <p className="text-gray-400">
-            By tapping <b className="text-white">Agree</b>, you confirm that you have read and accept NovaChain’s
-            Terms &amp; Conditions. Key points:
+            {t("terms_intro_1") || "By tapping"} <b className="text-white">{t("terms_intro_agree") || "Agree"}</b>{t("terms_intro_2") || ", you confirm that you have read and accept NovaChain’s Terms & Conditions. Key points:"}
           </p>
 
           <ol className="list-decimal pl-5 space-y-4 text-gray-400 marker:text-gray-600 marker:font-bold">
             <li>
-              <b className="text-gray-200">Terms &amp; Conditions</b> — New user startup requires <b className="text-white">100 USDT</b>.
+              <b className="text-gray-200">{t("terms_and_conditions") || "Terms & Conditions"}</b> — {t("terms_startup") || "New user startup requires"} <b className="text-white">100 USDT</b>.
             </li>
             <li>
-              <b className="text-gray-200">Account Security</b>
+              <b className="text-gray-200">{t("terms_account_security") || "Account Security"}</b>
               <ul className="list-disc pl-5 mt-2 space-y-1.5 text-gray-500 marker:text-gray-700">
-                <li>Do not disclose your password; platform is not responsible for losses caused by disclosure.</li>
-                <li>Avoid using birthday, ID number, or phone number as withdrawal/login passwords.</li>
-                <li>If you forget your password(s), contact online support to reset.</li>
-                <li>Confidentiality agreement applies between user and company.</li>
+                <li>{t("terms_sec_1") || "Do not disclose your password; platform is not responsible for losses caused by disclosure."}</li>
+                <li>{t("terms_sec_2") || "Avoid using birthday, ID number, or phone number as withdrawal/login passwords."}</li>
+                <li>{t("terms_sec_3") || "If you forget your password(s), contact online support to reset."}</li>
+                <li>{t("terms_sec_4") || "Confidentiality agreement applies between user and company."}</li>
               </ul>
             </li>
             <li>
-              <b className="text-gray-200">Funds</b>
+              <b className="text-gray-200">{t("terms_funds") || "Funds"}</b>
               <ul className="list-disc pl-5 mt-2 space-y-1.5 text-gray-500 marker:text-gray-700">
-                <li>All funds are processed by the system (no manual operations) to avoid losses.</li>
-                <li>Accidental loss due to <b className="text-white">NovaChain’s own mistake</b>: the platform takes full responsibility.</li>
+                <li>{t("terms_fund_1") || "All funds are processed by the system (no manual operations) to avoid losses."}</li>
+                <li>{t("terms_fund_2") || "Accidental loss due to"} <b className="text-white">{t("terms_fund_3") || "NovaChain’s own mistake"}</b>{t("terms_fund_4") || ": the platform takes full responsibility."}</li>
               </ul>
             </li>
             <li>
-              <b className="text-gray-200">Deposit</b>
+              <b className="text-gray-200">{t("terms_deposit") || "Deposit"}</b>
               <ul className="list-disc pl-5 mt-2 space-y-1.5 text-gray-500 marker:text-gray-700">
-                <li>Top-up amount is chosen by the user.</li>
-                <li>Get and confirm the deposit address from your own trading account before depositing.</li>
-                <li>Platform is not responsible for losses caused by an incorrect wallet address entered by the user.</li>
+                <li>{t("terms_dep_1") || "Top-up amount is chosen by the user."}</li>
+                <li>{t("terms_dep_2") || "Get and confirm the deposit address from your own trading account before depositing."}</li>
+                <li>{t("terms_dep_3") || "Platform is not responsible for losses caused by an incorrect wallet address entered by the user."}</li>
               </ul>
             </li>
             <li>
-              <b className="text-gray-200">Withdrawal</b>
+              <b className="text-gray-200">{t("terms_withdrawal") || "Withdrawal"}</b>
               <ul className="list-disc pl-5 mt-2 space-y-1.5 text-gray-500 marker:text-gray-700">
-                <li>First withdrawal for new users: <b className="text-white">$100</b>.</li>
-                <li>As you trade more and become an old user: daily limit <b className="text-white">$2,000</b>.</li>
-                <li>Withdrawals &gt; <b className="text-white">$10,000</b> require opening a large-channel account for fund safety.</li>
+                <li>{t("terms_with_1") || "First withdrawal for new users:"} <b className="text-white">$100</b>.</li>
+                <li>{t("terms_with_2") || "As you trade more and become an old user: daily limit"} <b className="text-white">$2,000</b>.</li>
+                <li>{t("terms_with_3") || "Withdrawals >"} <b className="text-white">$10,000</b> {t("terms_with_4") || "require opening a large-channel account for fund safety."}</li>
               </ul>
             </li>
             <li>
-              <b className="text-gray-200">Hours of Operation</b>
+              <b className="text-gray-200">{t("terms_hours") || "Hours of Operation"}</b>
               <ul className="list-disc pl-5 mt-2 space-y-1.5 text-gray-500 marker:text-gray-700">
-                <li>Platform opening hours: <b className="text-white">24/7</b>.</li>
-                <li>Online customer service: <b className="text-white">10:00–22:00</b>.</li>
-                <li>Withdrawal time: <b className="text-white">09:00–22:00</b> (UTC-4).</li>
-                <li>Final interpretation right belongs to <b className="text-white">Novachain LTD</b>.</li>
+                <li>{t("terms_hr_1") || "Platform opening hours:"} <b className="text-white">24/7</b>.</li>
+                <li>{t("terms_hr_2") || "Online customer service:"} <b className="text-white">10:00–22:00</b>.</li>
+                <li>{t("terms_hr_3") || "Withdrawal time:"} <b className="text-white">09:00–22:00</b> (UTC-4).</li>
+                <li>{t("terms_hr_4") || "Final interpretation right belongs to"} <b className="text-white">Novachain LTD</b>.</li>
               </ul>
             </li>
           </ol>
 
           <p className="text-xs text-gray-500 pt-2 border-t border-white/5">
-            Read the full version any time at{" "}
+            {t("terms_read_full") || "Read the full version any time at"}{" "}
             <a href="/terms" className="text-white font-bold hover:underline transition-all">
-              Terms &amp; Conditions
+              {t("terms_and_conditions") || "Terms & Conditions"}
             </a>.
           </p>
         </div>
@@ -90,7 +87,7 @@ function TermsModal({ open, onAgree }) {
             onClick={onAgree}
             className="h-12 px-8 rounded-xl font-black text-sm uppercase tracking-[0.1em] transition-all bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-[.98]"
           >
-            Agree &amp; Continue
+            {t("agree_and_continue") || "Agree & Continue"}
           </button>
         </div>
       </div>
@@ -99,6 +96,7 @@ function TermsModal({ open, onAgree }) {
 }
 
 export default function VerifyOTPPage() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
@@ -129,7 +127,7 @@ export default function VerifyOTPPage() {
     setSuccess("");
     setResendSuccess("");
     if (!email || otp.length < 6) {
-      setError("Enter your email and the 6-digit code.");
+      setError(t("enter_email_and_code") || "Enter your email and the 6-digit code.");
       return;
     }
     try {
@@ -140,15 +138,15 @@ export default function VerifyOTPPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Incorrect OTP. Please try again.");
+        setError(data.error || t("incorrect_otp") || "Incorrect OTP. Please try again.");
         setOtp("");
         return;
       }
-      setSuccess(data.message || "Email verified!");
+      setSuccess(data.message || t("email_verified_msg") || "Email verified!");
       // Instead of navigating to login, open Terms modal immediately
       setShowTerms(true);
     } catch (err) {
-      setError("Verification failed. Try again.");
+      setError(t("verification_failed") || "Verification failed. Try again.");
       setOtp("");
     }
   };
@@ -165,13 +163,13 @@ export default function VerifyOTPPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Failed to resend code.");
+        setError(data.error || t("failed_resend") || "Failed to resend code.");
       } else {
-        setResendSuccess("OTP code resent! Check your email.");
+        setResendSuccess(t("otp_resent") || "OTP code resent! Check your email.");
         setResendTimer(60);
       }
     } catch (err) {
-      setError("Failed to resend code. Try again.");
+      setError(t("failed_resend") || "Failed to resend code. Try again.");
     }
     setResendLoading(false);
   };
@@ -209,10 +207,10 @@ export default function VerifyOTPPage() {
           </div>
 
           <h2 className="mt-5 md:mt-8 text-center text-xl md:text-3xl font-extrabold text-white tracking-tight">
-            Verify Email
+            {t("verify_email") || "Verify Email"}
           </h2>
           <p className="text-xs md:text-sm text-gray-400 text-center mt-2 mb-6 md:mb-8 font-medium px-2">
-            Enter the 6-digit code sent to <br/><span className="text-white font-bold">{email}</span>
+            {t("enter_6_digit_code") || "Enter the 6-digit code sent to"} <br/><span className="text-white font-bold">{email}</span>
           </p>
 
           <form onSubmit={handleVerify}>
@@ -267,7 +265,7 @@ export default function VerifyOTPPage() {
               type="submit"
               disabled={otp.length < 6 || !email}
             >
-              Verify Code
+              {t("verify_code_btn") || "Verify Code"}
             </button>
           </form>
 
@@ -280,14 +278,14 @@ export default function VerifyOTPPage() {
               disabled={resendLoading || resendTimer > 0}
             >
               {resendTimer > 0
-                ? `Resend code in ${resendTimer}s`
+                ? `${t("resend_code_in") || "Resend code in"} ${resendTimer}s`
                 : resendLoading
-                ? "Sending..."
-                : "Didn't receive code? Resend"}
+                ? (t("sending") || "Sending...")
+                : (t("didnt_receive_code") || "Didn't receive code? Resend")}
             </button>
             <div className="pt-2">
               <Link to="/login" className="group flex items-center justify-center gap-1.5 text-xs font-bold text-gray-500 hover:text-white transition-colors tracking-wide uppercase">
-                <span className="group-hover:-translate-x-0.5 transition-transform">←</span> Back to login
+                <span className="group-hover:-translate-x-0.5 transition-transform">←</span> {t("back_to_login") || "Back to login"}
               </Link>
             </div>
           </div>
