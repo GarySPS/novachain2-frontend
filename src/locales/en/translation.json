@@ -522,7 +522,28 @@
   "verification_failed": "Verification failed. Try again.",
   "failed_resend": "Failed to resend code.",
   "otp_resent": "OTP code resent! Check your email.",
-  "enter_email_and_code": "Enter your email and the 6-digit code."
+  "enter_email_and_code": "Enter your email and the 6-digit code.",
+  "otp_sent_to_email": "OTP sent to your email.",
+  "failed_to_send_otp": "Failed to send OTP.",
+  "network_error": "Network error.",
+  "password_changed_success": "Password changed! You can now log in.",
+  "failed_to_reset_password": "Failed to reset password.",
+  "otp_resent_email": "OTP resent to your email.",
+  "failed_to_resend_otp": "Failed to resend OTP.",
+  "reset_password_title": "Reset Password",
+  "enter_verification_title": "Enter Verification",
+  "password_changed_title": "Password Changed",
+  "enter_email_for_otp": "Enter your email to receive an OTP.",
+  "check_email_for_code": "Check your email for the reset code.",
+  "account_secure": "Your account is secure.",
+  "enter_email_address": "Enter your email address",
+  "send_reset_code": "Send Reset Code",
+  "enter_6_digit_otp": "Enter 6-digit OTP code",
+  "new_password_placeholder": "New password",
+  "resend_otp_btn": "Resend OTP",
+  "updating": "Updating...",
+  "reset_password_btn": "Reset Password",
+  "go_to_login": "Go to Login"
 
 }
 

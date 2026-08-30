@@ -268,6 +268,28 @@
   "verification_failed": "La verificación falló. Inténtalo de nuevo.",
   "failed_resend": "No se pudo reenviar el código.",
   "otp_resent": "¡Código reenviado! Revisa tu correo.",
-  "enter_email_and_code": "Ingresa tu correo y el código de 6 dígitos."
+  "enter_email_and_code": "Ingresa tu correo y el código de 6 dígitos.",
+
+  "otp_sent_to_email": "OTP enviado a tu correo.",
+  "failed_to_send_otp": "Error al enviar OTP.",
+  "network_error": "Error de red.",
+  "password_changed_success": "¡Contraseña cambiada! Ahora puedes iniciar sesión.",
+  "failed_to_reset_password": "Error al restablecer la contraseña.",
+  "otp_resent_email": "OTP reenviado a tu correo.",
+  "failed_to_resend_otp": "Error al reenviar OTP.",
+  "reset_password_title": "Restablecer Contraseña",
+  "enter_verification_title": "Ingresar Verificación",
+  "password_changed_title": "Contraseña Cambiada",
+  "enter_email_for_otp": "Ingresa tu correo para recibir un OTP.",
+  "check_email_for_code": "Revisa tu correo para el código de restablecimiento.",
+  "account_secure": "Tu cuenta está segura.",
+  "enter_email_address": "Ingresa tu dirección de correo",
+  "send_reset_code": "Enviar Código",
+  "enter_6_digit_otp": "Ingresa el código OTP de 6 dígitos",
+  "new_password_placeholder": "Nueva contraseña",
+  "resend_otp_btn": "Reenviar OTP",
+  "updating": "Actualizando...",
+  "reset_password_btn": "Restablecer Contraseña",
+  "go_to_login": "Ir a Iniciar Sesión"
 
 }

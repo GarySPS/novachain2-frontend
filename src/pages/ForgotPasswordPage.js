@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import { MAIN_API_BASE } from '../config';
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function ForgotPasswordPage() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [step, setStep] = useState(1); // 1: email, 2: otp+password, 3: done
   const [otp, setOtp] = useState("");
@@ -29,13 +31,13 @@ export default function ForgotPasswordPage() {
       setLoading(false);
       if (res.ok) {
         setStep(2);
-        setMsg("OTP sent to your email.");
+        setMsg(t("otp_sent_to_email") || "OTP sent to your email.");
       } else {
-        setErr(data.error || "Failed to send OTP.");
+        setErr(data.error || t("failed_to_send_otp") || "Failed to send OTP.");
       }
     } catch {
       setLoading(false);
-      setErr("Network error.");
+      setErr(t("network_error") || "Network error.");
     }
   };
 
@@ -53,13 +55,13 @@ export default function ForgotPasswordPage() {
       setLoading(false);
       if (res.ok) {
         setStep(3);
-        setMsg("Password changed! You can now log in.");
+        setMsg(t("password_changed_success") || "Password changed! You can now log in.");
       } else {
-        setErr(data.error || "Failed to reset password.");
+        setErr(data.error || t("failed_to_reset_password") || "Failed to reset password.");
       }
     } catch {
       setLoading(false);
-      setErr("Network error.");
+      setErr(t("network_error") || "Network error.");
     }
   };
 
@@ -75,13 +77,13 @@ export default function ForgotPasswordPage() {
       const data = await res.json();
       setLoading(false);
       if (res.ok) {
-        setMsg("OTP resent to your email.");
+        setMsg(t("otp_resent_email") || "OTP resent to your email.");
       } else {
-        setErr(data.error || "Failed to resend OTP.");
+        setErr(data.error || t("failed_to_resend_otp") || "Failed to resend OTP.");
       }
     } catch {
       setLoading(false);
-      setErr("Network error.");
+      setErr(t("network_error") || "Network error.");
     }
   };
 
@@ -115,14 +117,14 @@ export default function ForgotPasswordPage() {
 
           {/* Title - Dynamic based on step */}
           <h2 className="mt-5 md:mt-8 text-center text-xl md:text-3xl font-extrabold text-white tracking-tight">
-            {step === 1 && "Reset Password"}
-            {step === 2 && "Enter Verification"}
-            {step === 3 && "Password Changed"}
+            {step === 1 && (t("reset_password_title") || "Reset Password")}
+            {step === 2 && (t("enter_verification_title") || "Enter Verification")}
+            {step === 3 && (t("password_changed_title") || "Password Changed")}
           </h2>
           <p className="text-xs md:text-sm text-gray-400 text-center mt-2 mb-6 font-medium">
-            {step === 1 && "Enter your email to receive an OTP."}
-            {step === 2 && "Check your email for the reset code."}
-            {step === 3 && "Your account is secure."}
+            {step === 1 && (t("enter_email_for_otp") || "Enter your email to receive an OTP.")}
+            {step === 2 && (t("check_email_for_code") || "Check your email for the reset code.")}
+            {step === 3 && (t("account_secure") || "Your account is secure.")}
           </p>
 
           {/* --- Step 1: Email --- */}
@@ -133,7 +135,7 @@ export default function ForgotPasswordPage() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
-                placeholder="Enter your email address"
+                placeholder={t("enter_email_address") || "Enter your email address"}
                 className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
                 autoFocus
               />
@@ -154,7 +156,7 @@ export default function ForgotPasswordPage() {
                 disabled={loading || !email}
                 className="mt-2 w-full h-12 md:h-14 rounded-xl font-black text-sm md:text-base tracking-[0.1em] uppercase transition-all active:scale-[.99] disabled:opacity-50 disabled:cursor-not-allowed bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
               >
-                {loading ? "Sending..." : "Send Reset Code"}
+                {loading ? (t("sending") || "Sending...") : (t("send_reset_code") || "Send Reset Code")}
               </button>
             </form>
           )}
@@ -167,7 +169,7 @@ export default function ForgotPasswordPage() {
                 value={otp}
                 onChange={e => setOtp(e.target.value)}
                 required
-                placeholder="Enter 6-digit OTP code"
+                placeholder={t("enter_6_digit_otp") || "Enter 6-digit OTP code"}
                 className="w-full h-12 md:h-14 rounded-xl px-4 text-center tracking-widest bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner font-mono"
                 autoFocus
                 maxLength={8}
@@ -179,7 +181,7 @@ export default function ForgotPasswordPage() {
                   value={newPw}
                   onChange={e => setNewPw(e.target.value)}
                   required
-                  placeholder="New password"
+                  placeholder={t("new_password_placeholder") || "New password"}
                   className="w-full h-12 md:h-14 rounded-xl px-4 pr-16 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
                 />
                 <button
@@ -187,7 +189,7 @@ export default function ForgotPasswordPage() {
                   onClick={() => setShowPwd((s) => !s)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-300 hover:text-white bg-white/10 border border-white/10 hover:bg-white/20 transition-all shadow-sm"
                 >
-                  {showPwd ? "Hide" : "Show"}
+                  {showPwd ? (t("hide") || "Hide") : (t("show") || "Show")}
                 </button>
               </div>
 
@@ -198,7 +200,7 @@ export default function ForgotPasswordPage() {
                   disabled={loading}
                   className="text-[11px] font-bold text-gray-400 hover:text-white transition-colors tracking-wide uppercase disabled:opacity-50"
                 >
-                  Resend OTP
+                  {t("resend_otp_btn") || "Resend OTP"}
                 </button>
               </div>
 
@@ -213,7 +215,7 @@ export default function ForgotPasswordPage() {
                 disabled={loading || !otp || !newPw}
                 className="mt-2 w-full h-12 md:h-14 rounded-xl font-black text-sm md:text-base tracking-[0.1em] uppercase transition-all active:scale-[.99] disabled:opacity-50 disabled:cursor-not-allowed bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
               >
-                {loading ? "Updating..." : "Reset Password"}
+                {loading ? (t("updating") || "Updating...") : (t("reset_password_btn") || "Reset Password")}
               </button>
             </form>
           )}
@@ -229,7 +231,7 @@ export default function ForgotPasswordPage() {
                 onClick={() => navigate("/login")}
                 className="w-full h-12 md:h-14 rounded-xl font-black text-sm md:text-base tracking-[0.1em] uppercase transition-all active:scale-[.99] bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
               >
-                Go to Login
+                {t("go_to_login") || "Go to Login"}
               </button>
             </div>
           )}
@@ -241,7 +243,7 @@ export default function ForgotPasswordPage() {
                 to="/login"
                 className="group flex items-center justify-center gap-1.5 text-xs font-bold text-gray-500 hover:text-white transition-colors tracking-wide uppercase"
               >
-                <span className="group-hover:-translate-x-0.5 transition-transform">←</span> Back to login
+                <span className="group-hover:-translate-x-0.5 transition-transform">←</span> {t("back_to_login") || "Back to login"}
               </Link>
             </div>
           )}
