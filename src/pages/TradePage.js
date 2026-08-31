@@ -8,6 +8,7 @@ import Card from "../components/card";
 import Icon from "../components/icon";
 import OrderBTC from "../components/orderbtc";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 // Import our new components
 import TradeModal from "../components/TradeModal";
@@ -91,6 +92,25 @@ export default function TradePage() {
   const [fetchError, setFetchError] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [usdtBalance, setUsdtBalance] = useState(0); // <-- ADDED
+  const [showLowBalanceModal, setShowLowBalanceModal] = useState(false); // <-- ADDED
+  const navigate = useNavigate(); // <-- ADDED
+
+  // --- Fetch Balance Silently ---
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      try {
+        const res = await axios.get(`${MAIN_API_BASE}/balance`, { headers: { Authorization: `Bearer ${token}` } });
+        const usdt = res.data.assets?.find(a => a.symbol === "USDT");
+        if (usdt) setUsdtBalance(usdt.balance || 0);
+      } catch (err) {}
+    };
+    fetchBalance();
+    const interval = setInterval(fetchBalance, 15000); // refresh every 15s
+    return () => clearInterval(interval);
+  }, []);
 
   // --- pretty toast ---
   const [toast, setToast] = useState(null); // { text, type, id }
@@ -343,7 +363,14 @@ export default function TradePage() {
       setTradeResult(null);
       setTradeDetail(null);
       persistTradeState(null);
-      showToast(`${t("trade_failed", "Trade failed")}: ${err.response?.data?.error || err.message}`, "error");
+      
+      const errorMsg = err.response?.data?.error || err.message;
+      if (errorMsg.toLowerCase().includes("insufficient usdt") || errorMsg.toLowerCase().includes("balance")) {
+        setIsModalOpen(false); 
+        setShowLowBalanceModal(true); 
+      } else {
+        showToast(`${t("trade_failed", "Trade failed")}: ${errorMsg}`, "error");
+      }
     }
   };
 
@@ -725,7 +752,52 @@ export default function TradePage() {
         profitMap={profitMap}
         onSubmit={executeTrade}
         t={t}
+        usdtBalance={usdtBalance} /* <-- ADDED PROP */
       />
+
+      {/* BEAUTIFUL LOW BALANCE POPUP */}
+      <AnimatePresence>
+        {showLowBalanceModal && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+            onClick={() => setShowLowBalanceModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm rounded-3xl bg-gradient-to-b from-[#141a2b] to-[#0b1020] border border-rose-500/30 shadow-[0_0_40px_rgba(244,63,94,0.15)] p-6 text-center relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-rose-500 to-transparent" />
+              
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-rose-500/10 flex items-center justify-center border border-rose-500/20">
+                <Icon name="alert-circle" className="w-8 h-8 text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
+              </div>
+              
+              <h3 className="text-xl font-black text-white mb-2">{t("insufficient_balance", "Insufficient Balance")}</h3>
+              <p className="text-sm font-medium text-slate-400 mb-6">
+                {t("need_more_usdt", "You don't have enough USDT to place this trade. Convert your crypto instantly with zero fees.")}
+              </p>
+              
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={() => navigate('/wallet?action=convert')}
+                  className="w-full h-12 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 text-white font-black shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
+                >
+                  <Icon name="refresh-cw" className="w-4 h-4" />
+                  {t("convert_crypto", "Convert Crypto")}
+                </button>
+                <button
+                  onClick={() => navigate('/wallet?action=deposit&coin=USDT')}
+                  className="w-full h-12 rounded-xl bg-white/5 text-white font-bold hover:bg-white/10 transition-all border border-white/10"
+                >
+                  {t("deposit_usdt", "Deposit USDT")}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* toast – always global */}
       <AnimatePresence>

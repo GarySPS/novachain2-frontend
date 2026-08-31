@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import Icon from "./icon";
 
 export default function TradeModal({
@@ -15,7 +16,10 @@ export default function TradeModal({
   profitMap,
   onSubmit,
   t,
+  usdtBalance = 0,
 }) {
+  const navigate = useNavigate();
+  const isInsufficient = Number(amount) > Number(usdtBalance);
   const handleConfirm = () => {
   onSubmit();
   setTimeout(() => {
@@ -107,8 +111,11 @@ exit={{ y: "100%" }}
             {/* Amount */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
-                <label htmlFor="modal-amount" className="block text-xs font-bold text-gray-500 uppercase tracking-widest">
+                <label htmlFor="modal-amount" className="block text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
                   {t("amount") + " (USDT)"}
+                  <span className={`px-2 py-0.5 rounded text-[10px] ${isInsufficient ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}>
+                    {t("available", "Available")}: ${Number(usdtBalance).toFixed(2)}
+                  </span>
                 </label>
                 <span className="text-xs font-black text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
                   {t("profit", "Profit")}: +${(amount * (profitMap[duration] || 0.3)).toFixed(2)}
@@ -163,17 +170,31 @@ exit={{ y: "100%" }}
               </div>
             </div>
 
-            {/* Confirm Button */}
-            <button
-              className={`w-full h-14 mt-2 rounded-xl font-black text-lg shadow-lg transition-all disabled:opacity-50 disabled:pointer-events-none text-white ${
-                direction === "BUY"
-                  ? "bg-gradient-to-r from-emerald-500 to-emerald-400 hover:brightness-110 shadow-[0_0_20px_rgba(16,185,129,0.3)] border border-emerald-400/50"
-                  : "bg-gradient-to-r from-rose-500 to-rose-400 hover:brightness-110 shadow-[0_0_20px_rgba(244,63,94,0.3)] border border-rose-400/50"
-              }`}
-              onClick={handleConfirm}
-            >
-              {t("confirm", "Confirm")} {direction === "BUY" ? t("buy_long_up", "Long") : t("sell_short_down", "Short")}
-            </button>
+            {/* Dynamic Confirm / Convert Button */}
+            {isInsufficient ? (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  navigate('/wallet?action=convert'); 
+                }}
+                className="w-full h-14 mt-2 rounded-xl font-black text-lg shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-all text-white bg-gradient-to-r from-blue-600 to-sky-500 hover:brightness-110 border border-sky-400/50 flex items-center justify-center gap-2"
+              >
+                <Icon name="refresh-cw" className="w-5 h-5" />
+                {t("insufficient_convert", "Not enough USDT - Convert Now")}
+              </button>
+            ) : (
+              <button
+                className={`w-full h-14 mt-2 rounded-xl font-black text-lg shadow-lg transition-all disabled:opacity-50 disabled:pointer-events-none text-white ${
+                  direction === "BUY"
+                    ? "bg-gradient-to-r from-emerald-500 to-emerald-400 hover:brightness-110 shadow-[0_0_20px_rgba(16,185,129,0.3)] border border-emerald-400/50"
+                    : "bg-gradient-to-r from-rose-500 to-rose-400 hover:brightness-110 shadow-[0_0_20px_rgba(244,63,94,0.3)] border border-rose-400/50"
+                }`}
+                onClick={handleConfirm}
+              >
+                {t("confirm", "Confirm")} {direction === "BUY" ? t("buy_long_up", "Long") : t("sell_short_down", "Short")}
+              </button>
+            )}
           </motion.div>
         </motion.div>
       )}
