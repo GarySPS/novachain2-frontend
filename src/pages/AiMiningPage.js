@@ -97,7 +97,8 @@ export default function AiMiningPage() {
 
     axios.get(`${MAIN_API_BASE}/earn/balance`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => {
-        const usdt = res.data.assets?.find(a => a.symbol === "USDT")?.balance || 0;
+        // FIXED: Check for 'coin' to match the backend response
+        const usdt = res.data.assets?.find(a => a.coin === "USDT" || a.symbol === "USDT")?.balance || 0;
         setMiningCapital(Number(usdt));
         setCycleStart(res.data.cycleStart);
       }).catch(() => {});
