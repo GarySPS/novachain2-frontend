@@ -106,6 +106,7 @@ useEffect(() => {
 
   const onBIP = (e) => {
     e.preventDefault();
+    window.deferredPrompt = e; 
     setDeferredPrompt(e);
   };
   const onInstalled = () => {
@@ -638,11 +639,18 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
               <button
                 className="h-12 rounded-xl font-bold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] transition flex items-center justify-center"
                 onClick={async () => {
+  const promptEvent = window.deferredPrompt || deferredPrompt;
+
   if (isInstalled) { alert(t('pwa_already_installed')); return; }
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    const choice = await deferredPrompt.userChoice;
+  
+  if (promptEvent) {
+    promptEvent.prompt();
+    const choice = await promptEvent.userChoice;
+    
+    // Clear the prompts after use
     setDeferredPrompt(null);
+    window.deferredPrompt = null; 
+    
     if (choice?.outcome !== 'accepted') {
       alert(t('pwa_install_dismissed'));
     }

@@ -1,6 +1,6 @@
 //src>AppShell.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import TradePage from './pages/TradePage';
@@ -51,6 +51,22 @@ function AppShell() {
     position: "relative"
   };
 
+  // Add this useEffect right before the return statement
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event globally so ProfilePage can trigger it later
+      window.deferredPrompt = e;
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+  
   return (
     <div className="relative min-h-screen w-full bg-[#0b1020] text-white">
       
