@@ -55,6 +55,7 @@ export default function AiMiningPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [cycleStart, setCycleStart] = useState(null);
   const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
+  const [isPastGracePeriod, setIsPastGracePeriod] = useState(false);
 
   const handleWithdraw = async (e) => {
     e.preventDefault();
@@ -78,6 +79,8 @@ export default function AiMiningPage() {
       setMiningCapital(prev => prev - amount);
       setModal({ open: false, type: "" });
       setWithdrawAmount("");
+      // Force reload to fetch new cycle logic
+      setTimeout(() => window.location.reload(), 1000); 
     } catch (err) {
       alert(err.response?.data?.error || t("withdrawal_failed", "Withdrawal failed."));
     } finally {
@@ -115,6 +118,10 @@ export default function AiMiningPage() {
       const start = new Date(cycleStart).getTime();
       const end = start + (7 * 24 * 60 * 60 * 1000); // 7 Days
       const diff = end - Date.now();
+
+      // Calculate Grace Period for the UI warning
+      const hoursSince = (Date.now() - start) / (1000 * 60 * 60);
+      setIsPastGracePeriod(hoursSince > 24);
 
       if (diff <= 0) {
         setTimeLeft({ d: 0, h: 0, m: 0, s: 0 });
@@ -158,6 +165,8 @@ export default function AiMiningPage() {
       setMiningCapital(prev => prev + usdtEquivalent);
       setModal({ open: false, type: "" });
       setDepositAmount("");
+      // Force reload to grab the correct new timer (if reset)
+      setTimeout(() => window.location.reload(), 1000);
     } catch (err) {
       alert(err.response?.data?.error || t("allocation_failed", "Allocation failed."));
     } finally {
@@ -290,7 +299,16 @@ export default function AiMiningPage() {
         {modal.type === "deposit" && (
           <div className="p-2">
             <h2 className="mb-2 text-center text-xl font-black text-white">{t("allocate_capital", "Allocate Capital")}</h2>
-            <p className="mb-6 text-center text-xs text-slate-400">{t("deposit_any_asset", "Deposit any asset. It will be auto-converted to USDT to secure your mining contract.")}</p>
+            
+            {/* ANTI-EXPLOIT WARNING: Only shows if 24 hours have passed since cycle start */}
+            {isPastGracePeriod && miningCapital > 0 ? (
+              <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200">
+                <strong className="block text-amber-400">{t("notice", "Notice: Cycle Reset")}</strong>
+                {t("cycle_reset_desc", "The 24-hour grace period has passed. Adding new funds now will reset your 7-day payout timer for your entire balance.")}
+              </div>
+            ) : (
+              <p className="mb-6 text-center text-xs text-slate-400">{t("deposit_any_asset", "Deposit any asset. It will be auto-converted to USDT to secure your mining contract.")}</p>
+            )}
 
             <form onSubmit={handleAllocate} className="space-y-4">
               <div>
