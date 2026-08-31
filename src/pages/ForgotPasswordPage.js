@@ -4,7 +4,6 @@ import React, { useState, useRef } from "react";
 import { MAIN_API_BASE } from '../config';
 import { useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import ReactCodesInput from "react-codes-input";
 
 export default function ForgotPasswordPage() {
   const { t } = useTranslation();
@@ -149,34 +148,45 @@ export default function ForgotPasswordPage() {
             </form>
           )}
 
-          {/* --- Step 2: OTP + new password (UX OVERHAUL) --- */}
+          {/* --- Step 2: OTP + new password (Premium Block UI) --- */}
           {step === 2 && (
             <form onSubmit={handleResetPw} className="space-y-5 md:space-y-6">
               
-              {/* Distinct OTP Section */}
               <div className="space-y-3">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1">
                   {t("verification_code") || "1. Verification Code"}
                 </label>
-                <div className="flex justify-center">
-                  <ReactCodesInput
-                    classNameWrapper="flex justify-center gap-2 md:gap-3"
-                    classNameCodeWrapper="w-11 h-12 md:w-14 md:h-14 flex-none"
-                    classNameCode="border border-white/10 bg-white/[0.04] rounded-xl text-center text-xl md:text-2xl font-black text-white focus:bg-white/[0.08] focus:border-white/40 focus:outline-none transition-all shadow-inner"
-                    classNameCodeWrapperFocus="shadow-none"
-                    initialFocus={true}
-                    wrapperRef={pinWrapperRef}
-                    id="pin"
-                    codeLength={6}
+                
+                <div className="relative w-full h-12 md:h-14">
+                  {/* Invisible native input captures all typing, backspaces, and pastes */}
+                  <input
                     type="text"
+                    maxLength={6}
                     value={otp}
-                    onChange={setOtp}
-                    inputMode="numeric"
+                    onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
+                    className="absolute inset-0 w-full h-full opacity-0 z-10 cursor-text text-transparent bg-transparent"
+                    autoFocus
                   />
+                  {/* Visual glassmorphic blocks rendered underneath */}
+                  <div className="absolute inset-0 flex justify-between gap-1.5 md:gap-2 pointer-events-none">
+                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                      <div 
+                        key={i} 
+                        className={`flex-1 flex items-center justify-center text-xl md:text-2xl font-black text-white rounded-xl border transition-all duration-300 ${
+                          otp.length === i 
+                            ? 'border-white/50 bg-white/[0.12] shadow-[0_0_20px_rgba(255,255,255,0.15)] scale-105' 
+                            : otp[i] 
+                              ? 'border-white/20 bg-white/[0.06]' 
+                              : 'border-white/5 bg-white/[0.02]'
+                        }`}
+                      >
+                        {otp[i] || ""}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
               
-              {/* Distinct Password Section */}
               <div className="space-y-3">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest pl-1 flex justify-between">
                   <span>{t("create_new_password") || "2. Create New Password"}</span>
@@ -200,7 +210,6 @@ export default function ForgotPasswordPage() {
                 </div>
               </div>
 
-              {/* Resend Link */}
               <div className="flex justify-end pt-1">
                 <button
                   type="button"
@@ -218,7 +227,6 @@ export default function ForgotPasswordPage() {
                 </div>
               )}
 
-              {/* Updated Disabled Logic */}
               <button
                 type="submit"
                 disabled={loading || otp.length < 6 || !newPw}
