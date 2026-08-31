@@ -290,6 +290,10 @@
   "resend_otp_btn": "Reenviar OTP",
   "updating": "Actualizando...",
   "reset_password_btn": "Restablecer Contraseña",
-  "go_to_login": "Ir a Iniciar Sesión"
+  "go_to_login": "Ir a Iniciar Sesión",
+  "notice": "Aviso: Reinicio de Ciclo",
+  "cycle_reset_desc": "El período de gracia de 24 horas ha pasado. Agregar nuevos fondos ahora reiniciará tu temporizador de pago de 7 días para todo tu balance.",
+  "rule": "Regla:",
+  "mining_rules_desc": "Los depósitos agregados dentro de las 24 horas se unen al ciclo actual. Los depósitos agregados después de 24 horas reiniciarán tu temporizador de 7 días. Los retiros anticipados anulan las recompensas semanales pendientes."
 
 }

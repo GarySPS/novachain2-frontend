@@ -543,7 +543,10 @@
   "resend_otp_btn": "Resend OTP",
   "updating": "Updating...",
   "reset_password_btn": "Reset Password",
-  "go_to_login": "Go to Login"
-
+  "go_to_login": "Go to Login",
+  "notice": "Notice: Cycle Reset",
+  "cycle_reset_desc": "The 24-hour grace period has passed. Adding new funds now will reset your 7-day payout timer for your entire balance.",
+  "rule": "Rule:",
+  "mining_rules_desc": "Deposits added within 24 hours join the current cycle. Deposits added after 24 hours will restart your 7-day timer. Early withdrawals forfeit pending weekly rewards."
 }
 

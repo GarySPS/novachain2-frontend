@@ -223,6 +223,8 @@ export default function AiMiningPage() {
           <div className="col-span-2 rounded-2xl border border-white/5 bg-[#141a2b] p-4">
             <p className="text-xs leading-relaxed text-slate-400">
               <strong className="text-emerald-400">{t("ai_engine_active", "AI Engine Active.")}</strong> {t("ai_engine_desc", "Dynamically allocating capital across top Ethereum Layer-2 nodes. ETH block rewards are automatically liquidated and secured in USDT to protect against market volatility.")}
+              <br /><br />
+              <span className="text-emerald-500/70 font-bold">{t("rule", "Rule:")}</span> {t("mining_rules_desc", "Deposits added within 24 hours join the current cycle. Deposits added after 24 hours will restart your 7-day timer. Early withdrawals forfeit pending weekly rewards.")}
             </p>
           </div>
 
