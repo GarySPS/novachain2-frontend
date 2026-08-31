@@ -149,7 +149,10 @@ export default function AiMiningPage() {
       usdtEquivalent = amount * prices[selectedAsset];
     }
 
-    if (usdtEquivalent < 50) {
+    // Enforce $50 minimum ONLY if it is a brand new deposit OR they are resetting the cycle
+    const isNewCycle = miningCapital === 0 || isPastGracePeriod;
+    
+    if (isNewCycle && usdtEquivalent < 50) {
       alert(t("min_allocation_50", "Minimum allocation is $50 USDT equivalent."));
       setIsProcessing(false);
       return;
