@@ -53,6 +53,8 @@ export default function AiMiningPage() {
   const [depositAmount, setDepositAmount] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [cycleStart, setCycleStart] = useState(null);
+  const [timeLeft, setTimeLeft] = useState({ d: 0, h: 0, m: 0, s: 0 });
 
   const handleWithdraw = async (e) => {
     e.preventDefault();
@@ -83,46 +85,49 @@ export default function AiMiningPage() {
     }
   };
 
-  // Time simulation for lockup
-  const [timeLeft, setTimeLeft] = useState({ d: 6, h: 14, m: 23, s: 59 });
-
   const currentYield = getYieldTier(miningCapital);
   const estWeekly = miningCapital * (currentYield / 100);
 
-  // Load Data
+// Load Data
   useEffect(() => {
     if (!token) return navigate("/login");
     
-    // Fetch Spot Balances
     axios.get(`${MAIN_API_BASE}/balance`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => setWalletBalances(res.data.assets || []))
-      .catch(() => {});
+      .then(res => setWalletBalances(res.data.assets || [])).catch(() => {});
 
-    // Fetch Mining Capital (Reusing old Earn endpoint for now)
     axios.get(`${MAIN_API_BASE}/earn/balance`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => {
-        const assets = res.data.assets || [];
-        const usdt = assets.find(a => a.symbol === "USDT")?.balance || 0;
+        const usdt = res.data.assets?.find(a => a.symbol === "USDT")?.balance || 0;
         setMiningCapital(Number(usdt));
+        setCycleStart(res.data.cycleStart);
       }).catch(() => {});
 
-    // Fetch Prices for Auto-Convert
     const cachedPrices = localStorage.getItem("nc_prices");
     if (cachedPrices) setPrices(JSON.parse(cachedPrices));
   }, [token, navigate]);
 
-  // Simulated countdown timer
+  // Live countdown timer from backend cycleStart
   useEffect(() => {
+    if (!cycleStart) return;
+    
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        let { d, h, m, s } = prev;
-        if (s > 0) s--;
-        else { s = 59; if (m > 0) m--; else { m = 59; if (h > 0) h--; else { h = 23; d--; } } }
-        return { d, h, m, s };
-      });
+      const start = new Date(cycleStart).getTime();
+      const end = start + (7 * 24 * 60 * 60 * 1000); // 7 Days
+      const diff = end - Date.now();
+
+      if (diff <= 0) {
+        setTimeLeft({ d: 0, h: 0, m: 0, s: 0 });
+      } else {
+        setTimeLeft({
+          d: Math.floor(diff / (1000 * 60 * 60 * 24)),
+          h: Math.floor((diff / (1000 * 60 * 60)) % 24),
+          m: Math.floor((diff / 1000 / 60) % 60),
+          s: Math.floor((diff / 1000) % 60)
+        });
+      }
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [cycleStart]);
 
   const handleAllocate = async (e) => {
     e.preventDefault();
