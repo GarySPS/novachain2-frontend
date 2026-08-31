@@ -356,8 +356,15 @@ export default function AiMiningPage() {
         {/* --- WITHDRAW UI (PENALTY WARNING) --- */}
         {modal.type === "withdraw" && (
           <div className="p-2">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/20 text-rose-500">
-              <Icon name="alert-triangle" className="h-7 w-7" />
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-500/30 bg-emerald-500/10 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+              <svg className="h-7 w-7 text-emerald-400" viewBox="0 0 256 417" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M127.961 0L125.166 9.5V285.168L127.961 287.958L255.923 212.32L127.961 0Z" fill="currentColor" fillOpacity="0.9" />
+                <path d="M127.962 0L0 212.32L127.962 287.959V0Z" fill="currentColor" />
+                <path d="M127.961 312.187L126.386 314.107V412.306L127.961 416.907L256 236.587L127.961 312.187Z" fill="currentColor" fillOpacity="0.9" />
+                <path d="M127.962 416.905V312.185L0 236.585L127.962 416.905Z" fill="currentColor" fillOpacity="0.7" />
+                <path d="M127.961 287.958L255.921 212.321L127.961 154.159V287.958Z" fill="currentColor" fillOpacity="0.4" />
+                <path d="M0 212.32L127.96 287.958V154.159L0 212.32Z" fill="currentColor" fillOpacity="0.6" />
+              </svg>
             </div>
             <h2 className="mb-2 text-center text-xl font-black text-white">{t("early_withdrawal", "Early Withdrawal")}</h2>
             
