@@ -136,7 +136,7 @@ export default function SignUpPage() {
 
   return (
     <div
-      className="min-h-screen w-full relative flex items-center justify-center px-4 py-10 md:py-14"
+      className="min-h-[100dvh] w-full relative flex flex-col justify-center overflow-y-auto px-4 py-10 md:py-14"
       style={{
         backgroundImage: 'url("/novachain.jpg")',
         backgroundSize: "cover",
@@ -150,8 +150,8 @@ export default function SignUpPage() {
         {/* Responsive card - matching Login */}
         <div className="mx-auto w-full max-w-[400px] md:max-w-[480px] rounded-[2rem] bg-[#0a0a0a]/60 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-white/10 px-5 py-6 md:px-10 md:py-10">
           
-          {/* Video Header */}
-          <div className="w-full h-28 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-white/10">
+          {/* Video Header - shrunk for mobile keyboards */}
+          <div className="w-full h-12 sm:h-28 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-white/10">
             <video
               src="/login.mp4"
               autoPlay
@@ -195,6 +195,7 @@ export default function SignUpPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
               required
               placeholder={t("username")}
               className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
@@ -234,6 +235,7 @@ export default function SignUpPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
                   placeholder={t("email_address")}
                   className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
                 />
@@ -243,6 +245,7 @@ export default function SignUpPage() {
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
+                  onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
                   placeholder={t("phone_number")}
                   className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
                 />
@@ -278,6 +281,7 @@ export default function SignUpPage() {
                   type={showPwd ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
                   required
                   placeholder={t("password")}
                   className="w-full h-12 md:h-14 rounded-xl px-4 pr-16 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
@@ -297,6 +301,7 @@ export default function SignUpPage() {
                   type={showConfirmPwd ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
+                  onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
                   required
                   placeholder={t("confirm_password")}
                   className="w-full h-12 md:h-14 rounded-xl px-4 pr-16 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"

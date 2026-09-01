@@ -179,7 +179,7 @@ export default function VerifyOTPPage() {
 
   return (
     <div
-      className="min-h-screen w-full relative flex items-center justify-center px-4 py-10 md:py-14"
+      className="min-h-[100dvh] w-full relative flex flex-col justify-center overflow-y-auto px-4 py-10 md:py-14"
       style={{
         backgroundImage: 'url("/novachain.jpg")',
         backgroundSize: "cover",
@@ -193,8 +193,8 @@ export default function VerifyOTPPage() {
         {/* Responsive card */}
         <div className="mx-auto w-full max-w-[400px] md:max-w-[480px] rounded-[2rem] bg-[#0a0a0a]/60 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-white/10 px-5 py-6 md:px-10 md:py-10">
           
-          {/* Video Header */}
-          <div className="w-full h-28 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-white/10">
+          {/* Video Header - shrunk for mobile keyboards */}
+          <div className="w-full h-12 sm:h-28 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-white/10">
             <video
               src="/login.mp4"
               autoPlay
@@ -230,6 +230,7 @@ export default function VerifyOTPPage() {
                 maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
+                onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
                 className="absolute inset-0 w-full h-full opacity-0 z-10 cursor-text text-transparent bg-transparent"
                 autoFocus
               />

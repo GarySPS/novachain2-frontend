@@ -187,7 +187,7 @@
   "per_wk": "/sem",
   "allocate_capital": "Asignar Capital",
   "deposit_any_asset": "Deposita cualquier activo. Será convertido automáticamente a USDT para asegurar tu contrato de minería.",
-  "avail": "Disp:",
+  "avail": "$:",
   "min_30": "Mín $30",
   "auto_converts_to": "Auto-Convierte a ≈",
   "allocating_power": "Asignando Poder del Nodo...",

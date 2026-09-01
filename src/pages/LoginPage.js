@@ -124,7 +124,7 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen w-full relative flex items-center justify-center px-4 py-10 md:py-14"
+      className="min-h-[100dvh] w-full relative flex flex-col justify-center overflow-y-auto px-4 py-10 md:py-14"
       style={{
         backgroundImage: 'url("/novachain.jpg")',
         backgroundSize: "cover",
@@ -191,8 +191,8 @@ export default function LoginPage() {
       <div className="relative z-10 w-full">
         <div className="mx-auto w-full max-w-[400px] md:max-w-[480px] rounded-[2rem] bg-[#0a0a0a]/60 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-white/10 px-5 py-6 md:px-10 md:py-10">
           
-          {/* Video Header - smaller on mobile */}
-          <div className="w-full h-28 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-sky-400/20">
+          {/* Video Header - smaller on mobile to keep inputs visible */}
+          <div className="w-full h-16 sm:h-28 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-sky-400/20">
             <video
               src="/login.mp4"
               autoPlay
@@ -235,6 +235,7 @@ export default function LoginPage() {
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
               required
               autoComplete="username"
               placeholder={t('username_email') || "Username, Email"}
@@ -247,6 +248,7 @@ export default function LoginPage() {
                 type={showPwd ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
                 required
                 autoComplete="current-password"
                 placeholder={t('password') || "Password"}

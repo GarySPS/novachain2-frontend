@@ -125,24 +125,22 @@ exit={{ y: "100%" }}
               <div className="relative">
                 <input
                   id="modal-amount"
-                  type="number"
-                  inputMode="decimal" /* Forces the mobile number pad */
-                  pattern="[0-9]*" /* Strict validation for older browsers */
+                  type="text" /* Changed from "number" to remove native browser arrows */
+                  inputMode="decimal"
+                  pattern="[0-9]*"
                   min={1}
                   value={amount}
                   onChange={(e) => {
-                    // Block "e", "-", "+", and any other non-numeric characters completely
                     const val = e.target.value.replace(/[^0-9.]/g, "");
                     setAmount(val === "" ? "" : Number(val));
                   }}
                   onFocus={(e) => {
-                    // Auto-scroll the input into view when the mobile keyboard opens
                     setTimeout(() => {
                       e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }, 300);
                   }}
                   required
-                  className="w-full h-14 px-4 py-2 rounded-xl bg-[#070b16] border border-[#2c3040] text-white text-xl font-black outline-none transition-colors focus:border-sky-500"
+                  className="w-full h-14 pl-4 pr-14 py-2 rounded-xl bg-[#070b16] border border-[#2c3040] text-white text-xl font-black outline-none transition-colors focus:border-sky-500"
                 />
                 <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-500">
                   USDT
@@ -172,17 +170,36 @@ exit={{ y: "100%" }}
 
             {/* Dynamic Confirm / Convert Button */}
             {isInsufficient ? (
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  navigate('/wallet?action=convert'); 
-                }}
-                className="w-full h-14 mt-2 rounded-xl font-black text-lg shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-all text-white bg-gradient-to-r from-blue-600 to-sky-500 hover:brightness-110 border border-sky-400/50 flex items-center justify-center gap-2"
-              >
-                <Icon name="refresh-cw" className="w-5 h-5" />
-                {t("insufficient_convert", "Not enough USDT - Convert Now")}
-              </button>
+              <div className="mt-2 flex flex-col gap-2">
+                <div className="flex items-center gap-1.5 text-rose-400 text-xs font-bold justify-center mb-1">
+                  <Icon name="alert-circle" className="w-3.5 h-3.5" />
+                  {t("insufficient_usdt_action", "Not enough USDT. Choose an option:")}
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      navigate('/wallet?action=deposit&coin=USDT'); 
+                    }}
+                    className="flex-1 h-12 rounded-xl font-bold text-sm transition-all text-white bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center gap-2"
+                  >
+                    <Icon name="arrow-down" className="w-4 h-4 text-gray-400" />
+                    {t("deposit", "Deposit")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      navigate('/wallet?action=convert'); 
+                    }}
+                    className="flex-1 h-12 rounded-xl font-bold text-sm shadow-[0_0_15px_rgba(56,189,248,0.2)] transition-all text-white bg-gradient-to-r from-blue-600 to-sky-500 hover:brightness-110 border border-sky-400/50 flex items-center justify-center gap-2"
+                  >
+                    <Icon name="refresh-cw" className="w-4 h-4" />
+                    {t("convert", "Convert")}
+                  </button>
+                </div>
+              </div>
             ) : (
               <button
                 className={`w-full h-14 mt-2 rounded-xl font-black text-lg shadow-lg transition-all disabled:opacity-50 disabled:pointer-events-none text-white ${

@@ -466,7 +466,7 @@
   "per_wk": "/wk",
   "allocate_capital": "Allocate Capital",
   "deposit_any_asset": "Deposit any asset. It will be auto-converted to USDT to secure your mining contract.",
-  "avail": "Avail:",
+  "avail": "$:",
   "min_30": "Min $30",
   "auto_converts_to": "Auto-Converts to ≈",
   "allocating_power": "Allocating Node Power...",
