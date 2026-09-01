@@ -452,7 +452,7 @@
 
   "invalid_withdraw_amount": "Invalid withdraw amount.",
   "withdrawal_failed": "Withdrawal failed.",
-  "min_allocation_50": "Minimum allocation is $50 USDT equivalent.",
+  "min_allocation_30": "Minimum allocation is $30 USDT equivalent.",
   "allocation_failed": "Allocation failed.",
   "eth_ai_mining": "ETH AI Mining",
   "nodes_online": "Nodes Online & Hashing",
@@ -467,7 +467,7 @@
   "allocate_capital": "Allocate Capital",
   "deposit_any_asset": "Deposit any asset. It will be auto-converted to USDT to secure your mining contract.",
   "avail": "Avail:",
-  "min_50": "Min $50",
+  "min_30": "Min $30",
   "auto_converts_to": "Auto-Converts to ≈",
   "allocating_power": "Allocating Node Power...",
   "confirm_allocation": "Confirm Allocation",

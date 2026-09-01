@@ -12,7 +12,7 @@ const fmtUSD = (n) => "$" + Number(n || 0).toLocaleString(undefined, { minimumFr
 
 // The 11 Capital Tiers
 const TIERS = [
-  { name: "Tier 1", min: 50, max: 499, yield: 2 },
+  { name: "Tier 1", min: 30, max: 499, yield: 2 },
   { name: "Tier 2", min: 500, max: 999, yield: 3 },
   { name: "Tier 3", min: 1000, max: 4999, yield: 5 },
   { name: "Tier 4", min: 5000, max: 9999, yield: 7 },
@@ -36,7 +36,7 @@ const getYieldTier = (amount) => {
   if (amount >= 5000) return 7;
   if (amount >= 1000) return 5;
   if (amount >= 500) return 3;
-  if (amount >= 50) return 2;
+  if (amount >= 30) return 2;
   return 0;
 };
 
@@ -152,8 +152,8 @@ export default function AiMiningPage() {
     // Enforce $50 minimum ONLY if it is a brand new deposit OR they are resetting the cycle
     const isNewCycle = miningCapital === 0 || isPastGracePeriod;
     
-    if (isNewCycle && usdtEquivalent < 50) {
-      alert(t("min_allocation_50", "Minimum allocation is $50 USDT equivalent."));
+    if (isNewCycle && usdtEquivalent < 30) {
+      alert(t("min_allocation_30", "Minimum allocation is $30 USDT equivalent."));
       setIsProcessing(false);
       return;
     }
@@ -338,7 +338,7 @@ export default function AiMiningPage() {
                   value={depositAmount}
                   onChange={(e) => setDepositAmount(e.target.value)}
                   className="h-12 w-full rounded-xl border border-white/10 bg-black/20 px-4 font-bold text-white placeholder-slate-600 outline-none focus:border-emerald-500"
-                  placeholder={t("min_50", "Min $50")}
+                  placeholder={t("min_30", "Min $30")}
                 />
                 {depositAmount && selectedAsset !== "USDT" && prices[selectedAsset] && (
                   <div className="mt-2 text-right text-xs font-bold text-emerald-400">
