@@ -1,5 +1,3 @@
-//src>pages>AgentDashboard.js
-
 // src/pages/AgentDashboard.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,34 +8,65 @@ import { MAIN_API_BASE } from "../config";
 // 🛠️ EASY EDIT VARIABLES
 // ==========================================
 const COMMISSION_SHARE = "15%";
-const TOTAL_COMMISSION_EARNED = "1,250.00";
 const COMMISSION_CURRENCY = "USDT";
+const visibleWalletSymbols = ["USDT", "USDC", "BTC", "ETH", "BNB"]; // Used for balance calculation
 // ==========================================
 
 export default function AgentDashboard() {
   const [networkUsers, setNetworkUsers] = useState([]);
+  const [totalBalance, setTotalBalance] = useState("0.00"); // ⬅️ NEW: State for real balance
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchNetwork = async () => {
+    const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${MAIN_API_BASE}/agent/dashboard`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const data = await res.json();
-        if (res.ok) {
-          setNetworkUsers(data.users || []);
+
+        // ⬅️ NEW: Fetch both Agent Network and Wallet Balance at the same time
+        const [resNetwork, resBalance] = await Promise.all([
+          fetch(`${MAIN_API_BASE}/agent/dashboard`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${MAIN_API_BASE}/balance`, { headers: { Authorization: `Bearer ${token}` } })
+        ]);
+
+        // 1. Handle Network Users
+        if (resNetwork.ok) {
+          const dataNetwork = await resNetwork.json();
+          setNetworkUsers(dataNetwork.users || []);
           localStorage.setItem("isAgent", "true"); 
         }
+
+        // 2. Handle Real Total Balance (Same logic as WalletPage)
+        if (resBalance.ok) {
+          const dataBalance = await resBalance.json();
+          const assets = dataBalance.assets || [];
+
+          // Get cached prices from WalletPage
+          let savedPrices = {};
+          try {
+            const raw = localStorage.getItem("nc_prices");
+            if (raw) savedPrices = JSON.parse(raw);
+          } catch {}
+
+          let sum = 0;
+          assets
+            .filter(({ symbol }) => visibleWalletSymbols.includes(symbol))
+            .forEach(({ symbol, balance }) => {
+              const coinPrice = symbol === "USDT" ? 1 : (savedPrices[symbol] || 0);
+              sum += Number(balance) * coinPrice;
+            });
+
+          // Format to 2 decimal places
+          setTotalBalance(sum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        }
       } catch (err) {
-        console.error("Failed to load network", err);
+        console.error("Failed to load data", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchNetwork();
+
+    fetchData();
   }, []);
 
   const handleLogout = () => {
@@ -103,7 +132,8 @@ export default function AgentDashboard() {
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-5xl font-black font-mono tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-cyan-100 to-cyan-400 drop-shadow-sm">
-                {TOTAL_COMMISSION_EARNED}
+                {/* ⬅️ NEW: Dynamically rendered real balance */}
+                {loading ? "..." : totalBalance}
               </span>
               <span className="text-sm font-black text-cyan-400 tracking-wider">{COMMISSION_CURRENCY}</span>
             </div>
