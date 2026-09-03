@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Icon from './icon'; // Using your existing Icon component
+import Icon from './icon';
 
 // --- Visual Constants ---
 const BAR_HEIGHT = 58;
@@ -12,24 +12,30 @@ const CHIP_DIAMETER = 48;
 const BAR_CORNER_RADIUS = 20;
 
 const NAV_ITEMS = [
-  { label: 'dashboard', to: '/', icon: 'home', match: (p) => p === '/' },
-  { label: 'trade', to: '/trade', icon: 'chart', match: (p) => p === '/trade' }, // Crypto trade
+  { label: 'dashboard', to: '/', icon: 'home', match: (p) => p === '/' },
+  { label: 'trade', to: '/trade', icon: 'chart', match: (p) => p === '/trade' },
   { label: 'forex', to: '/forex', icon: 'chart-bar', match: (p) => p === '/forex' },
-  { label: 'history', to: '/trade-history', icon: 'history', match: (p) => p.startsWith('/trade-history') },
-  { label: 'wallet', to: '/wallet', icon: 'wallet', match: (p) => p.startsWith('/wallet') },
-  { label: 'profile', to: '/profile', icon: 'user', match: (p) => p.startsWith('/profile') }, // Now 6 items
+  { label: 'history', to: '/trade-history', icon: 'history', match: (p) => p.startsWith('/trade-history') },
+  { label: 'wallet', to: '/wallet', icon: 'wallet', match: (p) => p.startsWith('/wallet') },
+  { label: 'profile', to: '/profile', icon: 'user', match: (p) => p.startsWith('/profile') },
 ];
 
 export default function BottomNavBar() {
   const { pathname } = useLocation();
   const { t } = useTranslation();
 
+  // --- HIDE ON AGENT PORTAL ---
+  if (pathname.startsWith('/agent')) {
+    return null;
+  }
+
   const activeIndex = NAV_ITEMS.findIndex((item) => item.match(pathname));
-const hasActiveItem = activeIndex >= 0;
-const visualIndex = hasActiveItem ? activeIndex : 0;
+  const hasActiveItem = activeIndex >= 0;
+  const visualIndex = hasActiveItem ? activeIndex : 0;
 
   const navRef = useRef(null);
   const [width, setWidth] = useState(360);
+  
   useEffect(() => {
     const el = navRef.current;
     if (!el) return;
@@ -39,11 +45,11 @@ const visualIndex = hasActiveItem ? activeIndex : 0;
   }, []);
 
   const notchCenterX = useMemo(() => {
-  const segmentWidth = width / NAV_ITEMS.length;
-  return segmentWidth * visualIndex + segmentWidth / 2;
-}, [width, visualIndex]);
+    const segmentWidth = width / NAV_ITEMS.length;
+    return segmentWidth * visualIndex + segmentWidth / 2;
+  }, [width, visualIndex]);
 
-const activeItem = hasActiveItem ? NAV_ITEMS[activeIndex] : null;
+  const activeItem = hasActiveItem ? NAV_ITEMS[activeIndex] : null;
 
   return (
     <nav
@@ -52,7 +58,6 @@ const activeItem = hasActiveItem ? NAV_ITEMS[activeIndex] : null;
       style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 10px)" }}
     >
       <div className="relative select-none">
-        {/* SVG for the morphing bar shape */}
         <svg
           width="100%"
           height={BAR_HEIGHT + NOTCH_RADIUS}
@@ -64,21 +69,19 @@ const activeItem = hasActiveItem ? NAV_ITEMS[activeIndex] : null;
               <rect x="0" y={NOTCH_RADIUS} width={width} height={BAR_HEIGHT} rx={BAR_CORNER_RADIUS} ry={BAR_CORNER_RADIUS} fill="white" />
               <g style={{ transition: "transform 280ms ease-in-out" }} transform={`translate(${notchCenterX}, 0)`}>
                 <circle
-  cx="0"
-  cy={NOTCH_RADIUS + 6}
-  r={hasActiveItem ? NOTCH_RADIUS : 0}
-  fill="black"
-/>
+                  cx="0"
+                  cy={NOTCH_RADIUS + 6}
+                  r={hasActiveItem ? NOTCH_RADIUS : 0}
+                  fill="black"
+                />
               </g>
             </mask>
-            {/* Premium Dark Gradient */}
             <linearGradient id="premium-nav-bg" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#161c2d" />
               <stop offset="100%" stopColor="#0b1020" />
             </linearGradient>
           </defs>
 
-          {/* The visible bar element */}
           <rect
             x="0"
             y={NOTCH_RADIUS}
@@ -91,40 +94,38 @@ const activeItem = hasActiveItem ? NAV_ITEMS[activeIndex] : null;
           />
         </svg>
 
-        {/* Active Item Chip is a functional <Link> */}
-{activeItem && (
-  <Link
-    to={activeItem.to}
-    aria-label={t(activeItem.label)}
-    aria-current="page"
-    className="absolute will-change-transform"
-    style={{
-      left: notchCenterX - CHIP_DIAMETER / 2,
-      top: NOTCH_RADIUS + 6 - CHIP_DIAMETER / 2,
-      width: CHIP_DIAMETER,
-      height: CHIP_DIAMETER,
-      transition: "left 280ms ease-in-out",
-    }}
-  >
-    <div className="w-full h-full rounded-full flex items-center justify-center bg-gradient-to-tr from-blue-600 to-sky-400 shadow-[0_0_24px_rgba(56,189,248,0.48)] border border-white/20">
-      <ActiveIconComponent index={activeIndex} />
-    </div>
-  </Link>
-)}
+        {activeItem && (
+          <Link
+            to={activeItem.to}
+            aria-label={t(activeItem.label)}
+            aria-current="page"
+            className="absolute will-change-transform"
+            style={{
+              left: notchCenterX - CHIP_DIAMETER / 2,
+              top: NOTCH_RADIUS + 6 - CHIP_DIAMETER / 2,
+              width: CHIP_DIAMETER,
+              height: CHIP_DIAMETER,
+              transition: "left 280ms ease-in-out",
+            }}
+          >
+            <div className="w-full h-full rounded-full flex items-center justify-center bg-gradient-to-tr from-blue-600 to-sky-400 shadow-[0_0_24px_rgba(56,189,248,0.48)] border border-white/20">
+              <ActiveIconComponent index={activeIndex} />
+            </div>
+          </Link>
+        )}
 
-        {/* Row of Inactive Icons */}
         <div className="absolute inset-x-0" style={{ top: NOTCH_RADIUS, height: BAR_HEIGHT }}>
           <div className="flex h-full">
             {NAV_ITEMS.map(({ to, label }, i) => {
               const isActive = i === activeIndex;
               return (
-<Link
-  key={to}
-  to={to}
-  aria-label={t(label)}
-  aria-current={isActive ? "page" : undefined}
-  className="relative flex-1 flex items-center justify-center h-full active:scale-95 transition-transform"
->
+                <Link
+                  key={to}
+                  to={to}
+                  aria-label={t(label)}
+                  aria-current={isActive ? "page" : undefined}
+                  className="relative flex-1 flex items-center justify-center h-full active:scale-95 transition-transform"
+                >
                   <Icon
                     name={NAV_ITEMS[i].icon}
                     className={`h-6 w-6 transition-all duration-300 ${
@@ -144,7 +145,6 @@ const activeItem = hasActiveItem ? NAV_ITEMS[activeIndex] : null;
   );
 }
 
-// Helper component to render the correct icon inside the active chip
 function ActiveIconComponent({ index }) {
   const activeIconName = NAV_ITEMS[index]?.icon || 'home';
   return <Icon name={activeIconName} className="h-6 w-6 text-white fill-white" />;
