@@ -24,11 +24,6 @@ export default function BottomNavBar() {
   const { pathname } = useLocation();
   const { t } = useTranslation();
 
-  // --- HIDE ON AGENT PORTAL ---
-  if (pathname.startsWith('/agent')) {
-    return null;
-  }
-
   const activeIndex = NAV_ITEMS.findIndex((item) => item.match(pathname));
   const hasActiveItem = activeIndex >= 0;
   const visualIndex = hasActiveItem ? activeIndex : 0;
@@ -50,6 +45,11 @@ export default function BottomNavBar() {
   }, [width, visualIndex]);
 
   const activeItem = hasActiveItem ? NAV_ITEMS[activeIndex] : null;
+
+  // --- HIDE ON AGENT PORTAL (Must be placed after all React Hooks) ---
+  if (pathname.startsWith('/agent')) {
+    return null;
+  }
 
   return (
     <nav
