@@ -23,6 +23,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ContactUs from "./pages/ContactUs";
 import KYCPolicy from "./pages/KYCPolicy";
 import AiMiningPage from "./pages/AiMiningPage";
+import AgentMonitorPage from './pages/AgentMonitorPage';
 import './i18n';
 
 function isDarkMode() {
@@ -122,6 +123,7 @@ function AppShell() {
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/kyc" element={<KYCPolicy />} />
+            <Route path="/agent-monitor" element={<AgentMonitorPage />} />
           </Routes>
         </main>
         
