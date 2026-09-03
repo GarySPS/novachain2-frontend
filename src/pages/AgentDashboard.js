@@ -1,7 +1,9 @@
 //src>pages>AgentDashboard.js
 
+// src/pages/AgentDashboard.js
 import React, { useState, useEffect } from "react";
-import { Loader2, Users, TrendingUp, ShieldCheck, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Loader2, Users, TrendingUp, ShieldCheck, ChevronRight, Activity, LogOut } from "lucide-react";
 import { MAIN_API_BASE } from "../config";
 
 // ==========================================
@@ -15,6 +17,7 @@ const COMMISSION_CURRENCY = "USDT";
 export default function AgentDashboard() {
   const [networkUsers, setNetworkUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchNetwork = async () => {
@@ -26,6 +29,7 @@ export default function AgentDashboard() {
         const data = await res.json();
         if (res.ok) {
           setNetworkUsers(data.users || []);
+          localStorage.setItem("isAgent", "true"); 
         }
       } catch (err) {
         console.error("Failed to load network", err);
@@ -36,88 +40,140 @@ export default function AgentDashboard() {
     fetchNetwork();
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("isAgent");
+    navigate("/login");
+  };
+
   return (
-    <div className="min-h-screen bg-[#07090e] text-white relative overflow-hidden font-sans pb-20">
-      {/* Premium Animated Background */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[30%] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[30%] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
+    <div className="min-h-screen bg-[#030712] text-cyan-50 relative overflow-hidden font-sans pb-20 selection:bg-cyan-500/30">
+      
+      {/* Sci-Fi Grid Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none opacity-50" />
+
+      {/* Premium Neon Ambient Glows */}
+      <div className="absolute top-[-20%] left-[-20%] w-[70%] h-[50%] bg-cyan-600/15 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[10%] right-[-20%] w-[60%] h-[40%] bg-purple-600/10 blur-[100px] rounded-full pointer-events-none" />
 
       <div className="relative z-10 px-5 pt-12 pb-6 max-w-md mx-auto">
         
-        {/* Header */}
+        {/* Header with Logout Button */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight text-white flex items-center gap-2">
-              <ShieldCheck className="text-blue-500" size={24} />
-              Agent Portal
+              <ShieldCheck className="text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" size={26} />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+                Agent Portal
+              </span>
             </h1>
-            <p className="text-sm text-gray-400 font-medium mt-1">Exclusive Partner Network</p>
+            <p className="text-xs font-mono text-cyan-500/70 mt-1 uppercase tracking-[0.15em]">
+              Exclusive Partner Node
+            </p>
           </div>
+          
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 px-3 py-2 rounded-xl transition-all active:scale-95 text-xs font-mono font-bold uppercase tracking-widest shadow-[0_0_10px_rgba(239,68,68,0.1)] hover:shadow-[0_0_15px_rgba(239,68,68,0.3)]"
+          >
+            <LogOut size={14} />
+            Logout
+          </button>
         </div>
 
-        {/* Highlight Commission Card (Glassmorphism) */}
-        <div className="relative rounded-3xl bg-white/[0.03] border border-white/[0.08] p-6 backdrop-blur-xl shadow-2xl mb-4 overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl" />
-          <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Total Commission</p>
-          <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-black tracking-tighter text-white">
-              {TOTAL_COMMISSION_EARNED}
-            </span>
-            <span className="text-sm font-bold text-blue-400">{COMMISSION_CURRENCY}</span>
+        {/* Crypto Graph Commission Card */}
+        <div className="relative rounded-2xl bg-gray-900/60 border border-cyan-500/30 p-6 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] mb-6 overflow-hidden group">
+          {/* SVG Sparkline Graph Background */}
+          <svg className="absolute bottom-0 left-0 w-full h-24 opacity-40 transition-opacity group-hover:opacity-60" viewBox="0 0 400 100" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <path d="M0,100 L0,50 L50,60 L100,20 L150,40 L200,10 L250,50 L300,30 L350,70 L400,20 L400,100 Z" fill="url(#grad)" />
+            <polyline points="0,50 50,60 100,20 150,40 200,10 250,50 300,30 350,70 400,20" fill="none" stroke="#22d3ee" strokeWidth="2" className="drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]" />
+          </svg>
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <Activity className="text-cyan-400" size={14} />
+              <p className="text-xs font-mono font-bold uppercase tracking-widest text-cyan-500/80">Total Yield</p>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-5xl font-black font-mono tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-cyan-100 to-cyan-400 drop-shadow-sm">
+                {TOTAL_COMMISSION_EARNED}
+              </span>
+              <span className="text-sm font-black text-cyan-400 tracking-wider">{COMMISSION_CURRENCY}</span>
+            </div>
           </div>
         </div>
 
         {/* Stats Bento Grid */}
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          <div className="rounded-3xl bg-white/[0.02] border border-white/[0.05] p-5 backdrop-blur-md flex flex-col justify-center items-center text-center">
-            <div className="h-10 w-10 rounded-full bg-emerald-500/20 flex items-center justify-center mb-3">
-              <TrendingUp className="text-emerald-400" size={20} />
+        <div className="grid grid-cols-2 gap-4 mb-10">
+          {/* Share Card */}
+          <div className="relative rounded-2xl bg-gray-900/40 border border-white/5 p-5 backdrop-blur-md flex flex-col justify-center items-center text-center overflow-hidden hover:border-purple-500/30 transition-colors">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-purple-500/10 rounded-full blur-2xl" />
+            <div className="h-10 w-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
+              <TrendingUp className="text-purple-400" size={20} />
             </div>
-            <span className="text-2xl font-black text-white">{COMMISSION_SHARE}</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mt-1">Your Share</span>
+            <span className="text-2xl font-black font-mono text-white">{COMMISSION_SHARE}</span>
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-400 mt-1">Your Share</span>
           </div>
 
-          <div className="rounded-3xl bg-white/[0.02] border border-white/[0.05] p-5 backdrop-blur-md flex flex-col justify-center items-center text-center">
-            <div className="h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center mb-3">
-              <Users className="text-blue-400" size={20} />
+          {/* Network Card */}
+          <div className="relative rounded-2xl bg-gray-900/40 border border-white/5 p-5 backdrop-blur-md flex flex-col justify-center items-center text-center overflow-hidden hover:border-cyan-500/30 transition-colors">
+            <div className="absolute top-0 right-0 w-16 h-16 bg-cyan-500/10 rounded-full blur-2xl" />
+            <div className="h-10 w-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-3 shadow-[0_0_15px_rgba(34,211,238,0.15)]">
+              <Users className="text-cyan-400" size={20} />
             </div>
-            <span className="text-2xl font-black text-white">
+            <span className="text-2xl font-black font-mono text-white">
               {loading ? "-" : networkUsers.length}
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mt-1">Active Network</span>
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-gray-400 mt-1">Active Network</span>
           </div>
         </div>
 
-        {/* Network List */}
+        {/* Network List HUD */}
         <div>
-          <h2 className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-4 px-1">Network Members</h2>
+          <div className="flex items-center gap-2 mb-4 px-1">
+            <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+            <h2 className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-cyan-500">Network Nodes</h2>
+          </div>
           
           {loading ? (
-            <div className="flex justify-center py-10">
-              <Loader2 className="animate-spin text-blue-500" size={24} />
+            <div className="flex flex-col items-center justify-center py-12 bg-gray-900/20 rounded-2xl border border-white/5 backdrop-blur-sm">
+              <Loader2 className="animate-spin text-cyan-500 mb-3" size={28} />
+              <p className="text-xs font-mono text-cyan-500/50 uppercase tracking-widest">Syncing Data...</p>
             </div>
           ) : networkUsers.length === 0 ? (
-            <div className="text-center py-10 bg-white/[0.02] rounded-2xl border border-white/[0.05]">
-              <p className="text-sm text-gray-400">No users in your network yet.</p>
+            <div className="text-center py-10 bg-gray-900/40 rounded-2xl border border-white/5 backdrop-blur-sm">
+              <p className="text-sm font-mono text-gray-500 uppercase tracking-wider">No nodes connected</p>
             </div>
           ) : (
             <div className="space-y-3">
               {networkUsers.map((user) => (
-                <div key={user.id} className="flex items-center justify-between bg-white/[0.02] border border-white/[0.05] rounded-2xl p-4 transition-active active:scale-[0.98]">
+                <div key={user.id} className="group flex items-center justify-between bg-gray-900/40 border border-white/5 rounded-xl p-4 backdrop-blur-sm transition-all active:scale-[0.98] hover:bg-gray-800/60 hover:border-cyan-500/40 hover:shadow-[0_0_15px_rgba(34,211,238,0.1)]">
                   <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border border-white/[0.1] flex items-center justify-center">
-                      <span className="text-xs font-bold text-gray-300">
-                        {String(user.id).padStart(3, "0")}
+                    {/* Sci-Fi Avatar */}
+                    <div className="relative h-10 w-10 rounded-lg bg-gray-950 border border-cyan-500/30 flex items-center justify-center shadow-[inset_0_0_10px_rgba(34,211,238,0.1)]">
+                      <div className="absolute top-0 left-0 w-1 h-1 border-t border-l border-cyan-400 rounded-tl-sm" />
+                      <div className="absolute bottom-0 right-0 w-1 h-1 border-b border-r border-cyan-400 rounded-br-sm" />
+                      <span className="text-[10px] font-mono font-bold text-cyan-400">
+                        #{String(user.id).padStart(3, "0")}
                       </span>
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-gray-200">
+                      <p className="text-sm font-bold text-gray-100 group-hover:text-cyan-50 transition-colors">
                         {user.username || user.email.split('@')[0]}
                       </p>
-                      <p className="text-[11px] font-medium text-gray-500">Joined {new Date(user.created_at).toLocaleDateString()}</p>
+                      <p className="text-[10px] font-mono font-medium text-gray-500 uppercase tracking-wider mt-0.5">
+                        Linked {new Date(user.created_at).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
-                  <ChevronRight size={16} className="text-gray-600" />
+                  <ChevronRight size={18} className="text-cyan-500/40 group-hover:text-cyan-400 transition-colors" />
                 </div>
               ))}
             </div>

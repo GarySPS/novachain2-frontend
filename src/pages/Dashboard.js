@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Card from "../components/card";
 import NewsTicker from "../components/newsticker";
 import { MAIN_API_BASE } from "../config";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 /* ---------- helpers ---------- */
 function formatBigNum(number) {
@@ -22,6 +22,15 @@ const pctClass = (v) =>
     : "text-gray-400 bg-white/5 ring-1 ring-white/10";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+
+  // --- FORCE AGENTS BACK TO AGENT PORTAL ---
+  useEffect(() => {
+    if (localStorage.getItem("isAgent") === "true") {
+      navigate("/agent", { replace: true });
+    }
+  }, [navigate]);
+
   const [coins, setCoins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newsHeadlines, setNewsHeadlines] = useState([]);
