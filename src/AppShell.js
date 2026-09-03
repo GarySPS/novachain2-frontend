@@ -24,6 +24,7 @@ import ContactUs from "./pages/ContactUs";
 import KYCPolicy from "./pages/KYCPolicy";
 import AiMiningPage from "./pages/AiMiningPage";
 import AgentMonitorPage from './pages/AgentMonitorPage';
+import AgentDashboard from './pages/AgentDashboard';
 import './i18n';
 
 function isDarkMode() {
@@ -124,6 +125,7 @@ function AppShell() {
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/kyc" element={<KYCPolicy />} />
             <Route path="/agent-monitor" element={<AgentMonitorPage />} />
+            <Route path="/agent" element={<AgentDashboard />} />
           </Routes>
         </main>
         

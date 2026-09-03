@@ -116,12 +116,28 @@ export default function LoginPage() {
 
       if (data.token) localStorage.setItem("token", data.token);
       if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
-      navigate("/");
+
+      // --- SMART AGENT ROUTING ---
+      try {
+        const agentRes = await fetch(`${MAIN_API_BASE}/agent/dashboard`, {
+          headers: { Authorization: `Bearer ${data.token}` }
+        });
+        const agentData = await agentRes.json();
+        
+        if (agentRes.ok && agentData.totalUsers > 0) {
+          navigate("/agent"); // Redirects to the VIP Agent Dashboard
+          return;
+        }
+      } catch (err) {
+        console.error("Agent check bypassed", err);
+      }
+      // ---------------------------
+
+      navigate("/"); // Normal users go to standard dashboard
     } catch {
       setError("Platform is under scheduled maintenance. Please try again soon.");
     }
   };
-
   return (
     <div
       className="min-h-[100dvh] w-full relative flex flex-col justify-center overflow-y-auto px-4 py-10 md:py-14"
