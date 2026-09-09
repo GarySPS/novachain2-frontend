@@ -204,15 +204,17 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
     setAuthChecked(true);
   }, [navigate]);
 
-  /* -------- compute total USD (unchanged logic) -------- */
+  /* -------- compute total USD -------- */
   useEffect(() => {
     if (!assets.length) { setTotalUsd(0); return; }
-    if (!Object.keys(prices).length) return;
     let sum = 0;
-    assets.forEach(({ symbol, balance }) => {
-      const coinPrice = prices[symbol] || (symbol === "USDT" ? 1 : 0);
-      sum += Number(balance) * coinPrice;
-    });
+    const visibleWalletSymbols = ["USDT", "USDC", "BTC", "ETH", "BNB"];
+    assets
+      .filter(({ symbol }) => visibleWalletSymbols.includes(symbol))
+      .forEach(({ symbol, balance }) => {
+        const coinPrice = symbol === "USDT" ? 1 : prices[symbol] || 0;
+        sum += Number(balance) * coinPrice;
+      });
     setTotalUsd(sum);
   }, [assets, prices]);
 
@@ -440,8 +442,10 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
                 <AssetsDonut assets={assets} prices={prices} plain />
               </div>
               <div className="flex-1 w-full max-w-sm space-y-1.5">
-                {assets.filter(a => a.balance > 0).map((a, i) => {
-                  const price = prices[a.symbol] || (a.symbol === "USDT" ? 1 : 0);
+                {assets
+                  .filter(a => ["USDT", "USDC", "BTC", "ETH", "BNB"].includes(a.symbol) && a.balance > 0)
+                  .map((a, i) => {
+                  const price = a.symbol === "USDT" ? 1 : prices[a.symbol] || 0;
                   const usd = Number(a.balance) * price;
                   const percent = totalUsd ? (usd / totalUsd * 100) : 0;
                   const palette = ["#ffbe0b", "#0cf574", "#38bdf8", "#f3722c", "#b5179e", "#ff006e"];
