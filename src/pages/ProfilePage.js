@@ -212,7 +212,8 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
     assets
       .filter(({ symbol }) => visibleWalletSymbols.includes(symbol))
       .forEach(({ symbol, balance }) => {
-        const coinPrice = symbol === "USDT" ? 1 : prices[symbol] || 0;
+        // FIX: Treat USDC as $1 just like USDT
+        const coinPrice = (symbol === "USDT" || symbol === "USDC") ? 1 : prices[symbol] || 0;
         sum += Number(balance) * coinPrice;
       });
     setTotalUsd(sum);
@@ -445,7 +446,8 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
                 {assets
                   .filter(a => ["USDT", "USDC", "BTC", "ETH", "BNB"].includes(a.symbol) && a.balance > 0)
                   .map((a, i) => {
-                  const price = a.symbol === "USDT" ? 1 : prices[a.symbol] || 0;
+                  // FIX: Treat USDC as $1 just like USDT here too
+                  const price = (a.symbol === "USDT" || a.symbol === "USDC") ? 1 : prices[a.symbol] || 0;
                   const usd = Number(a.balance) * price;
                   const percent = totalUsd ? (usd / totalUsd * 100) : 0;
                   const palette = ["#ffbe0b", "#0cf574", "#38bdf8", "#f3722c", "#b5179e", "#ff006e"];
