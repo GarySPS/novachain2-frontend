@@ -207,15 +207,18 @@ export default function LoginPage() {
       <div className="relative z-10 w-full">
         <div className="mx-auto w-full max-w-[400px] md:max-w-[480px] rounded-[2rem] bg-[#0a0a0a]/60 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-white/10 px-5 py-6 md:px-10 md:py-10">
           
-          {/* Video Header - smaller on mobile to keep inputs visible */}
-          <div className="w-full h-16 sm:h-28 md:h-40 rounded-2xl overflow-hidden shadow-inner border border-sky-400/20">
+          {/* Video Header - Scaled for mobile and blended for a premium look */}
+          <div className="relative w-full aspect-video sm:aspect-auto sm:h-28 md:h-40 rounded-2xl overflow-hidden border border-sky-400/20 bg-[#050505]">
+            {/* Inner shadow overlay to seamlessly blend harsh video edges */}
+            <div className="absolute inset-0 z-10 shadow-[inset_0_0_35px_rgba(0,0,0,1)] pointer-events-none" />
+            
             <video
               src="/login.mp4"
               autoPlay
               loop
               muted
               playsInline
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain sm:object-cover scale-105"
             />
           </div>
 
