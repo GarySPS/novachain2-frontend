@@ -468,117 +468,169 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
 
         {/* ========= 3) KYC + Settings ========= */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          
           {/* KYC */}
-          <Card className={cardClass}>
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-2 text-white font-black text-2xl">
-                <Icon name="shield-check" className="w-7 h-7 text-sky-400 drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]" />
-                {t('Verification')}
-              </div>
+          <Card className={`relative overflow-hidden ${cardClass} ${kycStatus === 'approved' ? 'border-emerald-500/20' : kycStatus === 'pending' ? 'border-amber-500/20' : ''}`}>
+            {/* Ambient Background Glow */}
+            <div className={`absolute -top-20 -right-20 w-48 h-48 rounded-full blur-[80px] opacity-20 pointer-events-none
+              ${kycStatus === 'approved' ? 'bg-emerald-500' :
+                kycStatus === 'pending' ? 'bg-amber-500' :
+                kycStatus === 'rejected' ? 'bg-rose-500' : 'bg-sky-500'}`}
+            ></div>
 
-              <div className="mt-3 inline-flex items-center text-xs font-bold px-3 py-1.5 rounded-full bg-[#0b1020] ring-1 ring-white/10 text-gray-300">
-                <span className={`w-2 h-2 rounded-full mr-2
-                  ${kycStatus === "approved" ? "bg-emerald-400 shadow-[0_0_8px_#34d399]" :
-                    kycStatus === "pending" ? "bg-amber-400 shadow-[0_0_8px_#fbbf24]" :
-                    kycStatus === "rejected" ? "bg-rose-400 shadow-[0_0_8px_#fb7185]" : "bg-gray-500"}`} />
-                {kycStatus === "approved" ? t("verified", "Verified") :
-                 kycStatus === "pending" ? t("automated_review_progress", "Automated review in progress") :
-                 kycStatus === "rejected" ? t("needs_new_upload", "Needs new upload") : t("not_verified", "Not verified")}
-              </div>
-            </div>
-
-            {(kycStatus === "unverified" || kycStatus === "rejected") && (
-              <form className="mt-6 space-y-6" onSubmit={handleKycSubmit}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* Selfie */}
-                  <div>
-                    <label className="mb-2 block font-semibold text-gray-300 text-sm">
-                      <span className="inline-flex items-center gap-2">
-                        <Icon name="user" className="w-4 h-4 text-sky-400" /> {t('upload_selfie', 'Upload Selfie')}
-                        <Tooltip text={t('profile_tooltip_selfie', 'Please upload a clear selfie')} />
-                      </span>
-                    </label>
-                    <div className="bg-[#0b1020]/50 border-2 border-dashed border-[#2c3040] rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-sky-500/50 transition">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        id="selfie"
-                        className="hidden"
-                        disabled={kycStatus === "pending" || kycStatus === "approved"}
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          if (file) { setKycSelfie(file); setKycSelfiePreview(URL.createObjectURL(file)); }
-                        }}
-                      />
-                      <label htmlFor="selfie" className="cursor-pointer flex flex-col items-center text-gray-400 hover:text-white transition">
-                        <Icon name="upload-cloud" className="w-8 h-8 mb-2 opacity-70" />
-                        <span className="text-sm font-semibold">{t('selfie', 'Selfie')}</span>
-                      </label>
-                      {kycSelfiePreview && (
-                        <img src={kycSelfiePreview} alt="Selfie Preview" className="rounded-lg mt-4 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] max-w-[110px]" />
-                      )}
-                    </div>
-                  </div>
-                  {/* ID */}
-                  <div>
-                    <label className="mb-2 block font-semibold text-gray-300 text-sm">
-                      <span className="inline-flex items-center gap-2">
-                        <Icon name="id-card" className="w-4 h-4 text-sky-400" /> {t('upload_id', 'Upload ID')}
-                        <Tooltip text={t('profile_tooltip_id', 'Please upload a valid government ID')} />
-                      </span>
-                    </label>
-                    <div className="bg-[#0b1020]/50 border-2 border-dashed border-[#2c3040] rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-sky-500/50 transition">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        id="id-card"
-                        className="hidden"
-                        disabled={kycStatus === "pending" || kycStatus === "approved"}
-                        onChange={(e) => {
-                          const file = e.target.files[0];
-                          if (file) { setKycId(file); setKycIdPreview(URL.createObjectURL(file)); }
-                        }}
-                      />
-                      <label htmlFor="id-card" className="cursor-pointer flex flex-col items-center text-gray-400 hover:text-white transition">
-                        <Icon name="upload-cloud" className="w-8 h-8 mb-2 opacity-70" />
-                        <span className="text-sm font-semibold">{t('id', 'ID')}</span>
-                      </label>
-                      {kycIdPreview && (
-                        <img src={kycIdPreview} alt="ID Preview" className="rounded-lg mt-4 border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.2)] max-w-[110px]" />
-                      )}
+            {kycStatus === "approved" ? (
+              <div className="flex flex-col items-center justify-center h-full min-h-[260px] py-4 relative z-10">
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 rounded-full bg-emerald-500/20 blur-xl animate-pulse"></div>
+                  <div className="relative flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-[#0b1020] to-[#121b2f] border border-emerald-500/30 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                    <Icon name="shield-check" className="w-10 h-10 text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+                    <div className="absolute -bottom-1 -right-1 flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 text-white shadow-lg">
+                      <Icon name="check" className="w-4 h-4" />
                     </div>
                   </div>
                 </div>
-
-                <div className="flex justify-center">
-                  <button
-                    type="submit"
-                    className="h-12 px-8 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:scale-[1.02] transition disabled:opacity-50 disabled:pointer-events-none w-full sm:w-72 border border-white/10"
-                    disabled={!kycSelfie || !kycId || kycStatus === "pending" || kycStatus === "approved"}
+                <h3 className="text-xl font-black text-white tracking-wide mb-2">{t('Verification')}</h3>
+                <div className="mt-2 inline-flex items-center px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-2 shadow-[0_0_8px_#34d399]"></span>
+                  {t("verified", "Verified")}
+                </div>
+                <div className="mt-6 text-[11px] text-gray-500 font-bold text-center uppercase tracking-widest">
+                  {t("profile_identity_verified", "Your identity is verified.")}
+                </div>
+              </div>
+            ) : kycStatus === "pending" ? (
+              <div className="flex flex-col items-center justify-center h-full min-h-[260px] py-4 relative z-10">
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 rounded-full bg-amber-500/20 blur-xl animate-pulse"></div>
+                  <div className="relative flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-[#0b1020] to-[#121b2f] border border-amber-500/30 shadow-[0_0_30px_rgba(245,158,11,0.2)]">
+                    <Icon name="clock" className="w-10 h-10 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-black text-white tracking-wide mb-2">{t('Verification')}</h3>
+                <div className="mt-2 inline-flex items-center px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(245,158,11,0.1)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mr-2 shadow-[0_0_8px_#fbbf24]"></span>
+                  {t("automated_review_progress", "Automated Review")}
+                </div>
+                <div className="mt-6 text-[11px] text-gray-500 font-bold text-center uppercase tracking-widest">
+                  {t("profile_kyc_pending_message", "Review in progress. Please wait.")}
+                </div>
+              </div>
+            ) : (
+              <div className="relative z-10">
+                {/* Header for Unverified / Rejected */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 pb-4 border-b border-white/5 gap-3">
+                  <div className="flex items-center gap-3 text-white font-black text-xl">
+                    <div className={`flex items-center justify-center w-10 h-10 rounded-xl border ${kycStatus === 'rejected' ? 'bg-rose-500/10 border-rose-500/20' : 'bg-sky-500/10 border-sky-500/20'}`}>
+                      <Icon name="shield" className={`w-5 h-5 ${kycStatus === 'rejected' ? 'text-rose-400' : 'text-sky-400'}`} />
+                    </div>
+                    {t('Verification')}
+                  </div>
+                  <div className={`inline-flex items-center self-start sm:self-auto text-[10px] font-bold px-3 py-1.5 rounded-lg border uppercase tracking-widest
+                    ${kycStatus === 'rejected' ? 'bg-rose-500/10 border-rose-500/20 text-rose-400' : 'bg-gray-500/10 border-gray-500/20 text-gray-400'}`}
                   >
-                    {kycStatus === "rejected" ? t("profile_reupload_review") : t("profile_submit_review")}
-                  </button>
+                    <span className={`w-1.5 h-1.5 rounded-full mr-2 ${kycStatus === 'rejected' ? 'bg-rose-400' : 'bg-gray-400'}`}></span>
+                    {kycStatus === "rejected" ? t("needs_new_upload", "Needs new upload") : t("not_verified", "Not verified")}
+                  </div>
                 </div>
+                
+                {kycStatus === "rejected" && (
+                   <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-start gap-3">
+                      <Icon name="alert-circle" className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                      <p className="text-xs text-rose-200 font-medium leading-relaxed">
+                         {t("profile_kyc_rejected_message", "Your previous submission was rejected. Please upload clear images.")}
+                      </p>
+                   </div>
+                )}
 
-                {(kycStatus === "pending" && kycSubmitted) && (
-                  <div className="text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-4 py-3 text-center text-sm font-medium">
-                    {t("profile_kyc_submitted")}
+                <form className="space-y-6" onSubmit={handleKycSubmit}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {/* Selfie */}
+                    <div>
+                      <label className="mb-2 block font-semibold text-gray-300 text-sm">
+                        <span className="inline-flex items-center gap-2">
+                          <Icon name="user" className="w-4 h-4 text-sky-400" /> {t('upload_selfie', 'Upload Selfie')}
+                          <Tooltip text={t('profile_tooltip_selfie', 'Please upload a clear selfie')} />
+                        </span>
+                      </label>
+                      <div className="bg-[#0b1020]/50 border-2 border-dashed border-[#2c3040] rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-sky-500/50 transition">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          id="selfie"
+                          className="hidden"
+                          disabled={kycStatus === "pending" || kycStatus === "approved"}
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (file) { setKycSelfie(file); setKycSelfiePreview(URL.createObjectURL(file)); }
+                          }}
+                        />
+                        <label htmlFor="selfie" className="cursor-pointer flex flex-col items-center text-gray-400 hover:text-white transition w-full">
+                          <Icon name="upload-cloud" className="w-8 h-8 mb-2 opacity-70" />
+                          <span className="text-sm font-semibold">{t('selfie', 'Selfie')}</span>
+                        </label>
+                        {kycSelfiePreview && (
+                          <img src={kycSelfiePreview} alt="Selfie Preview" className="rounded-lg mt-4 border border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)] max-w-[110px]" />
+                        )}
+                      </div>
+                    </div>
+                    {/* ID */}
+                    <div>
+                      <label className="mb-2 block font-semibold text-gray-300 text-sm">
+                        <span className="inline-flex items-center gap-2">
+                          <Icon name="id-card" className="w-4 h-4 text-sky-400" /> {t('upload_id', 'Upload ID')}
+                          <Tooltip text={t('profile_tooltip_id', 'Please upload a valid government ID')} />
+                        </span>
+                      </label>
+                      <div className="bg-[#0b1020]/50 border-2 border-dashed border-[#2c3040] rounded-xl px-3 py-6 flex flex-col items-center justify-center hover:border-sky-500/50 transition">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          id="id-card"
+                          className="hidden"
+                          disabled={kycStatus === "pending" || kycStatus === "approved"}
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (file) { setKycId(file); setKycIdPreview(URL.createObjectURL(file)); }
+                          }}
+                        />
+                        <label htmlFor="id-card" className="cursor-pointer flex flex-col items-center text-gray-400 hover:text-white transition w-full">
+                          <Icon name="upload-cloud" className="w-8 h-8 mb-2 opacity-70" />
+                          <span className="text-sm font-semibold">{t('id', 'ID')}</span>
+                        </label>
+                        {kycIdPreview && (
+                          <img src={kycIdPreview} alt="ID Preview" className="rounded-lg mt-4 border border-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.2)] max-w-[110px]" />
+                        )}
+                      </div>
+                    </div>
                   </div>
-                )}
-                {kycError && (
-                  <div className="text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg px-4 py-3 text-center text-sm font-medium">
-                    {kycError}
+
+                  <div className="flex justify-center mt-2">
+                    <button
+                      type="submit"
+                      className="h-12 px-8 rounded-xl font-bold bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:scale-[1.02] transition disabled:opacity-50 disabled:pointer-events-none w-full sm:w-72 border border-white/10"
+                      disabled={!kycSelfie || !kycId || kycStatus === "pending" || kycStatus === "approved"}
+                    >
+                      {kycStatus === "rejected" ? t("profile_reupload_review") : t("profile_submit_review")}
+                    </button>
                   </div>
-                )}
-            </form>
+
+                  {(kycStatus === "pending" && kycSubmitted) && (
+                    <div className="text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-4 py-3 text-center text-sm font-medium">
+                      {t("profile_kyc_submitted")}
+                    </div>
+                  )}
+                  {kycError && (
+                    <div className="text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg px-4 py-3 text-center text-sm font-medium">
+                      {kycError}
+                    </div>
+                  )}
+                </form>
+
+                <div className="mt-6 text-[10px] text-gray-500 text-center font-bold uppercase tracking-widest">
+                  {t("profile_kyc_upload_message", "Please upload required documents")}
+                </div>
+              </div>
             )}
-
-            <div className="mt-6 text-xs text-gray-500 text-center font-medium uppercase tracking-wider">
-              {kycStatus === "approved" ? t("profile_identity_verified") :
- kycStatus === "pending" ? t("profile_kyc_pending_message") :
- kycStatus === "rejected" ? t("profile_kyc_rejected_message") :
- t("profile_kyc_upload_message")}
-            </div>
           </Card>
 
           {/* Settings */}

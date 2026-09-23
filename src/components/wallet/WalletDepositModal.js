@@ -129,15 +129,15 @@ export default function WalletDepositModal({
                 {walletAddresses[selectedDepositCoin]}
               </p>
               
-              {/* Added Copy Button inside the Enlarger */}
               <button
-                type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(walletAddresses[selectedDepositCoin] || "");
-                  setDepositToast(t("copied", "Copied"));
-                }}
-                className="mt-4 flex h-10 items-center justify-center gap-2 rounded-xl bg-sky-500/10 px-6 text-xs font-black text-sky-400 ring-1 ring-sky-500/30 transition hover:bg-sky-500/20 active:scale-95"
-              >
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(walletAddresses[selectedDepositCoin] || "");
+                    setDepositToast(t("copied", "Copied"));
+                    setTimeout(() => setDepositToast(""), 1500); // Clears after 1.5s
+                  }}
+                  className="mt-1.5 flex items-center gap-1 text-[10px] font-bold text-sky-400 transition hover:text-sky-300 active:scale-95"
+                >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 {t("copy_address")}
               </button>
