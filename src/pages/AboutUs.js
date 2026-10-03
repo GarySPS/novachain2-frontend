@@ -182,17 +182,7 @@ return (
 <br />
 {t("company_phone_2")}
         </div>
-        <div>
-          {t("about_support")}:{" "}
-          <a
-            href="https://wa.me/16627053615"
-            target="_blank"
-            rel="noreferrer"
-            className="text-sky-300 underline underline-offset-2 hover:text-sky-200"
-          >
-            {t("whatsapp_contact", "WhatsApp +1 662 705 3615")}
-          </a>
-        </div>
+        {/* WhatsApp contact hidden */}
       </div>
     </GlassCard>
 
@@ -201,14 +191,6 @@ return (
       <Link to="/terms" className="hover:text-white underline underline-offset-2">{t("terms")}</Link>
       <Link to="/privacy" className="hover:text-white underline underline-offset-2">{t("privacy")}</Link>
       <Link to="/kyc" className="hover:text-white underline underline-offset-2">{t("aml_kyc")}</Link>
-      <a
-        href="https://wa.me/16627053615"
-        target="_blank"
-        rel="noreferrer"
-        className="hover:text-white underline underline-offset-2"
-      >
-        {t("support")}
-      </a>
     </div>
   </div>
 );
