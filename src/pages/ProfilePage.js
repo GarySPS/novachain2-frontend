@@ -753,12 +753,6 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
           <Card className={cardClass}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
-                className="h-12 rounded-xl font-bold text-white bg-[#1EBEA5] hover:bg-[#128C7E] active:scale-[0.98] transition flex items-center justify-center"
-                onClick={() => window.open('https://wa.me/16627053615', '_blank')}
-              >
-               {t('profile_whatsapp')}
-              </button>
-              <button
                 className="h-12 rounded-xl font-bold text-white bg-[#0088cc] hover:bg-[#0077b5] active:scale-[0.98] transition flex items-center justify-center"
                 onClick={() => window.open('https://t.me/novachaindigitalsupport', '_blank')}
               >
