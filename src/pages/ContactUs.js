@@ -27,7 +27,7 @@ export default function ContactUs() {
                 Message on WhatsApp
               </a>
               <a
-                href="https://t.me/novachainsupport"
+                href="https://t.me/novachaindigitalsupport"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex-1 rounded-xl px-4 py-3 text-center font-bold text-white bg-[#229ED9] hover:bg-[#178fca] transition shadow"
