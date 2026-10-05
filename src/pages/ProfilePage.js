@@ -767,7 +767,7 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
               </button>
               <button
                 className="h-12 rounded-xl font-bold text-white bg-[#0088cc] hover:bg-[#0077b5] active:scale-[0.98] transition flex items-center justify-center"
-                onClick={() => window.open('https://t.me/novachainsgofficialcom', '_blank')}
+                onClick={() => window.open('https://t.me/novachainsupport', '_blank')}
               >
                {t('profile_telegram')}
               </button>
