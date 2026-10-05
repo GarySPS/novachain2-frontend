@@ -78,7 +78,7 @@ export default function WalletRecentActivityCard({
 
                 <div className="min-w-0">
                   <div className="truncate text-sm font-black text-gray-100">
-                    {t(row.type.toLowerCase())} {row.coin}
+                    {t(row.type.toLowerCase())} {row.coin} {row.status && row.status.toLowerCase() !== 'completed' ? `(${row.status})` : ''}
                   </div>
 
                   <div className="text-[11px] font-medium text-gray-500">
@@ -139,6 +139,8 @@ export default function WalletRecentActivityCard({
                       className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-bold ring-1 ${
                         isDeposit(row)
                           ? "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20"
+                          : row.status?.toLowerCase() === 'rejected'
+                          ? "bg-red-500/10 text-red-400 ring-red-500/20"
                           : "bg-amber-500/10 text-amber-400 ring-amber-500/20"
                       }`}
                     >
@@ -146,7 +148,9 @@ export default function WalletRecentActivityCard({
                         name={isDeposit(row) ? "download" : "upload"}
                         className="h-4 w-4"
                       />
-                      {t(row.type.toLowerCase())}
+                      <span>
+                        {t(row.type.toLowerCase())} {row.status && row.status.toLowerCase() !== 'completed' ? `(${row.status})` : ''}
+                      </span>
                     </span>
                   </td>
 
