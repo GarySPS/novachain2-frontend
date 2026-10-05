@@ -654,13 +654,6 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
 
               <button
                 className="h-16 px-4 rounded-xl font-semibold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] hover:text-white transition flex flex-col items-center justify-center text-sm"
-                onClick={() => navigate('/news')}
-              >
-                <Icon name="newspaper" className="mb-1.5 w-5 h-5 opacity-70" /> {t('news')}
-              </button>
-              
-              <button
-                className="h-16 px-4 rounded-xl font-semibold bg-[#1a2343] border border-white/5 text-gray-300 hover:bg-[#202b54] hover:text-white transition flex flex-col items-center justify-center text-sm"
                 onClick={() => navigate('/about')}
               >
                 <Icon name="info" className="mb-1.5 w-5 h-5 opacity-70" /> {t('about_us')}
@@ -767,7 +760,7 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
               </button>
               <button
                 className="h-12 rounded-xl font-bold text-white bg-[#0088cc] hover:bg-[#0077b5] active:scale-[0.98] transition flex items-center justify-center"
-                onClick={() => window.open('https://t.me/novachainsupport', '_blank')}
+                onClick={() => window.open('https://t.me/novachaindigitalsupport', '_blank')}
               >
                {t('profile_telegram')}
               </button>
