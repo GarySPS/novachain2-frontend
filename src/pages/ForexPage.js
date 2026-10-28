@@ -102,6 +102,40 @@ export default function ForexPage() {
   const [fetchError, setFetchError] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [usdtBalance, setUsdtBalance] = useState(0);
+
+  // --- Fetch USDT Wallet Balance ---
+useEffect(() => {
+  const fetchBalance = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) return;
+
+    try {
+      const res = await axios.get(`${MAIN_API_BASE}/balance`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const usdt = res.data.assets?.find(
+        (asset) => String(asset.symbol).toUpperCase() === "USDT"
+      );
+
+      if (usdt) {
+        setUsdtBalance(Number(usdt.balance) || 0);
+      }
+    } catch (err) {
+      console.error("Failed to fetch USDT balance:", err);
+    }
+  };
+
+  fetchBalance();
+
+  const interval = setInterval(fetchBalance, 15000);
+
+  return () => clearInterval(interval);
+}, []);
 
   // --- pretty toast ---
   const [toast, setToast] = useState(null);
@@ -763,6 +797,7 @@ export default function ForexPage() {
         profitMap={profitMap}
         onSubmit={executeTrade}
         t={t}
+        usdtBalance={usdtBalance}
       />
 
       {/* Toast */}

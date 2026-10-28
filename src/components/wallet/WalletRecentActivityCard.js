@@ -30,6 +30,57 @@ export default function WalletRecentActivityCard({
 
   const isDeposit = (row) => row.type === "Deposit";
 
+  // Convert backend statuses into user-facing transaction statuses.
+const getStatusKey = (row) => {
+  const status = String(row.status || "").trim().toLowerCase();
+
+  if (
+    ["completed", "complete", "successful", "success"].includes(status)
+  ) {
+    return "successful";
+  }
+
+  if (
+    ["rejected", "failed", "failure", "cancelled", "canceled", "declined"].includes(status)
+  ) {
+    return "failed";
+  }
+
+  // An approval alone does not prove that a withdrawal was sent.
+  // Treat it as successful only when the backend confirms completion.
+  if (status === "approved" && row.type === "Deposit") {
+    return "successful";
+  }
+
+  return "processing";
+};
+
+const getStatusLabel = (row) => {
+  const statusKey = getStatusKey(row);
+
+  const labels = {
+    successful: t("status_successful", "Successful"),
+    failed: t("status_failed", "Failed"),
+    processing: t("status_processing", "Processing"),
+  };
+
+  return labels[statusKey];
+};
+
+const getStatusClass = (row) => {
+  const statusKey = getStatusKey(row);
+
+  if (statusKey === "successful") {
+    return "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20";
+  }
+
+  if (statusKey === "failed") {
+    return "bg-red-500/10 text-red-400 ring-red-500/20";
+  }
+
+  return "bg-amber-500/10 text-amber-400 ring-amber-500/20";
+};
+
   return (
     <Card className={`${cardClass} p-0`}>
       <div className="border-b border-white/5 bg-[#0f1424] px-4 py-4 sm:px-5 md:px-6">
@@ -78,7 +129,7 @@ export default function WalletRecentActivityCard({
 
                 <div className="min-w-0">
                   <div className="truncate text-sm font-black text-gray-100">
-                    {t(row.type.toLowerCase())} {row.coin} {row.status && row.status.toLowerCase() !== 'completed' ? `(${row.status})` : ''}
+                    {t(row.type.toLowerCase())} {row.coin} ({getStatusLabel(row)})
                   </div>
 
                   <div className="text-[11px] font-medium text-gray-500">
@@ -136,20 +187,14 @@ export default function WalletRecentActivityCard({
                 >
                   <td className="py-3 pl-6 pr-4">
                     <span
-                      className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-bold ring-1 ${
-                        isDeposit(row)
-                          ? "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20"
-                          : row.status?.toLowerCase() === 'rejected'
-                          ? "bg-red-500/10 text-red-400 ring-red-500/20"
-                          : "bg-amber-500/10 text-amber-400 ring-amber-500/20"
-                      }`}
+                      className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-bold ring-1 ${getStatusClass(row)}`}
                     >
                       <Icon
                         name={isDeposit(row) ? "download" : "upload"}
                         className="h-4 w-4"
                       />
                       <span>
-                        {t(row.type.toLowerCase())} {row.status && row.status.toLowerCase() !== 'completed' ? `(${row.status})` : ''}
+                        {t(row.type.toLowerCase())} ({getStatusLabel(row)})
                       </span>
                     </span>
                   </td>

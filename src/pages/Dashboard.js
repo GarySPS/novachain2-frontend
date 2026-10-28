@@ -500,37 +500,55 @@ return (
 
       </div> {/* Closes z-index wrapper */}
 
-      {/* ===== Premium Floating Promo Video ===== */}
-     {showPromotion && (
-       <div
-         className="fixed bottom-28 left-1/2 -translate-x-1/2 z-50 w-[92vw] max-w-[340px] rounded-2xl overflow-hidden backdrop-blur-xl bg-black/40 border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.8)] transition-all"
-       >
-         <div className="relative p-1">
-           {/* Glass close button */}
-           <button
-             onClick={handleClosePromotion}
-             className="absolute top-3 right-3 z-10 h-8 w-8 rounded-full bg-black/50 backdrop-blur-md text-gray-300 border border-white/10 hover:bg-black/80 hover:text-white transition-colors flex items-center justify-center shadow-lg"
-             aria-label="Close promotion"
-           >
-             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-               <line x1="18" y1="6" x2="6" y2="18"></line>
-               <line x1="6" y1="6" x2="18" y2="18"></line>
-             </svg>
-           </button>
-           {/* Rounded video wrapper to fit inside the padding */}
-           <div className="rounded-xl overflow-hidden bg-[#0b1020]">
-             <video
-               src="/promotion.mp4"
-               autoPlay
-               loop
-               muted
-               playsInline
-               className="w-full h-auto object-cover opacity-95" // Slight opacity drop makes it blend better with dark mode
-             />
-           </div>
-         </div>
-       </div>
-     )}
+      
+      {/* ===== Responsive Floating Promo Video ===== */}
+      {showPromotion && (
+        <div
+          className="fixed bottom-28 left-1/2 -translate-x-1/2 z-[100] w-[92vw] max-w-[340px] rounded-2xl overflow-hidden bg-black/80 border border-white/20 shadow-2xl"
+          style={{ maxHeight: "calc(100dvh - 7rem)" }}
+          role="dialog"
+          aria-label="Promotion"
+        >
+          <div className="relative p-1">
+            {/* Large, easy-to-tap close button */}
+            <button
+              type="button"
+              onClick={handleClosePromotion}
+              className="absolute top-2 right-2 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black text-white border-2 border-white shadow-lg active:scale-95"
+              aria-label="Close promotion"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            {/* Keep the video within the visible mobile screen */}
+            <div className="rounded-xl overflow-hidden bg-[#0b1020]">
+              <video
+                src="/promotion.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="block w-full h-auto object-contain"
+                style={{ maxHeight: "calc(100dvh - 9rem)" }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

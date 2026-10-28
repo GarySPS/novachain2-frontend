@@ -224,7 +224,7 @@ export default function SignUpPage() {
                       : "text-gray-500 hover:text-white"
                   }`}
                 >
-                  {t("telegram")}
+                  Phone
                 </button>
               </div>
 

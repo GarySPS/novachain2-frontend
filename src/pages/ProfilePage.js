@@ -62,6 +62,7 @@ export default function ProfilePage() {
   const [pwSuccess, setPwSuccess] = useState("");
   const [balanceHistory, setBalanceHistory] = useState([]);
   const [authChecked, setAuthChecked] = useState(false);
+  const [accountIdCopied, setAccountIdCopied] = useState(false);
 
 const [deferredPrompt, setDeferredPrompt] = useState(null);
 const [isInstalled, setIsInstalled] = useState(false);
@@ -364,6 +365,7 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
                 <div className="text-2xl md:text-3xl font-black text-white tracking-tight">
                   {user.username}
                 </div>
+
                 {kycStatus === "approved" && (
                   <span className="inline-flex items-center text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -385,6 +387,36 @@ if (res.data.user.language && res.data.user.language !== i18n.language) {
                   : kycStatus === "rejected" ? t("needs_new_upload", "Needs new upload")
                   : t("not_verified", "Not verified")}
               </div>
+
+              {/* Account ID */}
+<div className="mt-4 inline-flex items-center gap-2 rounded-xl border border-sky-400/20 bg-[#0b1020] px-3 py-2">
+  <Icon name="id-card" className="h-4 w-4 text-sky-400" />
+
+  <span className="text-xs text-gray-400">Account ID</span>
+
+  <span className="font-mono text-sm font-bold text-sky-300">
+    {user.id || "—"}
+  </span>
+
+  <button
+    type="button"
+    disabled={!user?.id}
+    onClick={async () => {
+      try {
+        await navigator.clipboard.writeText(String(user.id));
+        setAccountIdCopied(true);
+        window.setTimeout(() => setAccountIdCopied(false), 1500);
+      } catch {
+        window.prompt("Copy your Account ID", String(user.id));
+      }
+    }}
+    className="text-gray-400 hover:text-white"
+  >
+    {accountIdCopied
+      ? <Icon name="check" className="h-4 w-4 text-emerald-400" />
+      : <Icon name="copy" className="h-4 w-4" />}
+  </button>
+</div>
 
               <button
                 className="mt-8 h-11 px-6 rounded-xl font-bold bg-rose-500/10 text-rose-400 ring-1 ring-rose-500/20 hover:bg-rose-500/20 transition flex items-center"
