@@ -565,7 +565,12 @@
 "wallet_mxn_confirmation": "Your virtual USDT balance updates once the deposit request succeeds.",
 "wallet_copy": "Copy",
 "wallet_copy_manually": "Select and copy the CLABE manually.",
-"wallet_done": "Done"
+"wallet_done": "Done",
+
+"wallet_mxn_transfer_details": "MXN transfer details",
+"wallet_mxn_institution": "Payment institution",
+"wallet_mxn_account_holder": "Bank account holder"
+
 
 }
 

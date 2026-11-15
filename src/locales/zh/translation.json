@@ -583,6 +583,11 @@
   "close": "关闭",
   "unsupported": "您的浏览器不支持安装该应用。请在 iOS 上使用 Safari 或在安卓上使用 Chrome。",
   "install_notice_title": "安装说明：",
-  "install_notice_desc": "在安卓设备上使用 Chrome/Brave/Opera 打开此网站，然后使用菜单 →“添加到主屏幕”。"
+  "install_notice_desc": "在安卓设备上使用 Chrome/Brave/Opera 打开此网站，然后使用菜单 →“添加到主屏幕”。",
+
+"wallet_mxn_transfer_details": "MXN 转账信息",
+"wallet_mxn_institution": "收款机构",
+"wallet_mxn_account_holder": "银行账户持有人"
+
 
 }

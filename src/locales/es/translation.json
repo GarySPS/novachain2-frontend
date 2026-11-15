@@ -314,7 +314,12 @@
 "wallet_copy_manually": "Selecciona y copia la CLABE manualmente.",
 "wallet_done": "Listo",
 "submitting": "Enviando…",
-"copied": "¡Copiado!"
+"copied": "¡Copiado!",
+
+"wallet_mxn_transfer_details": "Datos de transferencia en MXN",
+"wallet_mxn_institution": "Institución de pago",
+"wallet_mxn_account_holder": "Titular de la cuenta bancaria"
+
 
 
 }

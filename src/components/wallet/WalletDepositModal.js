@@ -628,11 +628,44 @@ export default function WalletDepositModal({
 
                 {mxnQuote && Number(mxnQuote.mxnAmount) === Number(mxnAmount) && (
                 <div className="rounded-xl border border-white/10 bg-[#0b1424] px-3 py-3">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-sm font-bold text-white">{mxnQuote?.payment?.institution || MXN_BANK_TRANSFER.institution}</span>
-                    <span className="text-[10px] font-semibold text-slate-500">SPEI · MXN</span>
-                  </div>
-                  <p className="text-xs leading-5 text-slate-300">{mxnQuote?.payment?.holder || MXN_BANK_TRANSFER.holder}</p>
+                  
+<div className="mb-3 flex items-center justify-between gap-2">
+  <div className="flex min-w-0 items-center gap-2">
+    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-600 text-lg font-black text-white">
+      N
+    </div>
+    <div className="min-w-0">
+      <div className="text-sm font-black text-white">
+        NovaChain
+      </div>
+      <div className="text-[10px] text-slate-400">
+        {t("wallet_mxn_transfer_details", "MXN transfer details")}
+      </div>
+    </div>
+  </div>
+  <span className="shrink-0 text-[10px] font-semibold text-sky-300">
+    SPEI · MXN
+  </span>
+</div>
+
+<div className="border-t border-white/10 pt-3">
+  <div className="text-[10px] text-slate-500">
+    {t("wallet_mxn_institution", "Payment institution")}
+  </div>
+  <div className="mt-1 text-sm font-bold text-white">
+    {mxnQuote?.payment?.institution || MXN_BANK_TRANSFER.institution}
+  </div>
+</div>
+
+<div className="mt-3">
+  <div className="text-[10px] text-slate-500">
+    {t("wallet_mxn_account_holder", "Bank account holder")}
+  </div>
+  <div className="mt-1 text-xs font-semibold text-slate-200">
+    {mxnQuote?.payment?.holder || MXN_BANK_TRANSFER.holder}
+  </div>
+</div>
+
                   <div className="mt-2 flex items-center gap-2 rounded-lg bg-[#070d19] px-2.5 py-1.5">
                     <div className="min-w-0 flex-1">
                       <div className="text-[9px] uppercase tracking-wide text-slate-500">CLABE</div>
