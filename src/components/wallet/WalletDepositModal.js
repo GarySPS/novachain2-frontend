@@ -3,6 +3,14 @@
 import React, { useState, useEffect } from "react";
 import Modal from "../modal";
 import Icon from "../icon";
+import { MAIN_API_BASE } from "../../config";
+
+// MXN payment details. The backend confirms the destination and quote.
+const MXN_BANK_TRANSFER = {
+  holder: "Carlos Martin Gonzalez Ortiz",
+  clabe: "722969020602102378",
+  institution: "Mercado Pago",
+};
 
 export default function WalletDepositModal({
   visible,
@@ -29,8 +37,20 @@ export default function WalletDepositModal({
   handleWeb3Deposit,
   web3Busy,
   isConnected,
+  onMxnRequested,
 }) {
   const [activeTab, setActiveTab] = useState("web3");
+  const [depositMethod, setDepositMethod] = useState("crypto");
+  const [mxnCopyStatus, setMxnCopyStatus] = useState("idle");
+  const [mxnAmount, setMxnAmount] = useState("");
+  const [mxnReceipt, setMxnReceipt] = useState(null);
+  const [mxnReceiptBusy, setMxnReceiptBusy] = useState(false);
+  const [mxnQuote, setMxnQuote] = useState(null);
+  const [mxnQuoteLoading, setMxnQuoteLoading] = useState(false);
+  const [mxnQuoteError, setMxnQuoteError] = useState("");
+  const [mxnBusy, setMxnBusy] = useState(false);
+  const [mxnError, setMxnError] = useState("");
+  const [mxnCreated, setMxnCreated] = useState(null);
   // NEW: State controls for our premium UI popups
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isQRExpanded, setIsQRExpanded] = useState(false);
@@ -40,8 +60,131 @@ export default function WalletDepositModal({
       const isWeb3Browser =
         !!window.ethereum || !!window.okxwallet || !!window.trustwallet;
       setActiveTab(isWeb3Browser ? "web3" : "manual");
+      setDepositMethod("crypto");
+      setMxnCopyStatus("idle");
+      setMxnAmount("");
+      setMxnReceipt(null);
+      setMxnQuote(null);
+      setMxnQuoteError("");
+      setMxnError("");
+      setMxnCreated(null);
+      setIsDropdownOpen(false);
+      setIsQRExpanded(false);
     }
   }, [visible]);
+
+  useEffect(() => {
+    if (!visible || depositMethod !== "mxn") return;
+    setMxnQuote(null);
+    setMxnQuoteError("");
+    if (!/^\d+(?:\.\d{1,2})?$/.test(mxnAmount) || Number(mxnAmount) <= 0) {
+      setMxnQuoteLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      setMxnQuoteLoading(true);
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${MAIN_API_BASE}/deposit/mxn-quote?amount=${encodeURIComponent(mxnAmount)}`,
+          { headers: { Authorization: `Bearer ${token}` }, signal: controller.signal }
+        );
+        const result = await response.json();
+        if (!response.ok) throw new Error(response.status === 404
+          ? 'MXN service is not available on this backend. Restart or deploy the updated backend.'
+          : (result.error || 'Unable to get exchange rate.'));
+        if (!controller.signal.aborted) setMxnQuote(result);
+      } catch (error) {
+        if (!controller.signal.aborted) setMxnQuoteError(error.message || "Quote unavailable.");
+      } finally {
+        if (!controller.signal.aborted) setMxnQuoteLoading(false);
+      }
+    }, 250);
+    return () => { clearTimeout(timer); controller.abort(); };
+  }, [visible, depositMethod, mxnAmount]);
+
+  async function compressMxnScreenshot(file) {
+    // Compress locally so receipts can be stored durably in the existing DB
+    // without a new Supabase Storage bucket or disk dependency.
+    if (!file || !file.type.startsWith('image/')) throw new Error('Choose a payment screenshot.');
+    if (file.size > 8 * 1024 * 1024) throw new Error('Choose an image smaller than 8 MB.');
+    if (['image/jpeg','image/png','image/webp'].includes(file.type) && file.size <= 300 * 1024) return file;
+    const url = URL.createObjectURL(file);
+    try {
+      const picture = new Image();
+      await new Promise((resolve, reject) => {
+        picture.onload = resolve;
+        picture.onerror = () => reject(new Error('This image cannot be opened. Use a PNG or JPG screenshot.'));
+        picture.src = url;
+      });
+      for (const longest of [1700, 1450, 1200]) {
+        const scale = Math.min(1, longest / Math.max(picture.naturalWidth, picture.naturalHeight));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(picture.naturalWidth * scale);
+        canvas.height = Math.round(picture.naturalHeight * scale);
+        const context = canvas.getContext('2d');
+        if (!context) throw new Error('Image processing is unavailable.');
+        context.fillStyle = '#fff';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(picture, 0, 0, canvas.width, canvas.height);
+        for (const quality of [0.85, 0.73, 0.6]) {
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+          if (blob && blob.size <= 300 * 1024) {
+            return new File([blob], 'mxn-transfer.jpg', { type: 'image/jpeg' });
+          }
+        }
+      }
+      throw new Error('Screenshot is too large. Crop it to the transfer details and try again.');
+    } finally { URL.revokeObjectURL(url); }
+  }
+
+  async function chooseMxnReceipt(event) {
+    const original = event.target.files?.[0];
+    setMxnReceipt(null);
+    setMxnError('');
+    if (!original) return;
+    setMxnReceiptBusy(true);
+    try { setMxnReceipt(await compressMxnScreenshot(original)); }
+    catch (error) { setMxnError(error.message || 'Unable to prepare screenshot.'); }
+    finally { setMxnReceiptBusy(false); }
+  }
+
+  async function submitMxnDeposit(event) {
+    event.preventDefault();
+    if (mxnBusy || mxnReceiptBusy || !mxnQuote || Number(mxnQuote.mxnAmount) !== Number(mxnAmount) || !mxnReceipt || mxnCreated) return;
+    setMxnBusy(true);
+    setMxnError('');
+    try {
+      const token = localStorage.getItem('token');
+      const form = new FormData();
+      form.append('mxnAmount', mxnQuote.mxnAmount);
+      form.append('rateMxnPerUsdt', String(mxnQuote.rateMxnPerUsdt));
+      form.append('screenshot', mxnReceipt, mxnReceipt.name);
+      const response = await fetch(`${MAIN_API_BASE}/deposit/mxn`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: form, // Let the browser supply the multipart boundary.
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Payment request could not be submitted.');
+      setMxnCreated(result);
+      onMxnRequested?.();
+    } catch (error) {
+      setMxnError(error.message || 'Payment request could not be submitted.');
+    } finally { setMxnBusy(false); }
+  }
+
+  async function copyMxnClabe() {
+    try {
+      await navigator.clipboard.writeText(mxnQuote?.payment?.clabe || MXN_BANK_TRANSFER.clabe);
+      setMxnCopyStatus("copied");
+    } catch {
+      // On browsers without clipboard permission, the CLABE remains selectable.
+      setMxnCopyStatus("manual");
+    }
+  }
 
   return (
     <Modal
@@ -51,7 +194,7 @@ export default function WalletDepositModal({
       classButtonClose="text-gray-400 hover:text-white z-20"
     >
       {/* Scrollable, relative container for our custom absolute overlays */}
-      <div className="relative max-h-[85dvh] overflow-y-auto overscroll-contain px-2 pb-40 pt-2 scrollbar-hide">
+      <div className="relative max-h-[85dvh] overflow-y-auto overscroll-contain px-2 pb-5 pt-2 scrollbar-hide">
         
         {/* ================= OVERLAY: Custom Asset Selector ================= */}
         {isDropdownOpen && (
@@ -150,6 +293,43 @@ export default function WalletDepositModal({
           {t("deposit", "Deposit")}
         </h2>
 
+        {/* Primary deposit rail. MXN is display-only until the backend is ready. */}
+        <div className="mb-3 grid grid-cols-2 gap-1 rounded-xl border border-white/10 bg-[#070b16] p-1" role="tablist" aria-label={t("wallet_payment_method", "Deposit method")}>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={depositMethod === "crypto"}
+            onClick={() => setDepositMethod("crypto")}
+            className={`min-h-10 rounded-lg px-3 py-2 text-sm font-bold transition-colors ${
+              depositMethod === "crypto"
+                ? "bg-[#1a2343] text-white ring-1 ring-sky-500/25"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            {t("wallet_crypto_method", "Crypto")}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={depositMethod === "mxn"}
+            onClick={() => {
+              setIsDropdownOpen(false);
+              setIsQRExpanded(false);
+              setDepositMethod("mxn");
+            }}
+            className={`min-h-10 rounded-lg px-3 py-2 text-sm font-bold transition-colors ${
+              depositMethod === "mxn"
+                ? "bg-sky-500/15 text-sky-200 ring-1 ring-sky-500/40"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            MXN · SPEI
+          </button>
+        </div>
+
+        {depositMethod === "crypto" ? (
+          <>
+            {/* Existing cryptocurrency methods are unchanged. */}
         {/* Ultra-Slim Tab Switcher */}
         <div className="mb-5 flex rounded-lg bg-[#070b16] p-1 ring-1 ring-white/10">
           <button
@@ -394,6 +574,122 @@ export default function WalletDepositModal({
               {depositBusy ? (t("submitting") || "Submitting...") : t("submit_proof")}
             </button>
           </form>
+        )}
+          </>
+        ) : (
+          <section className="space-y-3" role="tabpanel" aria-label={t("wallet_mxn_method", "MXN bank transfer")}>
+            {mxnCreated ? (
+              <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.06] p-4 text-center">
+                <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-amber-400/15 text-amber-300">
+                  <Icon name="clock" className="h-5 w-5" />
+                </div>
+                <p className="mt-2 text-sm font-bold text-white">{t("wallet_deposit_processing", "Processing")}</p>
+                <p className="mt-1 text-xs text-slate-400">{t("wallet_request_number", "Request")} #{mxnCreated.id}</p>
+                <p className="mt-3 text-xl font-black tabular-nums text-white">{Number(mxnCreated.usdtAmount).toLocaleString(undefined, { maximumFractionDigits: 6 })} USDT</p>
+                <p className="mt-2 text-xs text-slate-400">{t("wallet_mxn_confirmation", "Your USDT balance will update after the bank transfer is verified.")}</p>
+                <button type="button" onClick={onClose} className="mt-4 h-10 w-full rounded-xl bg-sky-600 text-sm font-bold text-white">
+                  {t("common.done", "Done")}
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={submitMxnDeposit} className="space-y-3">
+                <div>
+                  <label htmlFor="wallet-mxn-amount" className="mb-1 block text-[11px] font-semibold text-slate-400">
+                    {t("wallet_mxn_amount", "Deposit amount")}
+                  </label>
+                  <div className="flex h-12 items-center rounded-xl border border-white/10 bg-[#070d19] px-3 focus-within:border-sky-500/60">
+                    <input
+                      id="wallet-mxn-amount"
+                      inputMode="decimal"
+                      type="text"
+                      value={mxnAmount}
+                      onChange={(event) => { setMxnAmount(event.target.value); setMxnError(""); }}
+                      placeholder="0.00"
+                      maxLength={12}
+                      className="min-w-0 flex-1 bg-transparent text-lg font-bold tabular-nums text-white outline-none placeholder:text-slate-600"
+                    />
+                    <span className="text-xs font-bold text-sky-300">MXN</span>
+                  </div>
+                </div>
+
+                <div className="flex min-h-14 items-center justify-between gap-2 rounded-xl bg-sky-500/[0.07] px-3 py-2">
+                  <div className="min-w-0">
+                    <div className="text-[10px] font-medium text-slate-400">{t("wallet_usdt_credit", "Estimated credit")}</div>
+                    <div className="mt-0.5 text-[10px] text-slate-500">
+                      {mxnQuote ? `1 USDT = ${mxnQuote.rateMxnPerUsdt} MXN` : t("wallet_mxn_enter_amount", "Enter an amount to view the rate")}
+                    </div>
+                  </div>
+                  <div className="shrink-0 text-right text-base font-black tabular-nums text-white">
+                    {mxnQuoteLoading ? "…" : mxnQuote ? Number(mxnQuote.usdtAmount).toLocaleString(undefined, { maximumFractionDigits: 6 }) : "—"}
+                    <span className="ml-1 text-xs font-bold text-sky-300">USDT</span>
+                  </div>
+                </div>
+                {mxnQuoteError && <p role="alert" className="text-[11px] leading-4 text-amber-300">{mxnQuoteError}</p>}
+
+                {mxnQuote && Number(mxnQuote.mxnAmount) === Number(mxnAmount) && (
+                <div className="rounded-xl border border-white/10 bg-[#0b1424] px-3 py-3">
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-sm font-bold text-white">{mxnQuote?.payment?.institution || MXN_BANK_TRANSFER.institution}</span>
+                    <span className="text-[10px] font-semibold text-slate-500">SPEI · MXN</span>
+                  </div>
+                  <p className="text-xs leading-5 text-slate-300">{mxnQuote?.payment?.holder || MXN_BANK_TRANSFER.holder}</p>
+                  <div className="mt-2 flex items-center gap-2 rounded-lg bg-[#070d19] px-2.5 py-1.5">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[9px] uppercase tracking-wide text-slate-500">CLABE</div>
+                      <input
+                        type="text"
+                        inputMode="none"
+                        readOnly
+                        value={mxnQuote?.payment?.clabe || MXN_BANK_TRANSFER.clabe}
+                        onFocus={(event) => event.currentTarget.select()}
+                        className="w-full bg-transparent font-mono text-[clamp(10px,3vw,13px)] font-semibold tracking-tight text-white outline-none"
+                        aria-label="CLABE"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={copyMxnClabe}
+                      className="flex h-9 shrink-0 items-center gap-1 rounded-lg bg-sky-500/15 px-2.5 text-xs font-bold text-sky-200"
+                    >
+                      <Icon name={mxnCopyStatus === "copied" ? "check" : "copy"} className="h-3.5 w-3.5" />
+                      {mxnCopyStatus === "copied" ? t("copied", "Copied") : t("wallet_copy", "Copy")}
+                    </button>
+                  </div>
+                  {mxnCopyStatus === "manual" && <p className="mt-1 text-[10px] text-slate-400">{t("wallet_copy_manually", "Select and copy the CLABE manually.")}</p>}
+                </div>
+
+                )}
+
+                <div>
+                  <label htmlFor="wallet-mxn-receipt" className="mb-1 block text-[11px] font-semibold text-slate-400">
+                    {t('wallet_mxn_receipt', 'Payment screenshot')}
+                  </label>
+                  <label htmlFor="wallet-mxn-receipt" className="flex min-h-12 cursor-pointer items-center justify-between gap-2 rounded-xl border border-dashed border-sky-400/30 bg-sky-500/[0.05] px-3 text-xs font-semibold text-sky-200">
+                    <span className="flex min-w-0 items-center gap-2">
+                      <Icon name={mxnReceipt ? 'check-circle' : 'upload-cloud'} className="h-4 w-4 shrink-0" />
+                      <span className="truncate">{mxnReceiptBusy ? t('wallet_mxn_preparing', 'Preparing image…') : mxnReceipt ? t('wallet_mxn_receipt_ready', 'Screenshot ready') : t('wallet_mxn_choose_receipt', 'Choose screenshot')}</span>
+                    </span>
+                    <span className="shrink-0 text-[10px] text-slate-400">JPG · PNG · WebP</span>
+                  </label>
+                  <input
+                    id="wallet-mxn-receipt" type="file" accept="image/png,image/jpeg,image/webp"
+                    onChange={chooseMxnReceipt} className="sr-only"
+                  />
+                </div>
+                {mxnError && <p role="alert" className="text-[11px] leading-4 text-rose-300">{mxnError}</p>}
+                <button
+                  type="submit"
+                  disabled={mxnBusy || !mxnQuote || Number(mxnQuote.mxnAmount) !== Number(mxnAmount) || mxnQuoteLoading || mxnReceiptBusy || !mxnReceipt}
+                  className="h-11 w-full rounded-xl bg-sky-600 text-sm font-bold text-white transition enabled:hover:bg-sky-500 disabled:cursor-not-allowed disabled:bg-slate-800 disabled:text-slate-500"
+                >
+                  {mxnBusy ? t("submitting", "Submitting…") : t("wallet_mxn_submit", "Submit payment request")}
+                </button>
+                <p className="text-center text-[10px] leading-4 text-slate-500">
+                  {t("wallet_mxn_confirmation", "Your USDT balance will update after the bank transfer is verified.")}
+                </p>
+              </form>
+            )}
+          </section>
         )}
       </div>
     </Modal>

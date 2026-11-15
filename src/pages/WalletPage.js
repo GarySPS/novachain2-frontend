@@ -725,6 +725,11 @@ return (
         handleWeb3Deposit={handleWeb3Deposit}
         web3Busy={web3Busy}
         isConnected={isConnected}
+        onMxnRequested={() => {
+          axios.get(`${MAIN_API_BASE}/deposits`, { headers: { Authorization: `Bearer ${token}` } })
+            .then((response) => setDepositHistory(response.data))
+            .catch(() => {});
+        }}
       />
 
       <WalletWithdrawModal
