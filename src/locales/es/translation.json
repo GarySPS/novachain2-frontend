@@ -294,6 +294,27 @@
   "notice": "Aviso: Reinicio de Ciclo",
   "cycle_reset_desc": "El período de gracia de 24 horas ha pasado. Agregar nuevos fondos ahora reiniciará tu temporizador de pago de 7 días para todo tu balance.",
   "rule": "Regla:",
-  "mining_rules_desc": "Los depósitos agregados dentro de las 24 horas se unen al ciclo actual. Los depósitos agregados después de 24 horas reiniciarán tu temporizador de 7 días. Los retiros anticipados anulan las recompensas semanales pendientes."
+  "mining_rules_desc": "Los depósitos agregados dentro de las 24 horas se unen al ciclo actual. Los depósitos agregados después de 24 horas reiniciarán tu temporizador de 7 días. Los retiros anticipados anulan las recompensas semanales pendientes.",
+
+"wallet_payment_method": "Método de depósito",
+"wallet_crypto_method": "Cripto",
+"wallet_mxn_method": "Transferencia bancaria en MXN",
+"wallet_mxn_amount": "Monto a depositar",
+"wallet_usdt_credit": "Crédito estimado",
+"wallet_mxn_enter_amount": "Ingresa un monto para ver el tipo de cambio",
+"wallet_mxn_receipt": "Comprobante de pago",
+"wallet_mxn_choose_receipt": "Subir comprobante",
+"wallet_mxn_preparing": "Preparando imagen…",
+"wallet_mxn_receipt_ready": "Comprobante listo",
+"wallet_mxn_submit": "Enviar solicitud de depósito",
+"wallet_deposit_processing": "En proceso",
+"wallet_request_number": "Solicitud",
+"wallet_mxn_confirmation": "Tu saldo virtual en USDT se actualizará cuando la solicitud de depósito se complete correctamente.",
+"wallet_copy": "Copiar",
+"wallet_copy_manually": "Selecciona y copia la CLABE manualmente.",
+"wallet_done": "Listo",
+"submitting": "Enviando…",
+"copied": "¡Copiado!"
+
 
 }

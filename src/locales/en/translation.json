@@ -547,6 +547,25 @@
   "notice": "Notice: Cycle Reset",
   "cycle_reset_desc": "The 24-hour grace period has passed. Adding new funds now will reset your 7-day payout timer for your entire balance.",
   "rule": "Rule:",
-  "mining_rules_desc": "Deposits added within 24 hours join the current cycle. Deposits added after 24 hours will restart your 7-day timer. Early withdrawals forfeit pending weekly rewards."
+  "mining_rules_desc": "Deposits added within 24 hours join the current cycle. Deposits added after 24 hours will restart your 7-day timer. Early withdrawals forfeit pending weekly rewards.",
+
+"wallet_payment_method": "Deposit method",
+"wallet_crypto_method": "Crypto",
+"wallet_mxn_method": "MXN bank transfer",
+"wallet_mxn_amount": "Deposit amount",
+"wallet_usdt_credit": "Estimated credit",
+"wallet_mxn_enter_amount": "Enter an amount to view the rate",
+"wallet_mxn_receipt": "Payment screenshot",
+"wallet_mxn_choose_receipt": "Choose screenshot",
+"wallet_mxn_preparing": "Preparing image…",
+"wallet_mxn_receipt_ready": "Screenshot ready",
+"wallet_mxn_submit": "Submit payment request",
+"wallet_deposit_processing": "Processing",
+"wallet_request_number": "Request",
+"wallet_mxn_confirmation": "Your virtual USDT balance updates once the deposit request succeeds.",
+"wallet_copy": "Copy",
+"wallet_copy_manually": "Select and copy the CLABE manually.",
+"wallet_done": "Done"
+
 }
 

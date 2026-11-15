@@ -588,7 +588,7 @@ export default function WalletDepositModal({
                 <p className="mt-3 text-xl font-black tabular-nums text-white">{Number(mxnCreated.usdtAmount).toLocaleString(undefined, { maximumFractionDigits: 6 })} USDT</p>
                 <p className="mt-2 text-xs text-slate-400">{t("wallet_mxn_confirmation", "Your USDT balance will update after the bank transfer is verified.")}</p>
                 <button type="button" onClick={onClose} className="mt-4 h-10 w-full rounded-xl bg-sky-600 text-sm font-bold text-white">
-                  {t("common.done", "Done")}
+                  {t("wallet_done", "Done")}
                 </button>
               </div>
             ) : (
