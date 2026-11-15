@@ -8,11 +8,17 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 
 const projectId = 'f9d63295119b677c0e58f3e0f7aee760';
 
+// Keep WalletConnect metadata aligned with whichever Novachain domain is open.
+const siteOrigin =
+  typeof window !== 'undefined'
+    ? window.location.origin
+    : 'https://www.novachain.digital';
+
 const metadata = {
   name: 'NovaChain',
   description: 'NovaChain Crypto Platform',
-  url: 'https://www.novachain.digital',
-  icons: ['https://novachain2-frontend.vercel.app/static/media/NovaChainLogo.cc6658098dc08e8b26e22f2541a7b8e1.svg']
+  url: siteOrigin,
+  icons: [`${siteOrigin}/logo192_new.png`]
 };
 
 const wagmiAdapter = new WagmiAdapter({

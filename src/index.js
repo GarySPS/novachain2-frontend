@@ -12,4 +12,5 @@ root.render(
 );
 
 // Register the service worker here:
-serviceWorkerRegistration.register();
+// No service-worker.js is emitted by this build; retire any old registration.
+serviceWorkerRegistration.unregister();
