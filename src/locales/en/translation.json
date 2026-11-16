@@ -569,8 +569,15 @@
 
 "wallet_mxn_transfer_details": "MXN transfer details",
 "wallet_mxn_institution": "Payment institution",
-"wallet_mxn_account_holder": "Bank account holder"
-
-
+"wallet_mxn_account_holder": "Bank account holder",
+  "login_install_app": "Install NovaChain",
+  "login_install_guide_title": "Add NovaChain to Home Screen",
+  "login_install_ios_steps": "Open your browser's Share menu, choose Add to Home Screen, then tap Add.",
+  "login_install_android_steps": "Open your browser menu (⋮), choose Install app or Add to Home screen, then confirm.",
+  "login_install_desktop_steps": "Use your browser's Install app option in the address bar or menu.",
+  "login_install_hint": "Open NovaChain from your home screen. You may need to sign in the first time.",
+  "login_install_close": "Got it",
+  "login_remember_account": "Remember account",
+  "login_save_password_hint": "Your browser may offer to save your password after sign-in.",
+  "login_verifying": "Verifying…"
 }
-
