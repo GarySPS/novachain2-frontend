@@ -161,6 +161,7 @@ export default function WalletDepositModal({
       const form = new FormData();
       form.append('mxnAmount', mxnQuote.mxnAmount);
       form.append('rateMxnPerUsdt', String(mxnQuote.rateMxnPerUsdt));
+      form.append('paymentClabe', mxnQuote.payment?.clabe || '');
       form.append('screenshot', mxnReceipt, mxnReceipt.name);
       const response = await fetch(`${MAIN_API_BASE}/deposit/mxn`, {
         method: 'POST',
