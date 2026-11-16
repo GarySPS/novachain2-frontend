@@ -326,7 +326,7 @@
   "login_install_desktop_steps": "Utiliza la opción Instalar aplicación en la barra de direcciones o en el menú del navegador.",
   "login_install_hint": "Abre NovaChain desde la pantalla de inicio. Es posible que debas iniciar sesión la primera vez.",
   "login_install_close": "Entendido",
-  "login_remember_account": "Recordar cuenta",
+  "login_remember_account": "Recordar correo o usuario",
   "login_save_password_hint": "Tu navegador puede ofrecerte guardar la contraseña después de iniciar sesión.",
   "login_verifying": "Verificando…"
 }
