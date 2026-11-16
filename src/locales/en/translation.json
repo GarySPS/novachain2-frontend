@@ -579,5 +579,14 @@
   "login_install_close": "Got it",
   "login_remember_account": "Remember email / username",
   "login_save_password_hint": "Your browser may offer to save your password after sign-in.",
-  "login_verifying": "Verifying…"
+  "login_verifying": "Verifying…",
+  "signup_phone_tab": "Phone",
+  "signup_phone_soon": "Soon",
+  "signup_phone_unavailable_title": "Phone registration coming soon",
+  "signup_phone_unavailable": "Phone registration isn't available yet. Please use email to create your account.",
+  "signup_continue_email": "Continue with email",
+  "signup_email_required": "Enter your email address to register.",
+  "signup_failed": "Registration failed",
+  "signup_email_otp_sent": "Check your email for the verification code.",
+  "signup_failed_retry": "Registration failed. Please try again."
 }
