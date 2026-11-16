@@ -577,7 +577,7 @@
   "login_install_desktop_steps": "Use your browser's Install app option in the address bar or menu.",
   "login_install_hint": "Open NovaChain from your home screen. You may need to sign in the first time.",
   "login_install_close": "Got it",
-  "login_remember_account": "Remember account",
+  "login_remember_account": "Remember email / username",
   "login_save_password_hint": "Your browser may offer to save your password after sign-in.",
   "login_verifying": "Verifying…"
 }
