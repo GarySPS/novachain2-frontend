@@ -12,13 +12,10 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [signupMethod, setSignupMethod] = useState("email");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
-  const [codeStage, setCodeStage] = useState(false);
-  const [memberCode, setMemberCode] = useState(["", "", "", "", ""]);
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
   const { t } = useTranslation();
@@ -60,77 +57,36 @@ export default function SignUpPage() {
     setError("");
     setSuccess("");
 
+    // Phone verification is not available. Do not create unverified/demo phone accounts.
+    if (signupMethod !== "email") {
+      setError(t("signup_phone_unavailable", "Phone registration is not available yet. Please register with email."));
+      return;
+    }
+    if (!email.trim()) {
+      setError(t("signup_email_required", "Enter an email address to register."));
+      return;
+    }
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+      setError(t("password_unmatch", "Passwords do not match."));
       return;
     }
 
-    const finalEmail = signupMethod === "email" ? email : "";
-    const finalPhone = signupMethod === "phone" ? phoneNumber : "";
-
-    if (signupMethod === "phone" && codeStage && memberCode.join("").length !== 5) {
-      setError("Please enter your 5-digit member code.");
-      return;
-    }
-
-    if (!finalEmail && !finalPhone) {
-      setError("Please provide your contact information.");
-      return;
-    }
-    
     try {
       const res = await fetch(`${MAIN_API_BASE}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          password,
-          email: finalEmail,
-          phoneNumber: finalPhone,
-          memberCode: codeStage ? memberCode.join("") : null
-        }),
+        body: JSON.stringify({ username, password, email: email.trim() }),
       });
       const data = await res.json();
 
-      if (res.status === 409 && data.unverified) {
-        if (email) {
-          setSuccess("Unverified email. New OTP sent.");
-          setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
-        } else {
-          setSuccess("Account creating pending.");
-        }
+      if (!res.ok && !data.unverified) {
+        setError(data.error || t("signup_failed", "Signup failed"));
         return;
       }
-      if (!res.ok) {
-        setError(data.error || "Signup failed");
-        return;
-      }
-
-      if (email) {
-        setSuccess("OTP code sent to your email.");
-        setTimeout(() => navigate("/verify-otp", { state: { email } }), 1200);
-      } else {
-        if (signupMethod === "phone" && !codeStage) {
-          setSuccess("Phone registered. Please enter Telegram verification code.");
-          setCodeStage(true);
-        } else {
-          setSuccess("Code submitted. Waiting for verification.");
-        }
-      }
+      setSuccess(t("signup_email_otp_sent", "Check your email for the verification code."));
+      setTimeout(() => navigate("/verify-otp", { state: { email: email.trim() } }), 1200);
     } catch {
-      setError("Signup failed. Please try again.");
-    }
-  };
-
-  const handleCodeChange = (index, value) => {
-    if (!/^[0-9]?$/.test(value)) return;
-
-    const newCode = [...memberCode];
-    newCode[index] = value;
-    setMemberCode(newCode);
-
-    if (value && index < 4) {
-      document.getElementById(`code-${index + 1}`)?.focus();
+      setError(t("signup_failed_retry", "Signup failed. Please try again."));
     }
   };
 
@@ -190,7 +146,8 @@ export default function SignUpPage() {
           {/* Compact Form */}
           <form onSubmit={handleSignUp} className="space-y-4 md:space-y-5" autoComplete="on">
             
-            <input
+            {signupMethod === "email" && (
+              <input
               id="username"
               type="text"
               autoComplete="username"
@@ -200,14 +157,15 @@ export default function SignUpPage() {
               required
               placeholder={t("username")}
               className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
-            />
+              />
+            )}
 
-            {/* Email / Phone Toggle Tab - Premium UI Update */}
+            {/* Email / Phone registration options */}
             <div className="space-y-4">
               <div className="flex bg-white/[0.04] p-1.5 rounded-xl border border-white/5">
                 <button
                   type="button"
-                  onClick={() => setSignupMethod("email")}
+                  onClick={() => { setSignupMethod("email"); setError(""); }}
                   className={`flex-1 py-2 text-xs md:text-sm font-bold uppercase tracking-wider rounded-lg transition-all ${
                     signupMethod === "email" 
                       ? "bg-white text-black shadow-md" 
@@ -218,64 +176,54 @@ export default function SignUpPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSignupMethod("phone")}
+                  onClick={() => { setSignupMethod("phone"); setError(""); }}
                   className={`flex-1 py-2 text-xs md:text-sm font-bold uppercase tracking-wider rounded-lg transition-all ${
                     signupMethod === "phone" 
                       ? "bg-white text-black shadow-md" 
                       : "text-gray-500 hover:text-white"
                   }`}
                 >
-                  Phone
+                  {t("signup_phone_tab", "Phone")} <span className="ml-1 text-[9px] normal-case opacity-70">{t("signup_phone_soon", "Soon")}</span>
                 </button>
               </div>
 
-              {/* Dynamic Input */}
-              {signupMethod === "email" ? (
+              {signupMethod === "phone" ? (
+                <div className="rounded-xl border border-sky-400/20 bg-sky-400/[0.06] px-4 py-4 text-left" role="status">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-400/10 text-sm text-sky-300" aria-hidden="true">i</span>
+                    <p className="text-sm font-bold text-slate-100">
+                      {t("signup_phone_unavailable_title", "Phone signup is coming soon")}
+                    </p>
+                  </div>
+                  <p className="mt-2 text-xs leading-relaxed text-slate-400">
+                    {t("signup_phone_unavailable", "Phone registration is not available yet. Please register with email.")}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => { setSignupMethod("email"); setError(""); }}
+                    className="mt-4 flex h-11 w-full items-center justify-center rounded-xl bg-sky-600 text-sm font-black text-white hover:bg-sky-500 transition"
+                  >
+                    {t("signup_continue_email", "Continue with email")}
+                  </button>
+                </div>
+              ) : (
                 <input
                   id="email"
+                  name="email"
                   type="email"
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
+                  required
                   placeholder={t("email_address")}
-                  className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
-                />
-              ) : (
-                <input
-                  id="phoneNumber"
-                  type="tel"
-                  autoComplete="tel"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
-                  placeholder={t("phone_number")}
                   className="w-full h-12 md:h-14 rounded-xl px-4 bg-white/[0.04] text-white placeholder-gray-400 border border-white/10 focus:outline-none focus:border-white/30 focus:bg-white/[0.08] transition-all text-sm md:text-base shadow-inner"
                 />
               )}
             </div>
 
-            {signupMethod === "phone" && codeStage && (
-              <div className="space-y-3">
-                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest text-center">
-                  <p className="...">{t("enter_telegram_code")}</p>
-                </p>
-                <div className="flex gap-2 justify-between">
-                  {[0,1,2,3,4].map((i) => (
-                    <input
-                      key={i}
-                      id={`code-${i}`}
-                      type="text"
-                      maxLength="1"
-                      value={memberCode[i]}
-                      onChange={(e)=>handleCodeChange(i,e.target.value)}
-                      className="w-full h-12 md:h-14 text-center text-xl font-black rounded-xl bg-white/[0.04] text-white border border-white/10 focus:border-white/40 focus:bg-white/[0.08] focus:outline-none transition-all shadow-inner"
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
+            {signupMethod === "email" && (
+              <>
             {/* Password fields with show/hide toggles */}
             <div className="space-y-4 md:space-y-0 md:flex md:gap-4">
               <div className="relative w-full">
@@ -340,6 +288,8 @@ export default function SignUpPage() {
             >
               {t("register")}
             </button>
+              </>
+            )}
           </form>
 
           {/* Terms */}
