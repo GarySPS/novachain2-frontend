@@ -9,9 +9,11 @@ import { useTranslation } from "react-i18next";
 import i18n from "i18next";
 
 import DatabaseErrorCard from "../components/DatabaseErrorCard";
+import LoginInstallApp from "../components/LoginInstallApp";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => localStorage.getItem("novachain_remembered_login") || "");
+  const [rememberAccount, setRememberAccount] = useState(() => Boolean(localStorage.getItem("novachain_remembered_login")));
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState("");
@@ -114,6 +116,13 @@ export default function LoginPage() {
         return;
       }
 
+      // Remember only the login identifier, never the user's password.
+      if (rememberAccount && email.trim()) {
+        localStorage.setItem("novachain_remembered_login", email.trim());
+      } else {
+        localStorage.removeItem("novachain_remembered_login");
+      }
+
       if (data.token) localStorage.setItem("token", data.token);
       if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
 
@@ -208,7 +217,7 @@ export default function LoginPage() {
         <div className="mx-auto w-full max-w-[400px] md:max-w-[480px] rounded-[2rem] bg-[#0a0a0a]/60 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] border border-white/10 px-5 py-6 md:px-10 md:py-10">
           
           {/* Video Header - Scaled for mobile and blended for a premium look */}
-          <div className="relative w-full aspect-video sm:aspect-auto sm:h-28 md:h-40 rounded-2xl overflow-hidden border border-sky-400/20 bg-[#050505]">
+          <div className="relative w-full h-24 sm:h-28 md:h-40 rounded-2xl overflow-hidden border border-sky-400/20 bg-[#050505]">
             {/* Inner shadow overlay to seamlessly blend harsh video edges */}
             <div className="absolute inset-0 z-10 shadow-[inset_0_0_35px_rgba(0,0,0,1)] pointer-events-none" />
             
@@ -248,7 +257,7 @@ export default function LoginPage() {
           </div>
           
           {/* Compact Form Without Labels */}
-          <form onSubmit={handleLogin} className="space-y-4 md:space-y-5">
+          <form onSubmit={handleLogin} className="space-y-4 md:space-y-5" autoComplete="on">
             <input
               id="email"
               type="text"
@@ -282,7 +291,16 @@ export default function LoginPage() {
               </button>
             </div>
 
-            <div className="flex justify-end pt-1">
+            <p className="-mt-2 text-[10px] leading-4 text-slate-500">
+              {t("login_save_password_hint", "After sign-in, your browser may offer to save your password.")}
+            </p>
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 pt-1">
+              <label className="flex cursor-pointer items-center gap-2 text-[11px] font-semibold text-slate-300">
+                <input type="checkbox" checked={rememberAccount}
+                  onChange={event => setRememberAccount(event.target.checked)}
+                  className="h-4 w-4 rounded border-slate-600 accent-sky-500" />
+                {t("login_remember_account", "Remember account")}
+              </label>
               <Link
                 to="/forgot"
                 className="group flex items-center gap-1.5 text-[11px] font-bold text-gray-400 hover:text-white transition-colors tracking-wide uppercase"
@@ -317,6 +335,7 @@ export default function LoginPage() {
               {t('create_account') || "New here? Create an account"}
             </Link>
           </div>
+          <LoginInstallApp />
         </div>
       </div>
 

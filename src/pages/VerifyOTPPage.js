@@ -104,6 +104,8 @@ export default function VerifyOTPPage() {
   const [resendSuccess, setResendSuccess] = useState("");
   const [resendTimer, setResendTimer] = useState(0);
   const [showTerms, setShowTerms] = useState(false);
+  const [verifiedSession, setVerifiedSession] = useState(null);
+  const [verifying, setVerifying] = useState(false);
   const pinWrapperRef = useRef(null);
 
   const navigate = useNavigate();
@@ -129,6 +131,7 @@ export default function VerifyOTPPage() {
       setError(t("enter_email_and_code") || "Enter your email and the 6-digit code.");
       return;
     }
+    setVerifying(true);
     try {
       const res = await fetch(`${MAIN_API_BASE}/auth/verify-otp`, {
         method: "POST",
@@ -141,12 +144,15 @@ export default function VerifyOTPPage() {
         setOtp("");
         return;
       }
+      setVerifiedSession(data.token && data.user ? { token: data.token, user: data.user } : null);
       setSuccess(data.message || t("email_verified_msg") || "Email verified!");
-      // Instead of navigating to login, open Terms modal immediately
+      setOtp("");
       setShowTerms(true);
     } catch (err) {
       setError(t("verification_failed") || "Verification failed. Try again.");
       setOtp("");
+    } finally {
+      setVerifying(false);
     }
   };
 
@@ -173,9 +179,18 @@ export default function VerifyOTPPage() {
     setResendLoading(false);
   };
 
- const onAgree = () => {
-   navigate("/", { replace: true }); // go home; nothing stored
- };
+
+  const onAgree = () => {
+    if (verifiedSession?.token && verifiedSession.user) {
+      // Only persist the JWT after the terms have been accepted.
+      localStorage.setItem("token", verifiedSession.token);
+      localStorage.setItem("user", JSON.stringify(verifiedSession.user));
+      navigate("/wallet", { replace: true });
+    } else {
+      // Compatible with an older backend that doesn't issue OTP sessions.
+      navigate("/login", { replace: true });
+    }
+  };
 
   return (
     <div
@@ -227,6 +242,10 @@ export default function VerifyOTPPage() {
               {/* Invisible native input captures all typing, backspaces, and pastes */}
               <input
                 type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                name="one-time-code"
+                aria-label={t("verification_code", "Verification code")}
                 maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))}
@@ -274,9 +293,9 @@ export default function VerifyOTPPage() {
             <button
               className="mt-2 w-full h-12 md:h-14 rounded-xl font-black text-sm md:text-base tracking-[0.1em] uppercase transition-all active:scale-[.99] disabled:opacity-50 disabled:cursor-not-allowed bg-white text-black hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
               type="submit"
-              disabled={otp.length < 6 || !email}
+              disabled={verifying || otp.length < 6 || !email}
             >
-              {t("verify_code_btn") || "Verify Code"}
+              {verifying ? t("login_verifying", "Verifying…") : (t("verify_code_btn") || "Verify Code")}
             </button>
           </form>
 
