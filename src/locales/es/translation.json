@@ -328,5 +328,14 @@
   "login_install_close": "Entendido",
   "login_remember_account": "Recordar correo o usuario",
   "login_save_password_hint": "Tu navegador puede ofrecerte guardar la contraseña después de iniciar sesión.",
-  "login_verifying": "Verificando…"
+  "login_verifying": "Verificando…",
+  "signup_phone_tab": "Teléfono",
+  "signup_phone_soon": "Pronto",
+  "signup_phone_unavailable_title": "Registro por teléfono próximamente",
+  "signup_phone_unavailable": "El registro por teléfono aún no está disponible. Crea tu cuenta con correo electrónico.",
+  "signup_continue_email": "Continuar con correo",
+  "signup_email_required": "Ingresa tu correo electrónico para registrarte.",
+  "signup_failed": "No se pudo completar el registro",
+  "signup_email_otp_sent": "Revisa tu correo para obtener el código de verificación.",
+  "signup_failed_retry": "No se pudo registrar. Inténtalo de nuevo."
 }
