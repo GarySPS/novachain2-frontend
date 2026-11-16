@@ -318,8 +318,15 @@
 
 "wallet_mxn_transfer_details": "Datos de transferencia en MXN",
 "wallet_mxn_institution": "Institución de pago",
-"wallet_mxn_account_holder": "Titular de la cuenta bancaria"
-
-
-
+"wallet_mxn_account_holder": "Titular de la cuenta bancaria",
+  "login_install_app": "Instalar NovaChain",
+  "login_install_guide_title": "Añadir NovaChain a la pantalla de inicio",
+  "login_install_ios_steps": "Abre el menú Compartir del navegador, elige Añadir a pantalla de inicio y pulsa Añadir.",
+  "login_install_android_steps": "Abre el menú del navegador (⋮), elige Instalar aplicación o Añadir a pantalla de inicio y confirma.",
+  "login_install_desktop_steps": "Utiliza la opción Instalar aplicación en la barra de direcciones o en el menú del navegador.",
+  "login_install_hint": "Abre NovaChain desde la pantalla de inicio. Es posible que debas iniciar sesión la primera vez.",
+  "login_install_close": "Entendido",
+  "login_remember_account": "Recordar cuenta",
+  "login_save_password_hint": "Tu navegador puede ofrecerte guardar la contraseña después de iniciar sesión.",
+  "login_verifying": "Verificando…"
 }
