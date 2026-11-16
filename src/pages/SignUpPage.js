@@ -188,11 +188,12 @@ export default function SignUpPage() {
           </div>
 
           {/* Compact Form */}
-          <form onSubmit={handleSignUp} className="space-y-4 md:space-y-5">
+          <form onSubmit={handleSignUp} className="space-y-4 md:space-y-5" autoComplete="on">
             
             <input
               id="username"
               type="text"
+              autoComplete="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
@@ -233,6 +234,7 @@ export default function SignUpPage() {
                 <input
                   id="email"
                   type="email"
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
@@ -243,6 +245,7 @@ export default function SignUpPage() {
                 <input
                   id="phoneNumber"
                   type="tel"
+                  autoComplete="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
@@ -279,6 +282,7 @@ export default function SignUpPage() {
                 <input
                   id="password"
                   type={showPwd ? "text" : "password"}
+                  autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
@@ -299,6 +303,7 @@ export default function SignUpPage() {
                 <input
                   id="confirmPassword"
                   type={showConfirmPwd ? "text" : "password"}
+                  autoComplete="new-password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   onFocus={(e) => e.target.scrollIntoView({ behavior: "smooth", block: "center" })}
