@@ -587,7 +587,15 @@
 
 "wallet_mxn_transfer_details": "MXN 转账信息",
 "wallet_mxn_institution": "收款机构",
-"wallet_mxn_account_holder": "银行账户持有人"
-
-
+"wallet_mxn_account_holder": "银行账户持有人",
+  "login_install_app": "安装 NovaChain",
+  "login_install_guide_title": "将 NovaChain 添加到主屏幕",
+  "login_install_ios_steps": "打开浏览器的分享菜单，选择“添加到主屏幕”，然后点击“添加”。",
+  "login_install_android_steps": "打开浏览器菜单（⋮），选择“安装应用”或“添加到主屏幕”，然后确认。",
+  "login_install_desktop_steps": "使用浏览器地址栏或菜单中的“安装应用”选项。",
+  "login_install_hint": "从主屏幕打开 NovaChain。首次打开时可能需要重新登录。",
+  "login_install_close": "知道了",
+  "login_remember_account": "记住账号",
+  "login_save_password_hint": "登录后，浏览器可能会提示保存密码。",
+  "login_verifying": "正在验证…"
 }
