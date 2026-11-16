@@ -595,7 +595,7 @@
   "login_install_desktop_steps": "使用浏览器地址栏或菜单中的“安装应用”选项。",
   "login_install_hint": "从主屏幕打开 NovaChain。首次打开时可能需要重新登录。",
   "login_install_close": "知道了",
-  "login_remember_account": "记住账号",
+  "login_remember_account": "记住邮箱或用户名",
   "login_save_password_hint": "登录后，浏览器可能会提示保存密码。",
   "login_verifying": "正在验证…"
 }
